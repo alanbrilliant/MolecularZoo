@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: e9ab2fc4935ae8b43a1268c43559ed2f
+timeCreated: 1497909727
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - nitrogenMolecule: {fileID: 1745443690682756, guid: df361ad71f4a31e48be90fd169a75850,
+      type: 2}
+  - oxygenAtom: {fileID: 1309259594498986, guid: d888ea860c69cb9488c0c99ec203ab7d,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
