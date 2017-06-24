@@ -39,6 +39,13 @@ public class GameManager : MonoBehaviour {
 			FixedJoint nit1Joint = nit1.AddComponent<FixedJoint> ();
 			//SphereCollider nitCol = nit1.GetComponent<SphereCollider> ();
 
+			AtomScript nit1Script = nit1.GetComponent<AtomScript> ();
+			AtomScript nit2Script = nit2.GetComponent<AtomScript> ();
+
+			nit1Script.addBondedAtom (nit2);
+			nit2Script.addBondedAtom (nit1);
+
+
 			float radius = nit1.transform.localScale.x * .5f;
 
 			Collider col = nit2.GetComponent<SphereCollider> ();
@@ -73,6 +80,8 @@ public class GameManager : MonoBehaviour {
 
 		}
 	}
+
+
 	
 	// Update is called once per frame
 	void Update () {

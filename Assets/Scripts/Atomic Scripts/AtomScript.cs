@@ -6,6 +6,8 @@ public class AtomScript : MonoBehaviour {
 
 	Rigidbody rb;
 
+	private List<GameObject> bondedAtoms = new List<GameObject>();
+
 	public float speed;
 	void Start () {
 
@@ -28,6 +30,30 @@ public class AtomScript : MonoBehaviour {
 		//transform.rotation.x = 5;
 		rb.velocity = rb.velocity.normalized * speed;
 
+
+	}
+
+	public void addBondedAtom(GameObject atom) {
+		bondedAtoms.Add (atom);
+	}
+
+	public void removeBondedAtom(GameObject atom) {
+	
+		bondedAtoms.Remove (atom);
+	
+	}
+
+	public List<GameObject> getBondedAtoms(){
+		return bondedAtoms;
+	}
+
+	void onCollision(Collider col){
+		GameObject bullet = col.gameObject;
+		if (bullet.tag == "Projectile") {
+			if (gameObject.GetComponent != null) {
+				
+			}
+		}
 
 	}
 }
