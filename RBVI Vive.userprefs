@@ -2,15 +2,15 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Atomic Scripts\AtomScript.cs">
     <Files>
-      <File FileName="Assets\Scripts\Wand.cs" Line="14" Column="51" />
-      <File FileName="Assets\Scripts\Test.cs" Line="1" Column="1" />
-      <File FileName="Assets\SteamVR\Scripts\SteamVR_TrackedObject.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Wand.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Atomic Scripts\AtomScript.cs" Line="108" Column="4" />
+      <File FileName="Assets\Scripts\StringSerializationAPI.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Data\atoms.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Data\conformers.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Data\coords.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Data\DataManager.cs" Line="1" Column="1" />
       <File FileName="Assets\SteamVR\Scripts\SteamVR_Controller.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\GameManager.cs" Line="84" Column="2" />
-      <File FileName="Assets\SteamVR\Scripts\SteamVR_RenderModel.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Slug.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Atomic Scripts\Hydrogen.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Atomic Scripts\AtomScript.cs" Line="39" Column="2" />
+      <File FileName="Assets\Scripts\MoleculeCreator.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

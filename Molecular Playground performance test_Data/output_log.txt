@@ -19,7 +19,9 @@ Platform assembly: C:\Users\abrilliant\UnitySaves\RBVI Vive\Molecular Playground
 Loading C:\Users\abrilliant\UnitySaves\RBVI Vive\Molecular Playground performance test_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
 Platform assembly: C:\Users\abrilliant\UnitySaves\RBVI Vive\Molecular Playground performance test_Data\Managed\UnityEngine.VR.dll (this message is harmless)
 Loading C:\Users\abrilliant\UnitySaves\RBVI Vive\Molecular Playground performance test_Data\Managed\UnityEngine.VR.dll into Unity Child Domain
-- Completed reload, in  0.089 seconds
+Platform assembly: C:\Users\abrilliant\UnitySaves\RBVI Vive\Molecular Playground performance test_Data\Managed\Newtonsoft.Json.dll (this message is harmless)
+Loading C:\Users\abrilliant\UnitySaves\RBVI Vive\Molecular Playground performance test_Data\Managed\Newtonsoft.Json.dll into Unity Child Domain
+- Completed reload, in  0.112 seconds
 Platform assembly: C:\Users\abrilliant\UnitySaves\RBVI Vive\Molecular Playground performance test_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Users\abrilliant\UnitySaves\RBVI Vive\Molecular Playground performance test_Data\Managed\System.dll (this message is harmless)
 <RI> Initializing input.
@@ -30,12 +32,45 @@ OpenVR initialized!
  
 (Filename:  Line: 424)
 
-UnloadTime: 0.479297 ms
+UnloadTime: 0.438418 ms
+Connected to lighthouse:LHR-FBA896DD
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Platform assembly: C:\Users\abrilliant\UnitySaves\RBVI Vive\Molecular Playground performance test_Data\Managed\System.Runtime.Serialization.dll (this message is harmless)
 Setting up 4 worker threads for Enlighten.
-  Thread -> id: 2478 -> priority: 1 
-  Thread -> id: 24e8 -> priority: 1 
-  Thread -> id: 3b2c -> priority: 1 
-  Thread -> id: 1c5c -> priority: 1 
+  Thread -> id: bc4 -> priority: 1 
+  Thread -> id: 1404 -> priority: 1 
+  Thread -> id: 1c7c -> priority: 1 
+  Thread -> id: 9f4 -> priority: 1 
+Trigger Press
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Trigger Press
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Trigger Press
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Trigger Press
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Trigger Press
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Trigger Press
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
+Trigger Press
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
 OpenVR Shutdown
  
 (Filename:  Line: 889)

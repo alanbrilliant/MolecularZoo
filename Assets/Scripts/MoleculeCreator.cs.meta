@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: e33783225110a6b4c96220085b2df67a
+timeCreated: 1500330668
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - hydrogenPrefab: {fileID: 1503661090149674, guid: 5c4f0f5402225d54ca8a56ffbb3b45e4,
+      type: 2}
+  - oxygenPrefab: {fileID: 1309259594498986, guid: d888ea860c69cb9488c0c99ec203ab7d,
+      type: 2}
+  - carbonPrefab: {fileID: 1970577060944202, guid: a8de5b3bc7852ab4d97599b5069641b6,
+      type: 2}
+  - nitrogenPrefab: {fileID: 1745443690682756, guid: df361ad71f4a31e48be90fd169a75850,
+      type: 2}
+  - phosphorusPrefab: {fileID: 1707925176502294, guid: d1fb27f04fa24b646b5f76ad020a9ab4,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

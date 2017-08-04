@@ -7,6 +7,7 @@ public class Slug : MonoBehaviour {
 	// Use this for initialization
 	float time;
 	void Start () {
+
 		time = 0;
 	}
 	

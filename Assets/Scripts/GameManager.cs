@@ -7,22 +7,89 @@ public class GameManager : MonoBehaviour {
 
 	private List<GameObject> nitrogenList;
 	private List<GameObject> oxygenList;
+	private List<GameObject> hydrogenList;
+	private List<GameObject> carbonList;
 
-	public GameObject nitrogenMolecule;
+	public GameObject nitrogenAtom;
 	public GameObject oxygenAtom;
+	public GameObject carbonAtom;
+	public GameObject hydrogenAtom;
 
 	void Start () {
+		
 		nitrogenList = new List<GameObject> ();
 		oxygenList = new List<GameObject> ();
+		hydrogenList = new List<GameObject> ();
+		carbonList = new List<GameObject> ();
 
-		addN2 ();
-		addO2 ();
+		addAtoms (780, nitrogenAtom, nitrogenList);
+		addAtoms (200, oxygenAtom, oxygenList);
+		//addAtoms (, carbonAtom, carbonList);
+		addAtoms (10, hydrogenAtom, hydrogenList);
+
+
+
 	}
 
 
+
+
+
+
+	private void addAtoms(int amount, GameObject atomType, List<GameObject> atomList){
+		for (int i = 0; i < amount; i++) {
+			float randY = Random.Range (1f, 8f);
+			float randX = Random.Range (-6f, 6f);
+			float randZ = Random.Range (-6f, 5f);
+			Vector3 startPos = new Vector3 (randX, randY, randZ);
+			startPos = Vector3.up;
+			GameObject newAtom = (GameObject)GameObject.Instantiate (atomType, startPos, Quaternion.identity) as GameObject;
+			newAtom.transform.localScale *= .232f;
+			atomList.Add (newAtom);
+			//GameObject newAatom = (GameObject)GameObject.Instantiate (atomType, startPos, Random.rotation) as GameObject;
+		}
+
+
+
+		for (int i = 0; i < atomList.Count; i += 2) {
+			GameObject atom1 = atomList [i];
+			GameObject atom2 = atomList [i+1];
+			FixedJoint atom1Joint = atom1.AddComponent<FixedJoint> ();
+			//atom1Joint.spring = 80;
+			//atom1Joint.damper = 0;
+			//SphereCollider nitCol = nit1.GetComponent<SphereCollider> ();
+
+			AtomScript atom1Script = atom1.GetComponent<AtomScript> ();
+			AtomScript atom2Script = atom2.GetComponent<AtomScript> ();
+
+			atom1Script.addBondedAtom (atom2);
+			atom2Script.addBondedAtom (atom1);
+
+
+			float radius = atom1.transform.localScale.x * 2f;
+
+			Collider col = atom2.GetComponent<SphereCollider> ();
+
+
+			atom2.transform.position = atom1.transform.position + new Vector3(0,radius/2 * .5f,0);
+			atom1Joint.connectedBody = atom2.GetComponent<Rigidbody>();
+
+			atom2.GetComponent<Rigidbody> ().AddForce (1000f, 0, 0);
+			atom1.GetComponent<Rigidbody> ().AddForce (-1000f, 0, 0);
+
+			//atom1.GetComponent<Rigidbody> ().mass = 100;
+
+			atom2.GetComponent<Rigidbody> ().velocity =  new Vector3(0,10f, 0);
+			atom1.GetComponent<Rigidbody> ().velocity =  new Vector3(0,-10f, 0);
+
+		}
+		
+	}
+
+	/*
 	private void addN2(){
 
-		for (int i = 0; i < 2000; i++) {
+		for (int i = 0; i < 500; i++) {
 			float randY = Random.Range (1f, 3f);
 			float randX = Random.Range (-2f, 2f);
 			float randZ = Random.Range (-2f, 2f);
@@ -55,31 +122,8 @@ public class GameManager : MonoBehaviour {
 			nit1Joint.connectedBody = nit2.GetComponent<Rigidbody>();
 
 		} 
-	}
+	}*/
 
-	private void addO2(){
-		for (int i = 0; i < 200; i++) {
-			float randY = Random.Range (1f, 3f);
-			float randX = Random.Range (-2f, 2f);
-			float randZ = Random.Range (-2f, 2f);
-			Vector3 startPos = new Vector3 (randX, randY, randZ);
-
-			GameObject oxyAtom = (GameObject)GameObject.Instantiate (oxygenAtom, startPos, Random.rotation) as GameObject;
-			oxygenList.Add (oxyAtom);
-		}
-
-		for (int i = 0; i < oxygenList.Count; i += 2) {
-			GameObject oxy1 = oxygenList [i];
-			GameObject oxy2 = oxygenList [i+1];
-			FixedJoint oxy1Joint = oxy1.AddComponent<FixedJoint> ();
-			SphereCollider oxyCol = oxy1.GetComponent<SphereCollider> ();
-			float radius = oxy1.transform.localScale.x * oxyCol.radius;
-			oxy2.transform.position = oxy1.transform.position + new Vector3(0,radius,0);
-			oxy1Joint.connectedBody = oxy2.GetComponent<Rigidbody>();
-
-
-		}
-	}
 
 
 	
