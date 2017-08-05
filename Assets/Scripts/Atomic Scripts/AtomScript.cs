@@ -32,15 +32,18 @@ public class AtomScript : MonoBehaviour {
 			//gameObject.transform.localScale *= .1f;
 			bondNum = 2;
 		} else if (gameObject.name == "Carbon Atom") {
+			gameObject.transform.localScale = new Vector3(.1f,.1f,.1f);
 			//gameObject.transform.localScale *= .1f;
 			bondNum = 4;
 		} else if (gameObject.name == "Nitrogen Atom") {
+			gameObject.transform.localScale = new Vector3(.1f,.1f,.1f);
 			//gameObject.transform.localScale *= .1f;
 			bondNum = 3;
 		} else if (gameObject.name == "Hydrogen Atom") {
 			gameObject.transform.localScale = new Vector3(.05f,.05f,.05f);
 			bondNum = 1;
 		} else if (gameObject.name == "Phosphorus Atom") {
+			gameObject.transform.localScale = new Vector3(.1f,.1f,.1f);
 			//gameObject.transform.localScale *= .1f;
 			bondNum = 5;
 		}
@@ -60,12 +63,13 @@ public class AtomScript : MonoBehaviour {
 	// Update is called once per frame
 
 	void Update (){
-	
+		bondForming = false;
+
 	}
 
 	void FixedUpdate () {
 
-		//Debug.Log (gameObject.name+": " + allowedBonds);
+		//Debug.Log (gameObject.name+": " + bondForming);
 		//rb.AddForce (force * Vector3.up);
 		//rb.velocity = gameObject.transform.forward * 10;
 		//transform.rotation.x = 5;
@@ -124,6 +128,7 @@ public class AtomScript : MonoBehaviour {
 
 			//	script.addBondedAtom (gameObject);
 				addBondedAtom (obj);
+
 			}
 		
 		}
@@ -132,6 +137,16 @@ public class AtomScript : MonoBehaviour {
 
 
 
+	}
+
+	void OnJointBreak() {
+		List<GameObject> recalibratedBondedAtoms = new List<GameObject> ();
+		CharacterJoint[] currentJoints = gameObject.GetComponents<CharacterJoint> ();
+		for (int i = 0; i < currentJoints.Length; i++) {
+			recalibratedBondedAtoms.Add (currentJoints [i].connectedBody.gameObject);
+
+		}
+		bondedAtoms = recalibratedBondedAtoms;
 	}
 
 	/*

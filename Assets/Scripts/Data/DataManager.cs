@@ -27,14 +27,14 @@ public class DataManager : MonoBehaviour {
 		MoleculeCreator script = gameObject.GetComponent<MoleculeCreator> ();
 		//Debug.Log(waterData.atom.element[0]);
 		//Debug.Log(waterData.conf.x[1]);
-		/*for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 5; i++) {
 			script.instantiateMolecule (aspirinData, new Vector3(Random.Range(1f,4f),Random.Range(-3f,3f), Random.Range(-5f,3f)));
-		}*/
-		for (int i = 0; i < 1; i++) {
+		}
+		for (int i = 0; i < 50; i++) {
 			script.instantiateMolecule (waterData, new Vector3(Random.Range(-3f,3f),Random.Range(1f,4f), Random.Range(-5f,3f)));
 		}
 
-		//script.instantiateMolecule (atpData, new Vector3(Random.Range(1f,4f),Random.Range(-3f,3f), Random.Range(-5f,3f)));
+		script.instantiateMolecule (atpData, new Vector3(Random.Range(1f,4f),Random.Range(-3f,3f), Random.Range(-5f,3f)));
 
 
 
