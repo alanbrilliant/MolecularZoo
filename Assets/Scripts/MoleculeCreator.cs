@@ -11,6 +11,8 @@ public class MoleculeCreator : MonoBehaviour {
 	public GameObject nitrogenPrefab;
 	public GameObject phosphorusPrefab;
 
+	public GameObject bondModel;
+
 	private float molSize = .1f;
 	// Use this for initialization
 
@@ -76,45 +78,95 @@ public class MoleculeCreator : MonoBehaviour {
 			AtomScript startScript = startAtom.GetComponent<AtomScript> ();
 			AtomScript endScript = endAtom.GetComponent<AtomScript> ();
 
-			if (bondOrder [i] == 1) {
+			//Ray bondLine = new Ray (startAtom.transform.position, endAtom.transform.position);
+			//Vector3 bondPos = bondLine.GetPoint (Vector3.Distance (startAtom.transform.position, endAtom.transform.position));
+			Vector3 bondPos = (startAtom.transform.position + endAtom.transform.position) /2;
+
+			Rigidbody startAtomRB = startAtom.GetComponent<Rigidbody> ();
+			Rigidbody endAtomRB = endAtom.GetComponent<Rigidbody> ();
+
+
+			for (int j = 0; j < bondOrder [i]; j++) {
 				CharacterJoint joint1 = startAtom.AddComponent<CharacterJoint> ();
-				joint1.connectedBody = endAtom.GetComponent<Rigidbody> ();
+				joint1.connectedBody = endAtomRB;
 
 				startScript.addBondedAtom (endAtom);
 
 				CharacterJoint joint2 = endAtom.AddComponent<CharacterJoint> ();
-				joint2.connectedBody = startAtom.GetComponent<Rigidbody> ();
+				joint2.connectedBody = startAtomRB;
 				endScript.addBondedAtom (startAtom);
 
-				/*
-				JointLimits limits = joint1.limits;
-				limits.max = 5;
+				List<GameObject> startAtomBonds = startScript.getBonds ();
+				for (int k = 0; k < startAtomBonds.Count; k++) {
+					
+					Bond bondScript = startAtomBonds [k].GetComponent<Bond> ();
+					GameObject[] newBondConnectedAtoms = bondScript.getConnectedAtoms ();
+					if (newBondConnectedAtoms [1] == null) {
+						bondScript.setConnectedAtom (endAtom);
 
-				joint1.limits = limits;
-				joint2.limits = limits;
-				joint1.useLimits = true;
-				joint2.useLimits = true;
-				*/
-			} else if (bondOrder [i] == 2 ) {
+						if (bondOrder [i] == 1) {
+							bondScript.setOrderModifier (0);
+						} else if (bondOrder [i] == 2) {
+							if (j == 0)
+								bondScript.setOrderModifier (1);
+							if (j == 1)
+								bondScript.setOrderModifier (-1);
+						} else if (bondOrder [i] == 3) {
+							if (j == 0)
+								bondScript.setOrderModifier (0);
+							if (j == 1)
+								bondScript.setOrderModifier (-1);
+							if (j == 2)
+								bondScript.setOrderModifier (1);
+						}
+						break;
+					}
 				
-				CharacterJoint joint1 = startAtom.AddComponent<CharacterJoint> ();
-				joint1.connectedBody = endAtom.GetComponent<Rigidbody> ();
-				CharacterJoint joint2 = startAtom.AddComponent<CharacterJoint> ();
-				joint2.connectedBody = endAtom.GetComponent<Rigidbody> ();
-				startScript.addBondedAtom (endAtom);
-				startScript.addBondedAtom (endAtom);
+				}
+
+				List<GameObject> endAtomBonds = endScript.getBonds ();
 
 
-				CharacterJoint joint3 = endAtom.AddComponent<CharacterJoint> ();
-				joint3.connectedBody = startAtom.GetComponent<Rigidbody> ();
-				CharacterJoint joint4 = endAtom.AddComponent<CharacterJoint> ();
-				joint4.connectedBody = startAtom.GetComponent<Rigidbody> ();
-				endScript.addBondedAtom (startAtom);
-				endScript.addBondedAtom (startAtom);
+				for (int k = 0; k < endAtomBonds.Count; k++) {
+
+					Bond bondScript = endAtomBonds [k].GetComponent<Bond> ();
+					GameObject[] newBondConnectedAtoms = bondScript.getConnectedAtoms ();
+					if (newBondConnectedAtoms [1] == null) {
+						bondScript.setConnectedAtom (startAtom);
+
+						if (bondOrder [i] == 1) {
+							bondScript.setOrderModifier (0);
+						} else if (bondOrder [i] == 2) {
+							if (j == 0)
+								bondScript.setOrderModifier (1);
+							if (j == 1)
+								bondScript.setOrderModifier (-1);
+						} else if (bondOrder [i] == 3) {
+							if (j == 0)
+								bondScript.setOrderModifier (0);
+							if (j == 1)
+								bondScript.setOrderModifier (-1);
+							if (j == 2)
+								bondScript.setOrderModifier (1);
+						}
+						break;
+					}
+
+				}
 
 
-			
+				//Bond bondScript = newBond.GetComponent<Bond> ();
+				//bondScript.setConnectedAtoms (startAtom, endAtom);
+				//newBond.transform.parent = parentMol.transform;
+
+
+						
+					
+
+
 			}
+
+
 
 
 		}
