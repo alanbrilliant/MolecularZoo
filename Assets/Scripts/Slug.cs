@@ -7,7 +7,10 @@ public class Slug : MonoBehaviour {
 	// Use this for initialization
 	float time;
 	void Start () {
-
+		GameObject[] walls = GameObject.FindGameObjectsWithTag ("Wall");
+		foreach (GameObject wall in walls) {
+			Physics.IgnoreCollision(wall.GetComponent<BoxCollider>(), gameObject.GetComponent<CapsuleCollider>());
+		}
 		time = 0;
 	}
 	

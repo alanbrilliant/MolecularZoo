@@ -26,7 +26,7 @@ public class Bond : MonoBehaviour {
 			Quaternion bondDirectionQuat = Quaternion.LookRotation (bondDirection);
 			//Ray bondLine = new Ray (startAtom.transform.position, endAtom.transform.position);
 			//Vector3 bondPos = bondLine.GetPoint (Vector3.Distance (startAtom.transform.position, endAtom.transform.position));
-			if (time >= .1f) {
+			if (time >= .05f) {
 				Vector3 bondPos = (startAtom.transform.position + endAtom.transform.position) / 2;
 				transform.rotation = bondDirectionQuat;
 				transform.position = bondPos;
@@ -37,9 +37,9 @@ public class Bond : MonoBehaviour {
 
 		} else if (connectedAtoms [0] != null && connectedAtoms [1] == null) {
 
-			//if (Vector3.Distance (connectedAtoms [0], transform.position) != connectedAtoms [0].transform.localScale) {
-				
-			//}
+			if (Vector3.Distance (connectedAtoms [0].transform.position, transform.position) > connectedAtoms [0].transform.localScale.x * .5) {
+				transform.Translate ((connectedAtoms [0].transform.position - transform.position).normalized * .01f);
+			}
 			transform.rotation = Quaternion.LookRotation((connectedAtoms[0].transform.position- transform.position).normalized);
 
 			//transform.position = connectedAtoms [0].transform.position + connectedAtoms [0].transform.localScale;

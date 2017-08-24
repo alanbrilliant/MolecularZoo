@@ -14,6 +14,15 @@ public class AtomScript : MonoBehaviour {
 
 	private List<GameObject> bonds = new List<GameObject> ();
 
+	private AudioSource audioSrc;
+	public AudioClip bounceSound;
+	public AudioClip bangSound;
+	public AudioClip snapSound;
+
+	private AudioClip moleculeNameSound;
+
+	private bool hasBroken = false;
+
 	private int allowedBonds {
 		get;
 		set;
@@ -26,6 +35,13 @@ public class AtomScript : MonoBehaviour {
 
 	public float speed;
 	void Awake () {
+
+
+		audioSrc = gameObject.AddComponent <AudioSource> ();
+		audioSrc.playOnAwake = false;
+		audioSrc.spatialBlend = .73f;
+
+		
 		bondForming = false;
 		if (gameObject.name.Contains("("))
 			gameObject.name = gameObject.name.Substring (0, gameObject.name.IndexOf ("Atom") +4);
@@ -51,7 +67,11 @@ public class AtomScript : MonoBehaviour {
 			gameObject.transform.localScale = new Vector3(.1f,.1f,.1f);
 			//gameObject.transform.localScale *= .1f;
 			bondNum = 5;
-		}
+		} else if (gameObject.name == "Sulfur Atom") {
+			gameObject.transform.localScale = new Vector3(.1f,.1f,.1f);
+			//gameObject.transform.localScale *= .1f;
+			bondNum = 6;
+		} 
 
 
 		allowedBonds = bondNum;
@@ -100,6 +120,7 @@ public class AtomScript : MonoBehaviour {
 	// Update is called once per frame
 
 	void Update (){
+		
 		bondForming = false;
 
 		List<GameObject> recalibratedBondedAtoms = new List<GameObject> ();
@@ -154,7 +175,7 @@ public class AtomScript : MonoBehaviour {
 
 	 void OnCollisionEnter(Collision col){
 		GameObject obj = col.collider.gameObject;
-		if (obj.tag == "Projectile") {
+		if (obj.tag == "ExplosiveBullet") {
 			if(!hasDoubleBond()){
 				CharacterJoint[] bonds = gameObject.GetComponents<CharacterJoint> ();
 				for(int i = bonds.Length - 1; i >= 0; i--) {
@@ -168,6 +189,15 @@ public class AtomScript : MonoBehaviour {
 			}
 			rb.AddForce (1000f * obj.transform.forward);
 
+			audioSrc.volume = .1f;
+			audioSrc.clip = bangSound;
+			audioSrc.Play ();
+
+		}
+		if (obj.tag == "Bullet"){
+			audioSrc.volume = .2f;
+			audioSrc.clip = bounceSound;
+			audioSrc.Play ();
 		}
 
 		if (obj.tag == "Atom") {
@@ -181,7 +211,7 @@ public class AtomScript : MonoBehaviour {
 				
 				CharacterJoint newJoint = gameObject.AddComponent<CharacterJoint> ();
 				newJoint.connectedBody = obj.GetComponent<Rigidbody>();
-				newJoint.breakForce = 5000f;
+				newJoint.breakForce = 1000f;
 
 
 			//	script.addBondedAtom (gameObject);
@@ -217,6 +247,7 @@ public class AtomScript : MonoBehaviour {
 	}
 
 	void OnJointBreak() {
+		hasBroken = true;
 		List<GameObject> recalibratedBondedAtoms = new List<GameObject> ();
 		CharacterJoint[] currentJoints = gameObject.GetComponents<CharacterJoint> ();
 		for (int i = 0; i < currentJoints.Length; i++) {
@@ -237,6 +268,9 @@ public class AtomScript : MonoBehaviour {
 			}
 		}
 		Debug.Log (gameObject.name + " broke");
+		audioSrc.volume = .1f;
+		audioSrc.clip = snapSound;
+		audioSrc.Play ();
 	}
 
 	/*
@@ -278,5 +312,20 @@ public class AtomScript : MonoBehaviour {
 		return bonds;
 	}
 
+	public void setMoleculeNameSound(AudioClip clip){
+		moleculeNameSound = clip;
+	}
+
+	public void playMoleculeNameSound(){
+		
+		if (hasBroken == false) {
+			Debug.Log ("adaWater");
+			if (moleculeNameSound != null){
+				Debug.Log ("Water");
+				audioSrc.clip = moleculeNameSound;
+				audioSrc.Play ();
+			}
+		}
+	}
 
 }

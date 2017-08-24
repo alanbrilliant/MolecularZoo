@@ -20,13 +20,25 @@ public class Wand : MonoBehaviour {
 
 	private int controllerState;
 
+	private GameObject tractoredObject;
+
+	private GameObject laser;
+	private LaserScript laserScript;
+	public AudioClip phaserSound;
+	private AudioClip gunshot;
+
+
 
 	void Awake() {
 		audio = gameObject.GetComponent<AudioSource> ();
+		gunshot = audio.clip;
 	}
 	// Use this for initialization
 	void Start () {
+		laserScript = gameObject.GetComponentInChildren<LaserScript> ();
+		laser = laserScript.gameObject;
 		gunChildObjects = new List<GameObject> ();
+		controllerState = 2;
 		Gun[] gunList = gameObject.GetComponentsInChildren<Gun>(true) ;
 
 		for (int i = 0; i < gunList.Length; i++) {
@@ -34,12 +46,13 @@ public class Wand : MonoBehaviour {
 			gunChildObjects.Add (gunList [i].gameObject);
 		}
 
-		for (int i = 1; i < gunChildObjects.Count; i++) {
-			gunChildObjects[i].SetActive(false);
+		for (int i = 0; i < gunChildObjects.Count; i++) {
+			if (i != controllerState)
+				gunChildObjects[i].SetActive(false);
 		
 		}
 
-		controllerState = 0;
+		controllerState = 2;
 		trackedObj = gameObject.GetComponent<SteamVR_TrackedObject>();
 		controller = SteamVR_Controller.Input ((int)trackedObj.index);
 
@@ -64,18 +77,8 @@ public class Wand : MonoBehaviour {
 			grabJoint.connectedBody = null;
 			connectedRigidbody.velocity = grabbedObjectVelocity;
 		}
-		if (controller.GetPressDown (Valve.VR.EVRButtonId.k_EButton_Grip)) {
-			if (controllerState == 3){
-				controllerState = 0;
-			} else {
-				controllerState++;
-			}
-
-			for (int i = 0; i < gunChildObjects.Count; i++) {
-				gunChildObjects [i].SetActive (false);
-				if (i == controllerState)
-					gunChildObjects [i].SetActive (true);
-			}
+		if (controller.GetPressDown (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad) || controller.GetPressDown (Valve.VR.EVRButtonId.k_EButton_Grip) ) {
+			updateControllerState ();
 			
 		}
 			
@@ -89,6 +92,8 @@ public class Wand : MonoBehaviour {
 			
 			if (controllerState == 0 || controllerState == 1) {
 
+
+				audio.clip = gunshot;
 				audio.volume = .05f;
 				audio.Play ();
 
@@ -129,17 +134,68 @@ public class Wand : MonoBehaviour {
 
 			if (controllerState ==2) {
 				RaycastHit hit;
-				if (Physics.Raycast (transform.position + transform.forward * .2f, transform.forward, out hit)) {
-					Debug.DrawLine (transform.position + transform.forward * .2f, hit.point);
-					Debug.Log ("fheuf");
-					if (hit.collider.gameObject.tag == "Atom") {
-						
-						hit.collider.gameObject.GetComponent<Rigidbody> ().AddForce ( (transform.position - hit.collider.gameObject.transform.position).normalized * 50f);
-						Debug.DrawLine (transform.position + transform.forward * .2f, hit.point);
+
+				audio.clip = phaserSound;
+				audio.volume = .1f;
+				if (audio.isPlaying == false)
+					audio.Play ();
+
+				if (tractoredObject == null) {
+					Ray tractorBeamRay = new Ray (transform.position + transform.forward * .2f, transform.forward);
+					if (Physics.Raycast (tractorBeamRay, out hit)) {
+						if (hit.collider.gameObject.tag == "Atom") {
+							tractoredObject = hit.collider.gameObject;
+							GameObject hitAtom = hit.collider.gameObject;
+							Rigidbody hitAtomRB = hit.collider.gameObject.GetComponent<Rigidbody> ();
+							hitAtomRB.velocity = hitAtomRB.velocity.magnitude * (transform.position - hitAtom.transform.position).normalized;
+
+
+						} else {
+							
+							laserScript.enableLaser (transform.position, hit.point);
+						}
 					}
 				}
+				if ( tractoredObject != null){
+					Rigidbody tractoredObjRB = tractoredObject.GetComponent<Rigidbody>();
+					float targetSpeed = 2f * Vector3.Distance (tractoredObject.transform.position, transform.position);
+					float currentAtomSpeed = Vector3.Dot ((transform.position - tractoredObject.transform.position).normalized, tractoredObjRB.velocity);
+					tractoredObjRB.velocity = targetSpeed * ( transform.position - tractoredObjRB.transform.position).normalized;
+
+					laserScript.enableLaser (transform.position, tractoredObject.transform.position);
+
+					if (Vector3.Distance (tractoredObjRB.transform.position, transform.position) < .3f) {
+						laserScript.disableLaser ();
+						updateControllerState ();
+
+					}
+
+				}
+
+				/*
+						if (currentAtomSpeed < targetSpeed) {
+							hitAtomRB.AddForce (7f * (transform.position - hitAtom.transform.position).normalized, ForceMode.Acceleration);
+						} else if (currentAtomSpeed > targetSpeed) {
+							hitAtomRB.AddForce (-9f * (transform.position - hitAtom.transform.position).normalized, ForceMode.Acceleration);
+						}
+						/*
+						if (hitAtomRB.velocity.magnitude.CompareTo. < 10f) {
+
+							hitAtomRB.AddForce ((transform.position - hitAtom.transform.position).normalized * 50f);
+						} else {
+							hitAtomRB.AddForce ((transform.position - hitAtom.transform.position).normalized * -50f);
+						}*/
+					
+
 			}
 				
+		}
+
+		if (controller.GetHairTriggerUp ()) {
+			tractoredObject = null;
+			laserScript.disableLaser ();
+			if (audio.isPlaying)
+				audio.Stop ();
 		}
 
 
@@ -147,15 +203,20 @@ public class Wand : MonoBehaviour {
 
 	void OnTriggerStay(Collider other) {
 
-		if (controller.GetHairTriggerDown ()) {
+		if (controller.GetHairTrigger ()) {
 			
 			if (controllerState == 3) {
 
 				if (other.gameObject.tag == "Atom") {
+					if (grabJoint.connectedBody == null) {
 
 
-					grabJoint.connectedBody = other.attachedRigidbody;
-					previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;
+
+						grabJoint.connectedBody = other.attachedRigidbody;
+						previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;
+
+						other.GetComponent<AtomScript> ().playMoleculeNameSound ();
+					}
 				}
 
 			}
@@ -183,6 +244,20 @@ public class Wand : MonoBehaviour {
 
 
 		return final;
+	}
+
+	private void updateControllerState(){
+		if (controllerState == 3){
+			controllerState = 0;
+		} else {
+			controllerState++;
+		}
+
+		for (int i = 0; i < gunChildObjects.Count; i++) {
+			gunChildObjects [i].SetActive (false);
+			if (i == controllerState)
+				gunChildObjects [i].SetActive (true);
+		}
 	}
 			
 

@@ -10,8 +10,11 @@ public class MoleculeCreator : MonoBehaviour {
 	public GameObject carbonPrefab;
 	public GameObject nitrogenPrefab;
 	public GameObject phosphorusPrefab;
+	public GameObject sulfurPrefab;
 
 	public GameObject bondModel;
+
+	public List<AudioClip> moleculeNameSounds;
 
 	private float molSize = .1f;
 	// Use this for initialization
@@ -56,7 +59,10 @@ public class MoleculeCreator : MonoBehaviour {
 			}
 			if (atomList [i] == 15) {
 				atomPrefab = phosphorusPrefab;
-			} 
+			}
+			if (atomList [i] == 16) {
+				atomPrefab = sulfurPrefab;
+			}
 
 
 			GameObject newAtom = GameObject.Instantiate (atomPrefab, new Vector3 (xCoords [i]+ startingPos.x, yCoords [i] + startingPos.y, zCoords [i] + startingPos.z) * molSize, Quaternion.identity);
@@ -174,9 +180,18 @@ public class MoleculeCreator : MonoBehaviour {
 
 
 		for (int i = 0; i < instantiatedAtoms.Count; i++) {
+			
 			CharacterJoint[] atomJoints = instantiatedAtoms [i].GetComponents<CharacterJoint> ();
 			for (int j = 0; j < atomJoints.Length; j++) {
 				atomJoints [j].breakForce = 5000f;
+			}
+			for (int j = 0; j < moleculeNameSounds.Count; j++) {
+				string soundNameRepaired = moleculeNameSounds [j].name.Substring (0,moleculeNameSounds[j].name.IndexOf("Sound"));
+				Debug.Log(soundNameRepaired + " : "+ molecule.name);
+				if (soundNameRepaired == molecule.name) {
+					
+					instantiatedAtoms [i].GetComponent<AtomScript> ().setMoleculeNameSound (moleculeNameSounds [j]);
+				}
 			}
 		}
 

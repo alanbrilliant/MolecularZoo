@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,9 +22,10 @@ public class Earth : MonoBehaviour {
 
 	void OnCollisionEnter(Collision col){
 		GameObject obj = col.collider.gameObject;
-		if (obj.tag != "Atom") {
+		if (obj.tag == "Bullet" || obj.tag == "ExplosiveBullet") {
 			audio.volume = .07f;
-			audio.Play ();
+			if(audio.isPlaying == false)
+				audio.Play ();
 		}
 	}
 }

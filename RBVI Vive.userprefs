@@ -1,16 +1,17 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Atomic Scripts\AtomScript.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Data\DataManager.cs">
     <Files>
-      <File FileName="Assets\Scripts\Wand.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Earth.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Atomic Scripts\AtomScript.cs" Line="26" Column="2" />
+      <File FileName="Assets\Scripts\Earth.cs" Line="17" Column="2" />
+      <File FileName="Assets\Scripts\Atomic Scripts\AtomScript.cs" Line="64" Column="45" />
       <File FileName="Assets\SteamVR\Scripts\SteamVR_Controller.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\MoleculeCreator.cs" Line="137" Column="32" />
-      <File FileName="Assets\Scripts\Data\DataManager.cs" Line="34" Column="98" />
+      <File FileName="Assets\Scripts\MoleculeCreator.cs" Line="11" Column="26" />
+      <File FileName="Assets\Scripts\Data\DataManager.cs" Line="19" Column="2" />
       <File FileName="Assets\SteamVR\Scripts\SteamVR.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\GameManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Atomic Scripts\Bond.cs" Line="37" Column="4" />
+      <File FileName="Assets\Scripts\Atomic Scripts\Bond.cs" Line="61" Column="2" />
+      <File FileName="Assets\Scripts\Slug.cs" Line="15" Column="3" />
+      <File FileName="Assets\Scripts\Wand.cs" Line="227" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
