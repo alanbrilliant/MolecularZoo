@@ -11,4 +11,4 @@ Developed for UCSF
 
 
 
-![Screenshot](http://imgur.com/a/NV2xk.jpg "Title")
+![Screenshot](http://imgur.com/HCMVloP.jpg "Title")
