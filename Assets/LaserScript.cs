@@ -8,7 +8,7 @@ public class LaserScript : MonoBehaviour {
 	private Vector3 startPoint;
 	private Vector3 endPoint;
 
-	void Start () {
+	void Awake () {
 		lnRenderer = gameObject.GetComponent<LineRenderer> ();
 		lnRenderer.SetWidth (.2f, .2f);
 		lnRenderer.enabled = false;

@@ -1,12 +1,10 @@
 fileFormatVersion: 2
-guid: b4dfbe946801ab343968c08e98aa46cc
-timeCreated: 1503006707
+guid: 04115c7ace230954094c588e010f9d7f
+timeCreated: 1504305802
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences:
-  - bondGameObject: {fileID: 1333853292811182, guid: 5fd0606056b32af4cb8604a7d81d2bee,
-      type: 2}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

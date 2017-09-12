@@ -12,7 +12,9 @@ public class MoleculeCreator : MonoBehaviour {
 	public GameObject phosphorusPrefab;
 	public GameObject sulfurPrefab;
 
+
 	public GameObject bondModel;
+	public GameObject doubleBondModel;
 
 	public List<AudioClip> moleculeNameSounds;
 
@@ -92,19 +94,29 @@ public class MoleculeCreator : MonoBehaviour {
 			Rigidbody endAtomRB = endAtom.GetComponent<Rigidbody> ();
 
 
+
+
+			GameObject newBond;
+
+			if (bondOrder [i] == 1) {
+				newBond = Instantiate (bondModel, startAtom.transform.position, Quaternion.identity);
+			} else if (bondOrder [i] == 2) {
+				newBond = Instantiate (doubleBondModel, startAtom.transform.position, Quaternion.identity);
+			} else {
+				newBond = Instantiate (bondModel, startAtom.transform.position, Quaternion.identity);
+			}
+
+			Bond newBondScript = newBond.GetComponent<Bond> ();
+			Debug.Log (newBond + " || " + newBondScript);
+			newBondScript.formBond (startAtom, endAtom, bondOrder [i]);
+			newBond.transform.parent = parentMol.transform;
+
+
+			/*
+			List<GameObject> startAtomBonds = startScript.getBonds ();
 			for (int j = 0; j < bondOrder [i]; j++) {
-				CharacterJoint joint1 = startAtom.AddComponent<CharacterJoint> ();
-				joint1.connectedBody = endAtomRB;
-
-				startScript.addBondedAtom (endAtom);
-
-				CharacterJoint joint2 = endAtom.AddComponent<CharacterJoint> ();
-				joint2.connectedBody = startAtomRB;
-				endScript.addBondedAtom (startAtom);
-
-				List<GameObject> startAtomBonds = startScript.getBonds ();
 				for (int k = 0; k < startAtomBonds.Count; k++) {
-					
+
 					Bond bondScript = startAtomBonds [k].GetComponent<Bond> ();
 					GameObject[] newBondConnectedAtoms = bondScript.getConnectedAtoms ();
 					if (newBondConnectedAtoms [1] == null) {
@@ -127,12 +139,12 @@ public class MoleculeCreator : MonoBehaviour {
 						}
 						break;
 					}
-				
+
 				}
 
 				List<GameObject> endAtomBonds = endScript.getBonds ();
-
-
+				*/
+				/*
 				for (int k = 0; k < endAtomBonds.Count; k++) {
 
 					Bond bondScript = endAtomBonds [k].GetComponent<Bond> ();
@@ -158,36 +170,35 @@ public class MoleculeCreator : MonoBehaviour {
 						break;
 					}
 
-				}
+				}*/
+		}
 
 
-				//Bond bondScript = newBond.GetComponent<Bond> ();
-				//bondScript.setConnectedAtoms (startAtom, endAtom);
-				//newBond.transform.parent = parentMol.transform;
+
+				
 
 
 						
 					
 
 
-			}
+			
 
 
 
 
-		}
+
 
 
 
 		for (int i = 0; i < instantiatedAtoms.Count; i++) {
-			
+			/*
 			CharacterJoint[] atomJoints = instantiatedAtoms [i].GetComponents<CharacterJoint> ();
 			for (int j = 0; j < atomJoints.Length; j++) {
 				atomJoints [j].breakForce = 5000f;
-			}
+			}*/
 			for (int j = 0; j < moleculeNameSounds.Count; j++) {
 				string soundNameRepaired = moleculeNameSounds [j].name.Substring (0,moleculeNameSounds[j].name.IndexOf("Sound"));
-				Debug.Log(soundNameRepaired + " : "+ molecule.name);
 				if (soundNameRepaired == molecule.name) {
 					
 					instantiatedAtoms [i].GetComponent<AtomScript> ().setMoleculeNameSound (moleculeNameSounds [j]);

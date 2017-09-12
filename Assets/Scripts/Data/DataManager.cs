@@ -35,22 +35,22 @@ public class DataManager : MonoBehaviour {
 		MoleculeCreator script = gameObject.GetComponent<MoleculeCreator> ();
 		//Debug.Log(waterData.atom.element[0]);
 		//Debug.Log(waterData.conf.x[1]);
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 1; i++) {
 			script.instantiateMolecule (aspirinData, new Vector3(Random.Range(-3f,4f),Random.Range(2f,5f), Random.Range(-5f,4f)));
 		}
-		for (int i = 0; i < 35; i++) {
-			script.instantiateMolecule (waterData, new Vector3(Random.Range(-3f,4f),Random.Range(2f,5f), Random.Range(-5f,4f)));
+		for (int i = 0; i < 15; i++) {
+			//script.instantiateMolecule (waterData, new Vector3(Random.Range(-3f,4f),Random.Range(2f,5f), Random.Range(-5f,4f)));
 		}
 
 		for (int i = 0; i < 15; i++) {
 			script.instantiateMolecule (carbondioxideData, new Vector3(Random.Range(-3f,4f),Random.Range(2f,5f), Random.Range(-5f,4f)));
 		}
 
-		script.instantiateMolecule (caffeineData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,5f), Random.Range(-5f,4f)));
+		//script.instantiateMolecule (caffeineData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,5f), Random.Range(-5f,4f)));
 		script.instantiateMolecule (saturatedfatData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,5f), Random.Range(-5f,4f)));
-		script.instantiateMolecule (sulfuricacidData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,5f), Random.Range(-5f,4f)));
+		//script.instantiateMolecule (sulfuricacidData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,5f), Random.Range(-5f,4f)));
 
-		script.instantiateMolecule (atpData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,5f), Random.Range(-5f,4f)));
+		//script.instantiateMolecule (atpData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,5f), Random.Range(-5f,4f)));
 
 
 

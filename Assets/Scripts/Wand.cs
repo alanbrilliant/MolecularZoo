@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,32 +28,31 @@ public class Wand : MonoBehaviour {
 	public AudioClip phaserSound;
 	private AudioClip gunshot;
 
+	AudioClip moleculeNameCooldown;
+
+	private enum arsenal {hands, tractor, pistol, heavyPistol};
 
 
 	void Awake() {
 		audio = gameObject.GetComponent<AudioSource> ();
 		gunshot = audio.clip;
 	}
-	// Use this for initialization
+
 	void Start () {
 		laserScript = gameObject.GetComponentInChildren<LaserScript> ();
 		laser = laserScript.gameObject;
 		gunChildObjects = new List<GameObject> ();
-		controllerState = 2;
+		controllerState = (int)arsenal.tractor;
 		Gun[] gunList = gameObject.GetComponentsInChildren<Gun>(true) ;
 
 		for (int i = 0; i < gunList.Length; i++) {
 
 			gunChildObjects.Add (gunList [i].gameObject);
 		}
+			
 
-		for (int i = 0; i < gunChildObjects.Count; i++) {
-			if (i != controllerState)
-				gunChildObjects[i].SetActive(false);
-		
-		}
-
-		controllerState = 2;
+		controllerState = 0;
+		updateControllerState ();
 		trackedObj = gameObject.GetComponent<SteamVR_TrackedObject>();
 		controller = SteamVR_Controller.Input ((int)trackedObj.index);
 
@@ -63,36 +63,17 @@ public class Wand : MonoBehaviour {
 
 	void Update () {
 
-
-		if (grabJoint.connectedBody != null) {
-			//Debug.Log (grabJoint.connectedBody.velocity);
-			Vector3 currentPosition = grabJoint.connectedBody.transform.position;
-			grabbedObjectVelocity = (currentPosition - previousGrabbedObjectPosition) / Time.deltaTime;
-			previousGrabbedObjectPosition = currentPosition;
+		if (controllerState == (int)arsenal.hands) {
+			if (grabJoint.connectedBody != null) {
+				//Debug.Log (grabJoint.connectedBody.velocity);
+				Vector3 currentPosition = grabJoint.connectedBody.transform.position;
+				grabbedObjectVelocity = (currentPosition - previousGrabbedObjectPosition) / Time.deltaTime;
+				previousGrabbedObjectPosition = currentPosition;
+			}
 		}
-			
-			
-		if (controller.GetHairTriggerUp () && grabJoint.connectedBody != null) {
-			Rigidbody connectedRigidbody = grabJoint.connectedBody;
-			grabJoint.connectedBody = null;
-			connectedRigidbody.velocity = grabbedObjectVelocity;
-		}
-		if (controller.GetPressDown (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad) || controller.GetPressDown (Valve.VR.EVRButtonId.k_EButton_Grip) ) {
-			updateControllerState ();
-			
-		}
-			
 
-
-
-
-		
-			
-		if (controller.GetHairTriggerDown ()) {
-			
-			if (controllerState == 0 || controllerState == 1) {
-
-
+		if (controllerState == (int)arsenal.pistol) {
+			if (controller.GetHairTriggerDown()) {
 				audio.clip = gunshot;
 				audio.volume = .05f;
 				audio.Play ();
@@ -100,39 +81,51 @@ public class Wand : MonoBehaviour {
 				Debug.Log ("Trigger Press");
 
 
-				/*
-				GameObject cube = GameObject.CreatePrimitive (PrimitiveType.Cube);
-				Vector3 position = gameObject.transform.position;
-				position = incrementDimension (position, 5, 'y');
-				position = incrementDimension (position, 5, 'x');
-				position = incrementDimension (position, 5, 'z');
-
-				Ray ray = new Ray (transform.position, transform.forward);
-				position = ray.GetPoint (2);
-
-				cube.transform.position = position;
-				cube.AddComponent<Rigidbody> ();
-				*/
-
 				GameObject bullet;
-				if (controllerState == 0) {
-					bullet = slugs;
-				} else if (controllerState == 1) {
-					bullet = redSlugs;
-				} else {
-					bullet = slugs;
-				}
+				bullet = slugs;
 
 				GameObject shot = Instantiate (bullet, transform.position + transform.forward * .2f, transform.rotation);
 
 				Rigidbody shotRB = shot.GetComponent<Rigidbody> ();
 				shotRB.velocity = shotRB.transform.forward * 10;
 				shot.transform.Rotate (90, 0, 0);
-			} 
+			}
 		}
-		if (controller.GetHairTrigger()){
 
-			if (controllerState ==2) {
+		if (controllerState == (int)arsenal.heavyPistol) {
+			if (controller.GetHairTriggerDown()) {
+				audio.clip = gunshot;
+				audio.volume = .05f;
+				audio.Play ();
+
+				Debug.Log ("Trigger Press");
+
+
+				GameObject bullet;
+				bullet =  redSlugs;
+
+				GameObject shot = Instantiate (bullet, transform.position + transform.forward * .2f, transform.rotation);
+
+				Rigidbody shotRB = shot.GetComponent<Rigidbody> ();
+				shotRB.velocity = shotRB.transform.forward * 10;
+				shot.transform.Rotate (90, 0, 0);
+			}
+		}
+
+		if (controllerState == (int)arsenal.tractor){
+
+
+
+			if (controller.GetHairTriggerDown ()) {
+				if (tractoredObject != null)
+					tractoredObject = null;
+			}
+
+
+
+			if (controller.GetHairTrigger()) {
+
+
 				RaycastHit hit;
 
 				audio.clip = phaserSound;
@@ -151,51 +144,75 @@ public class Wand : MonoBehaviour {
 
 
 						} else {
-							
+
 							laserScript.enableLaser (transform.position, hit.point);
 						}
 					}
 				}
-				if ( tractoredObject != null){
-					Rigidbody tractoredObjRB = tractoredObject.GetComponent<Rigidbody>();
-					float targetSpeed = 2f * Vector3.Distance (tractoredObject.transform.position, transform.position);
-					float currentAtomSpeed = Vector3.Dot ((transform.position - tractoredObject.transform.position).normalized, tractoredObjRB.velocity);
-					tractoredObjRB.velocity = targetSpeed * ( transform.position - tractoredObjRB.transform.position).normalized;
 
-					laserScript.enableLaser (transform.position, tractoredObject.transform.position);
+			}
 
-					if (Vector3.Distance (tractoredObjRB.transform.position, transform.position) < .3f) {
-						laserScript.disableLaser ();
-						updateControllerState ();
+			if (controller.GetHairTriggerUp ()) {
+				if (tractoredObject == null) {
+					tractoredObject = null;
+					laserScript.disableLaser ();
+				}
+			}
 
-					}
+			if ( tractoredObject != null){
+				Rigidbody tractoredObjRB = tractoredObject.GetComponent<Rigidbody>();
+				float targetSpeed = 2f * Vector3.Distance (tractoredObject.transform.position, transform.position);
+				float currentAtomSpeed = Vector3.Dot ((transform.position - tractoredObject.transform.position).normalized, tractoredObjRB.velocity);
+				tractoredObjRB.velocity = targetSpeed * ( transform.position - tractoredObjRB.transform.position).normalized;
+
+				laserScript.enableLaser (transform.position, tractoredObject.transform.position);
+
+
+				float tractoredAtomDistance = 0;
+				if (controller.GetHairTrigger ()) {
+					tractoredAtomDistance = .2f;
+				} else {
+					tractoredAtomDistance = .04f;
+				}
+					
+
+				if (Vector3.Distance (tractoredObjRB.transform.position, transform.position) < .2f) {
+					controllerState = Enum.GetValues (typeof(arsenal)).Length - 1;
+					updateControllerState ();
+					laserScript.disableLaser ();
+					tractoredObject = null;
+					audio.Stop ();
+
+
 
 				}
 
-				/*
-						if (currentAtomSpeed < targetSpeed) {
-							hitAtomRB.AddForce (7f * (transform.position - hitAtom.transform.position).normalized, ForceMode.Acceleration);
-						} else if (currentAtomSpeed > targetSpeed) {
-							hitAtomRB.AddForce (-9f * (transform.position - hitAtom.transform.position).normalized, ForceMode.Acceleration);
-						}
-						/*
-						if (hitAtomRB.velocity.magnitude.CompareTo. < 10f) {
-
-							hitAtomRB.AddForce ((transform.position - hitAtom.transform.position).normalized * 50f);
-						} else {
-							hitAtomRB.AddForce ((transform.position - hitAtom.transform.position).normalized * -50f);
-						}*/
-					
-
 			}
-				
+
+
+
+
 		}
 
+
+
+		if (controller.GetHairTriggerUp () && grabJoint.connectedBody != null) {
+			Rigidbody connectedRigidbody = grabJoint.connectedBody;
+			grabJoint.connectedBody = null;
+			connectedRigidbody.velocity = grabbedObjectVelocity;
+		}
+		if (controller.GetPressDown (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad) || controller.GetPressDown (Valve.VR.EVRButtonId.k_EButton_Grip) ) {
+			updateControllerState ();
+			
+		}
+			
+
 		if (controller.GetHairTriggerUp ()) {
-			tractoredObject = null;
-			laserScript.disableLaser ();
-			if (audio.isPlaying)
-				audio.Stop ();
+			
+			if (audio.isPlaying) {
+				if (audio.clip != gunshot)
+					audio.Stop ();
+			}
 		}
 
 
@@ -205,7 +222,7 @@ public class Wand : MonoBehaviour {
 
 		if (controller.GetHairTrigger ()) {
 			
-			if (controllerState == 3) {
+			if (controllerState == (int)arsenal.hands) {
 
 				if (other.gameObject.tag == "Atom") {
 					if (grabJoint.connectedBody == null) {
@@ -215,7 +232,12 @@ public class Wand : MonoBehaviour {
 						grabJoint.connectedBody = other.attachedRigidbody;
 						previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;
 
-						other.GetComponent<AtomScript> ().playMoleculeNameSound ();
+						if (other.GetComponent<AtomScript> ().getMoleculeNameSound () != moleculeNameCooldown) {
+							other.GetComponent<AtomScript> ().playMoleculeNameSound ();
+							moleculeNameCooldown = other.GetComponent<AtomScript> ().getMoleculeNameSound ();
+						}
+							
+
 					}
 				}
 
@@ -247,17 +269,45 @@ public class Wand : MonoBehaviour {
 	}
 
 	private void updateControllerState(){
-		if (controllerState == 3){
+		tractoredObject = null;
+		laserScript.disableLaser ();
+
+		if (audio.isPlaying) {
+			if (audio.clip != gunshot)
+				audio.Stop ();
+		}
+		if (controllerState == Enum.GetValues(typeof(arsenal)).Length - 1){
 			controllerState = 0;
 		} else {
 			controllerState++;
 		}
 
+
+		string activeWeaponName = "";
+
+
+		switch (controllerState)
+		{
+		case (int)arsenal.hands:
+			break;
+
+		case (int)arsenal.tractor:
+			activeWeaponName = "Tractor";
+			break;
+		case (int)arsenal.pistol:
+			activeWeaponName = "Pistol";
+			break;
+		case (int)arsenal.heavyPistol:
+			activeWeaponName = "HeavyPistol";
+			break;
+		}
+
 		for (int i = 0; i < gunChildObjects.Count; i++) {
 			gunChildObjects [i].SetActive (false);
-			if (i == controllerState)
+			if (activeWeaponName == gunChildObjects[i].name)
 				gunChildObjects [i].SetActive (true);
 		}
+			
 	}
 			
 
