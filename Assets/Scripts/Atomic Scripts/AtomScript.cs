@@ -372,8 +372,6 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 		addBondedAtom (atomToBond);
 		bonds.Add (bond);
 
-		Debug.Log (bondOrder);
-
 		List<GameObject> stubBondReference = new List<GameObject> (); //Hidden stub bonds
 
 
@@ -387,7 +385,6 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 					if (bondStub.activeSelf && stubBondReference.Contains(bondStub) == false) {
 						bondDistance = Vector3.Distance (bondStub.transform.position, atomToBond.transform.position);
 						closestBondStub = bondStub;
-						Debug.Log ("HEfhfr");
 					}
 				
 
