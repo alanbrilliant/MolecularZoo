@@ -107,7 +107,7 @@ public class MoleculeCreator : MonoBehaviour {
 			}
 
 			Bond newBondScript = newBond.GetComponent<Bond> ();
-			Debug.Log (newBond + " || " + newBondScript);
+			//Debug.Log (newBond + " || " + newBondScript);
 			newBondScript.formBond (startAtom, endAtom, bondOrder [i]);
 			newBond.transform.parent = parentMol.transform;
 

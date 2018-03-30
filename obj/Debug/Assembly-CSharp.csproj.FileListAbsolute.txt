@@ -30,3 +30,42 @@ C:\Users\abrilliant\UnitySaves\RBVI Vive\Temp\bin\Debug\UnityEngine.VR.xml
 C:\Users\abrilliant\UnitySaves\RBVI Vive\obj\Debug\Assembly-CSharp.dll
 C:\Users\abrilliant\UnitySaves\RBVI Vive\obj\Debug\Assembly-CSharp.pdb
 C:\Users\abrilliant\UnitySaves\RBVI Vive\Temp\bin\Debug\Newtonsoft.Json.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\Assembly-CSharp.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\Assembly-CSharp.pdb
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\Newtonsoft.Json.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\nunit.framework.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEditor.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEngine.Analytics.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEngine.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEngine.GoogleAudioSpatializer.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEngine.HoloLens.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEngine.Networking.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEngine.Purchasing.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEngine.SpatialTracking.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEngine.TestRunner.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEngine.Timeline.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEngine.UI.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEngine.UIAutomation.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\Unity.Cecil.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\Unity.SerializationLogic.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\ExCSS.Unity.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\Unity.DataContract.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\Unity.Legacy.NRefactory.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\Unity.UNetWeaver.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\Unity.CecilTools.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\Unity.Cecil.Pdb.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\Unity.Cecil.Mdb.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEngine.xml
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEditor.xml
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEngine.UI.xml
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEngine.Networking.xml
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEngine.TestRunner.xml
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\nunit.framework.xml
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEngine.Timeline.xml
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEngine.UIAutomation.xml
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEngine.GoogleAudioSpatializer.xml
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEngine.HoloLens.xml
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\Temp\bin\Debug\UnityEngine.SpatialTracking.xml
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\obj\Debug\Assembly-CSharp.csprojResolveAssemblyReference.cache
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\obj\Debug\Assembly-CSharp.dll
+Q:\Documents\Git-Unity-Saves\Molecular_Playground\obj\Debug\Assembly-CSharp.pdb

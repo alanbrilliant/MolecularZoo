@@ -17,6 +17,8 @@ public class Wand : MonoBehaviour {
 	private Vector3 grabbedObjectVelocity;
 	private Vector3 previousGrabbedObjectPosition;
 
+	private GameObject[] atomSpawns = new GameObject[4];
+
 	private List<GameObject> gunChildObjects;
 
 	private int controllerState;
@@ -30,7 +32,8 @@ public class Wand : MonoBehaviour {
 
 	AudioClip moleculeNameCooldown;
 
-	private enum arsenal {hands, tractor, pistol, heavyPistol};
+
+	private enum arsenal {hands, tractor, pistol, heavyPistol,};
 
 
 	void Awake() {
@@ -39,6 +42,7 @@ public class Wand : MonoBehaviour {
 	}
 
 	void Start () {
+		initializeAtomSpawns ();
 		laserScript = gameObject.GetComponentInChildren<LaserScript> ();
 		laser = laserScript.gameObject;
 		gunChildObjects = new List<GameObject> ();
@@ -62,7 +66,6 @@ public class Wand : MonoBehaviour {
 
 
 	void Update () {
-
 		if (controllerState == (int)arsenal.hands) {
 			if (grabJoint.connectedBody != null) {
 				//Debug.Log (grabJoint.connectedBody.velocity);
@@ -70,6 +73,9 @@ public class Wand : MonoBehaviour {
 				grabbedObjectVelocity = (currentPosition - previousGrabbedObjectPosition) / Time.deltaTime;
 				previousGrabbedObjectPosition = currentPosition;
 			}
+
+
+
 		}
 
 		if (controllerState == (int)arsenal.pistol) {
@@ -217,12 +223,32 @@ public class Wand : MonoBehaviour {
 
 
 	}
+		
 
 	void OnTriggerStay(Collider other) {
+
 
 		if (controller.GetHairTrigger ()) {
 			
 			if (controllerState == (int)arsenal.hands) {
+
+				if (other.gameObject.tag == "AtomSpawn") {
+					
+					if (grabJoint.connectedBody == null ) {
+						AtomSpawn spawnScript = other.gameObject.GetComponent<AtomSpawn> ();
+						GameObject newAtom = Instantiate (spawnScript.associatedAtom, other.gameObject.transform.position,other.gameObject.transform.rotation);
+
+						//TODO: Fix below and stuff under if statement that checks and atoms tag to make more efficient, i.e. don't repeat code
+
+						grabJoint.connectedBody = newAtom.GetComponent<Rigidbody>();
+						previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;
+						if (newAtom.GetComponent<AtomScript> ().getMoleculeNameSound () != moleculeNameCooldown) {
+							newAtom.GetComponent<AtomScript> ().playMoleculeNameSound ();
+							moleculeNameCooldown = newAtom.GetComponent<AtomScript> ().getMoleculeNameSound ();
+						}
+
+					}
+				}
 
 				if (other.gameObject.tag == "Atom") {
 					if (grabJoint.connectedBody == null) {
@@ -308,6 +334,13 @@ public class Wand : MonoBehaviour {
 				gunChildObjects [i].SetActive (true);
 		}
 			
+	}
+
+	private void initializeAtomSpawns(){
+		AtomSpawn[] preSpawns = gameObject.GetComponentsInChildren<AtomSpawn> ();
+		for (int i = 0; i < preSpawns.Length; i++) {
+			atomSpawns [i] = preSpawns [i].gameObject;
+		}
 	}
 			
 
