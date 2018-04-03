@@ -1,4 +1,4 @@
-# Molecular_Playground
+# MolecularZoo
 Upcoming VR based game about observing and manipulating different molecular simulations
 Developed for UCSF
 
