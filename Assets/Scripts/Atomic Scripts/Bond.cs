@@ -17,7 +17,7 @@ public class Bond : MonoBehaviour {
 	float time = 0;
 	// Use this for initialization
 	void Start () {
-		posMod = transform.localPosition * transform.parent.transform.localScale.x * .5f;
+		posMod = transform.localPosition   * transform.parent.transform.localScale.x * .5f;
 	}
 	
 	// Update is called once per frame
@@ -43,7 +43,7 @@ public class Bond : MonoBehaviour {
 
 			if (Vector3.Distance (connectedAtoms [0].transform.position, transform.position) > connectedAtoms [0].transform.localScale.x * .5) {
 				//transform.Translate ((connectedAtoms [0].transform.position - transform.position).normalized * .01f);
-				Debug.Log(posMod);
+				//Debug.Log(posMod);
 				transform.position = Vector3.MoveTowards(transform.position,connectedAtoms[0].transform.position + posMod,.01f);
 			}
 			transform.rotation = Quaternion.LookRotation((connectedAtoms[0].transform.position- transform.position).normalized);
@@ -111,8 +111,7 @@ public class Bond : MonoBehaviour {
 	}
 
 	public List<GameObject> getStubBondReferences(GameObject parentAtom){
-		Debug.Log (stubBondReferenceStartAtom);
-		Debug.Log (stubBondReferenceEndAtom);
+
 		if (stubBondReferenceStartAtom [stubBondReferenceStartAtom.Count - 1] == parentAtom) {
 			return stubBondReferenceStartAtom;
 

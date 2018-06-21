@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class conformers : MonoBehaviour {
+public class conformers  {
 
 	public List<float> x;
 	public List<float> y;

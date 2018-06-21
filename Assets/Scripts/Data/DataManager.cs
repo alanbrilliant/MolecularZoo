@@ -26,7 +26,7 @@ public class DataManager : MonoBehaviour {
 		atpData = loadMolecule ("atpdata.json", "ATP");
 		caffeineData = loadMolecule ("caffeinedata.json", "Caffeine");
 		carbondioxideData = loadMolecule ("carbondioxidedata.json", "CarbonDioxide");
-		saturatedfatData = loadMolecule ("saturatedfatdata.json", "SaturatedFat");
+	    saturatedfatData = loadMolecule ("saturatedfatdata.json", "SaturatedFat");
 		sulfuricacidData = loadMolecule ("sulfuricaciddata.json", "SulfuricAcid");
 		/*atoms waterAtoms = new atoms(new List<int>{8,1,1});
 		bonds waterBonds = new bonds (new List<int> {1, 1}, new List<int> {2, 3}, new List<int> {1, 1});
@@ -38,11 +38,11 @@ public class DataManager : MonoBehaviour {
 		for (int i = 0; i < 3; i++) {
 			script.instantiateMolecule (aspirinData, new Vector3(Random.Range(-3f,4f),Random.Range(2f,5f), Random.Range(-5f,4f)));
 		}
-		for (int i = 0; i < 25; i++) {
+		for (int i = 0; i < 30; i++) {
 			script.instantiateMolecule (waterData, new Vector3(Random.Range(-3f,4f),Random.Range(2f,5f), Random.Range(-5f,4f)));
 		}
 
-		for (int i = 0; i < 15; i++) {
+		for (int i = 0; i < 30; i++) {
 			script.instantiateMolecule (carbondioxideData, new Vector3(Random.Range(-3f,4f),Random.Range(2f,5f), Random.Range(-5f,4f)));
 		}
 
@@ -50,20 +50,23 @@ public class DataManager : MonoBehaviour {
 		script.instantiateMolecule (caffeineData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,5f), Random.Range(-5f,4f)));
 
 		script.instantiateMolecule (saturatedfatData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,5f), Random.Range(-5f,4f)));
-		script.instantiateMolecule (sulfuricacidData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,5f), Random.Range(-5f,4f)));
-
-		script.instantiateMolecule (atpData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,5f), Random.Range(-5f,4f)));
 
 
+        script.instantiateMolecule(sulfuricacidData, new Vector3(Random.Range(-3f, 4f), Random.Range(3f, 5f), Random.Range(-5f, 4f)));
+
+
+        script.instantiateMolecule (atpData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,5f), Random.Range(-5f,4f)));
 
 
 
 
 
-	}
-	
-	// Update is called once per frame
-	void Update () {
+
+
+    }
+
+    // Update is called once per frame
+    void Update () {
 		
 	}
 

@@ -48,13 +48,16 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 		set;
 	}
 
+    SphereCollider col;
 
-	public float speed;
+
+    public float speed;
 
 	void Awake () {
+        col = gameObject.GetComponent<SphereCollider>();
+       // col.radius = 0.5f;
 
-
-		audioSrc = gameObject.AddComponent <AudioSource> ();
+        audioSrc = gameObject.AddComponent <AudioSource> ();
 		audioSrc.playOnAwake = false;
 		audioSrc.spatialBlend = .73f;
 
@@ -99,7 +102,12 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 		createStubBonds ();
 
 
-	}
+        //col.radius = 0.5f;
+
+
+        
+
+    }
 
 
 
@@ -113,11 +121,17 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 			//TODO: Change to easier to understand name? EX: breakBonds, figureOutWhichBondHasBrokenAndBreakThem
 			bondedAtomsRecalibration ();
 		}
-			
+      //  col.radius = 0.5f;
 
-	}
+    }
 
-	void FixedUpdate () {
+    private void LateUpdate()
+    {
+       // col.radius = 0.5f;
+
+    }
+
+    void FixedUpdate () {
 
 		//Debug.Log (gameObject.name+": " + bondForming);
 		//rb.AddForce (force * Vector3.up);
@@ -179,14 +193,14 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 		
 
 		} else if (obj.tag == "Atom") {
-			AtomScript script = obj.GetComponent<AtomScript> ();
+			AtomScript collidedAtomScript = obj.GetComponent<AtomScript> ();
 
-			if (nBondConnections < allowedBonds && script.nBondConnections < script.allowedBonds ) {
+			if (nBondConnections < allowedBonds && collidedAtomScript.nBondConnections < collidedAtomScript.allowedBonds ) {
 				if (bondedAtoms.Contains(obj) == false) {  //Ignore collision with atom I am already bonded to
 					
 					//TODO: THis code not used yet
 					int possibleBondsOfThisAtom = allowedBonds - bondedAtoms.Count;
-					int possibleBondsOfCollidedAtom = script.allowedBonds - script.bondedAtoms.Count;
+					int possibleBondsOfCollidedAtom = collidedAtomScript.allowedBonds - collidedAtomScript.bondedAtoms.Count;
 					int newBondOrder = Mathf.Min (possibleBondsOfThisAtom, possibleBondsOfCollidedAtom);
 
 					GameObject newBond = Instantiate (bondGameObject, gameObject.transform.position, Quaternion.identity);
@@ -200,10 +214,12 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 	}
 
 
-	void OnJointBreak() {
-		hasBroken = true;
+	void OnJointBreak(float breakforce) {
+        // Debug.Log(gameObject.name + " broke");
+        Debug.Log("heya");
+        hasBroken = true;
 		jointBreak = true;
-		Debug.Log (gameObject.name + " broke");
+		
 
 		audioSrc.volume = .1f;
 		audioSrc.clip = snapSound;
@@ -261,6 +277,7 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 
 	//Figure out which joints broke and break bonds
 	private void bondedAtomsRecalibration(){
+    
 		GameObject brokenBond = null;
 		GameObject brokenBondWithAtom = null;
 		List<GameObject> currentJointedAtoms = new List<GameObject> ();
@@ -272,6 +289,7 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 		//Find which joint broke
 		for (int i = 0; i < currentJoints.Length; i++) {
 			currentJointedAtoms.Add (currentJoints [i].connectedBody.gameObject);
+            currentJoints[i].breakForce = 1000f/*Mathf.Infinity*/;
 		}
 
 		for (int i = 0; i < bonds.Count; i++) {

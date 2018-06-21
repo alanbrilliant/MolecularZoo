@@ -107,12 +107,16 @@ public class MoleculeCreator : MonoBehaviour {
 			}
 
 			Bond newBondScript = newBond.GetComponent<Bond> ();
-			//Debug.Log (newBond + " || " + newBondScript);
-			newBondScript.formBond (startAtom, endAtom, bondOrder [i]);
-			newBond.transform.parent = parentMol.transform;
+            //Debug.Log (newBond + " || " + newBondScript);
+            newBondScript.formBond(startAtom, endAtom, bondOrder[i]);
+            newBond.transform.SetParent(parentMol.transform);
+            
+            newBond.transform.name = "bond" + i;
+            Debug.Log(parentMol.transform.name + " : " + newBond.transform.name);
 
 
-			/*
+
+            /*
 			List<GameObject> startAtomBonds = startScript.getBonds ();
 			for (int j = 0; j < bondOrder [i]; j++) {
 				for (int k = 0; k < startAtomBonds.Count; k++) {
@@ -144,34 +148,34 @@ public class MoleculeCreator : MonoBehaviour {
 
 				List<GameObject> endAtomBonds = endScript.getBonds ();
 				*/
-				/*
-				for (int k = 0; k < endAtomBonds.Count; k++) {
+            /*
+            for (int k = 0; k < endAtomBonds.Count; k++) {
 
-					Bond bondScript = endAtomBonds [k].GetComponent<Bond> ();
-					GameObject[] newBondConnectedAtoms = bondScript.getConnectedAtoms ();
-					if (newBondConnectedAtoms [1] == null) {
-						bondScript.setConnectedAtom (startAtom);
+                Bond bondScript = endAtomBonds [k].GetComponent<Bond> ();
+                GameObject[] newBondConnectedAtoms = bondScript.getConnectedAtoms ();
+                if (newBondConnectedAtoms [1] == null) {
+                    bondScript.setConnectedAtom (startAtom);
 
-						if (bondOrder [i] == 1) {
-							bondScript.setOrderModifier (0);
-						} else if (bondOrder [i] == 2) {
-							if (j == 0)
-								bondScript.setOrderModifier (1);
-							if (j == 1)
-								bondScript.setOrderModifier (-1);
-						} else if (bondOrder [i] == 3) {
-							if (j == 0)
-								bondScript.setOrderModifier (0);
-							if (j == 1)
-								bondScript.setOrderModifier (-1);
-							if (j == 2)
-								bondScript.setOrderModifier (1);
-						}
-						break;
-					}
+                    if (bondOrder [i] == 1) {
+                        bondScript.setOrderModifier (0);
+                    } else if (bondOrder [i] == 2) {
+                        if (j == 0)
+                            bondScript.setOrderModifier (1);
+                        if (j == 1)
+                            bondScript.setOrderModifier (-1);
+                    } else if (bondOrder [i] == 3) {
+                        if (j == 0)
+                            bondScript.setOrderModifier (0);
+                        if (j == 1)
+                            bondScript.setOrderModifier (-1);
+                        if (j == 2)
+                            bondScript.setOrderModifier (1);
+                    }
+                    break;
+                }
 
-				}*/
-		}
+            }*/
+        }
 
 
 
