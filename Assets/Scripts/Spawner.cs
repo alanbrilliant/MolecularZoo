@@ -8,10 +8,10 @@ public class Spawner : MonoBehaviour
     public GameObject gameController;
     bool touched = false;
     // Use this for initialization
-
+    public AudioClip saw;
     void Start()
     {
-
+        GetComponent<AudioSource>().playOnAwake = false;
         Debug.Log("We've got a run!");
 
         gameController = GameObject.FindWithTag("GameController");
@@ -42,8 +42,10 @@ public class Spawner : MonoBehaviour
         {
             MoleculeCreator script = gameObject.GetComponent<MoleculeCreator>();
             script.instantiateMolecule(saturatedfatData, GetComponent<Rigidbody>().position);
-            AudioSource audio = GetComponent<AudioSource>();
-            audio.Play();
+            //AudioSource audio = GetComponent<AudioSource>();
+            // audio.Play();
+            Debug.Log("Audio should be playing!");
+            GetComponent<AudioSource>().Play();
             touched = false;
         }
     }
