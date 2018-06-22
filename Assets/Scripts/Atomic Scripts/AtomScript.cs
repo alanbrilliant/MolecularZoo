@@ -166,11 +166,11 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 			//TODO: Break single bonds even if double bonds exist?
 			if (!hasDoubleBond ()) {
 				
-				CharacterJoint[] bonds = gameObject.GetComponents<CharacterJoint> ();
-				for (int i = bonds.Length - 1; i >= 0; i--) {
-					AtomScript script = bonds [i].connectedBody.GetComponent<AtomScript> ();
+				CharacterJoint[] joints = gameObject.GetComponents<CharacterJoint> ();
+				for (int i = joints.Length - 1; i >= 0; i--) {
+					AtomScript script = joints [i].connectedBody.GetComponent<AtomScript> ();
 					script.breakBondWith (gameObject);
-					Destroy (bonds [i]);
+					Destroy (joints [i]);
 				}
 
 
@@ -183,6 +183,7 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 			audioSrc.volume = .1f;
 			audioSrc.clip = bangSound;
 			audioSrc.Play ();
+
 
 		
 
@@ -216,10 +217,10 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 
 	void OnJointBreak(float breakforce) {
         // Debug.Log(gameObject.name + " broke");
-        Debug.Log("heya");
+
         hasBroken = true;
 		jointBreak = true;
-		
+
 
 		audioSrc.volume = .1f;
 		audioSrc.clip = snapSound;
@@ -228,14 +229,16 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 		
 
 
-	public void breakBondWith(GameObject atom){
+	public void breakBondWith(GameObject atom){ 
 		bondedAtoms.Remove (atom);
-		CharacterJoint[] bonds = gameObject.GetComponents<CharacterJoint> ();
-		for (int i = 0; i < bonds.Length; i++) {
-			if (bonds [i].connectedBody.gameObject == atom) {
-				Destroy (bonds [i]);
+		CharacterJoint[] joints = gameObject.GetComponents<CharacterJoint> ();
+		for (int i = 0; i < joints.Length; i++) {
+			if (joints[i].connectedBody.gameObject == atom) {
+				Destroy (joints[i]);
 			}
 		}
+
+        OnJointBreak(0f);
 
 
 	}
@@ -277,8 +280,8 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 
 	//Figure out which joints broke and break bonds
 	private void bondedAtomsRecalibration(){
-    
-		GameObject brokenBond = null;
+        Debug.Log("Hghfghf");
+        GameObject brokenBond = null;
 		GameObject brokenBondWithAtom = null;
 		List<GameObject> currentJointedAtoms = new List<GameObject> ();
 		List<GameObject> currentBondedAtoms = new List<GameObject> ();
@@ -289,7 +292,7 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 		//Find which joint broke
 		for (int i = 0; i < currentJoints.Length; i++) {
 			currentJointedAtoms.Add (currentJoints [i].connectedBody.gameObject);
-            currentJoints[i].breakForce = 1000f/*Mathf.Infinity*/;
+            //currentJoints[i].breakForce = 1000f/*Mathf.Infinity*/;
 		}
 
 		for (int i = 0; i < bonds.Count; i++) {
@@ -303,10 +306,14 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 		//Find bond with no joint
 		//TODO: What if two bonds have no joint?
 		for (int i = 0; i < currentBondedAtoms.Count; i++) {
-			if (currentJointedAtoms.Contains(currentBondedAtoms[i]) == false)
-				brokenBondWithAtom = currentBondedAtoms[i];
+            if (currentJointedAtoms.Contains(currentBondedAtoms[i]) == false)
+            {
+                brokenBondWithAtom = currentBondedAtoms[i];
+                Debug.Log("Hellocfc");
 
-		}
+            }
+
+        }
 
 		for (int i = 0; i < bonds.Count; i++) {
 			GameObject[] bondConnections = bonds[i].GetComponent<Bond>().getConnectedAtoms();
@@ -318,6 +325,8 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 		//Break the bonds
 		if (brokenBond != null) {
 
+            
+
 			breakBond (brokenBond);
 			brokenBondWithAtom.GetComponent<AtomScript> ().breakBond (brokenBond);
 
@@ -325,8 +334,13 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 			brokenBondWithAtom.GetComponent<AtomScript> ().breakBondWith (gameObject);
 
 			Destroy (brokenBond);
+           
 
-		}
+
+        } else
+        {
+           jointBreak= false;
+        }
 
 		/*
 		List<GameObject> recalibratedBondedAtoms = new List<GameObject> ();

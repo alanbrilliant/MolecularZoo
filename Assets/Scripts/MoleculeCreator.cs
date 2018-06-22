@@ -112,7 +112,6 @@ public class MoleculeCreator : MonoBehaviour {
             newBond.transform.SetParent(parentMol.transform);
             
             newBond.transform.name = "bond" + i;
-            Debug.Log(parentMol.transform.name + " : " + newBond.transform.name);
 
 
 

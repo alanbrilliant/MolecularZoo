@@ -45,7 +45,7 @@ public class DataManager : MonoBehaviour {
 		for (int i = 0; i < 30; i++) {
 			script.instantiateMolecule (carbondioxideData, new Vector3(Random.Range(-3f,4f),Random.Range(2f,5f), Random.Range(-5f,4f)));
 		}
-
+        
 		script.instantiateMolecule (caffeineData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,5f), Random.Range(-5f,4f)));
 		script.instantiateMolecule (caffeineData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,5f), Random.Range(-5f,4f)));
 
@@ -56,7 +56,7 @@ public class DataManager : MonoBehaviour {
 
 
         script.instantiateMolecule (atpData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,5f), Random.Range(-5f,4f)));
-
+        
 
 
 
