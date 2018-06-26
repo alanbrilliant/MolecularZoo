@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 
 public class DataManager : MonoBehaviour {
-
+    public float spawnDist;
 	MoleculeData waterData = new MoleculeData ();
 	MoleculeData atpData = new MoleculeData();
 	MoleculeData aspirinData = new MoleculeData ();
@@ -36,26 +36,26 @@ public class DataManager : MonoBehaviour {
 		//Debug.Log(waterData.atom.element[0]);
 		//Debug.Log(waterData.conf.x[1]);
 		for (int i = 0; i < 3; i++) {
-			script.instantiateMolecule (aspirinData, new Vector3(Random.Range(-3f,4f),Random.Range(2f,5f), Random.Range(-5f,4f)));
+			script.instantiateMolecule (aspirinData, new Vector3(Random.Range(-3f,4f),Random.Range(2f,4f), Random.Range(-4f,4f))*spawnDist);
 		}
 		for (int i = 0; i < 30; i++) {
-			script.instantiateMolecule (waterData, new Vector3(Random.Range(-3f,4f),Random.Range(2f,5f), Random.Range(-5f,4f)));
+			script.instantiateMolecule (waterData, new Vector3(Random.Range(-3f,4f),Random.Range(2f,4f), Random.Range(-4f,4f)) * spawnDist);
 		}
 
 		for (int i = 0; i < 30; i++) {
-			script.instantiateMolecule (carbondioxideData, new Vector3(Random.Range(-3f,4f),Random.Range(2f,5f), Random.Range(-5f,4f)));
+			script.instantiateMolecule (carbondioxideData, new Vector3(Random.Range(-3f,4f),Random.Range(2f,4f), Random.Range(-4,4f)) * spawnDist);
 		}
 
-		script.instantiateMolecule (caffeineData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,5f), Random.Range(-5f,4f)));
-		script.instantiateMolecule (caffeineData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,5f), Random.Range(-5f,4f)));
+		script.instantiateMolecule (caffeineData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,4f), Random.Range(-4f,4f)) * spawnDist);
+		script.instantiateMolecule (caffeineData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,4f), Random.Range(-4f,4f)) * spawnDist);
 
-		script.instantiateMolecule (saturatedfatData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,5f), Random.Range(-5f,4f)));
-
-
-        script.instantiateMolecule(sulfuricacidData, new Vector3(Random.Range(-3f, 4f), Random.Range(3f, 5f), Random.Range(-5f, 4f)));
+		script.instantiateMolecule (saturatedfatData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,4f), Random.Range(-4f,4f)) * spawnDist);
 
 
-        script.instantiateMolecule (atpData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,5f), Random.Range(-5f,4f)));
+        script.instantiateMolecule(sulfuricacidData, new Vector3(Random.Range(-3f, 4f), Random.Range(3f, 4f), Random.Range(-4f, 4f)) * spawnDist);
+
+
+        script.instantiateMolecule (atpData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,4f), Random.Range(-4f,4f)) * spawnDist);
 
 
 
