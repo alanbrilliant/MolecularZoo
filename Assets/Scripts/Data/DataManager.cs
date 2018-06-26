@@ -49,13 +49,16 @@ public class DataManager : MonoBehaviour {
 		script.instantiateMolecule (caffeineData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,4f), Random.Range(-4f,4f)) * spawnDist);
 		script.instantiateMolecule (caffeineData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,4f), Random.Range(-4f,4f)) * spawnDist);
 
+
 		script.instantiateMolecule (saturatedfatData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,4f), Random.Range(-4f,4f)) * spawnDist);
 
 
         script.instantiateMolecule(sulfuricacidData, new Vector3(Random.Range(-3f, 4f), Random.Range(3f, 4f), Random.Range(-4f, 4f)) * spawnDist);
 
 
+
         script.instantiateMolecule (atpData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,4f), Random.Range(-4f,4f)) * spawnDist);
+
 
 
 

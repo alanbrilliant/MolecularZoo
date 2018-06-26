@@ -24,7 +24,7 @@ GameObject:
   m_Layer: 0
   m_Name: Tractor Beam
   m_TagString: Untagged
-  m_Icon: {fileID: 2800000, guid: df9101368644d6049afb1b18bd986b6a, type: 3}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -67,7 +67,7 @@ LineRenderer:
   m_ReflectionProbeUsage: 0
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: a4f5c66fc05a7054aadb077eea1a49a3, type: 2}
+  - {fileID: 2100000, guid: 52e0d035dbf471542825823c4bea173d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
