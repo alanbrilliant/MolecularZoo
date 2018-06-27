@@ -7,8 +7,6 @@ public class Spinner : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        GetComponent<AudioSource>().playOnAwake = false;
-        GetComponent<AudioSource>().Play();
 
     }
 
