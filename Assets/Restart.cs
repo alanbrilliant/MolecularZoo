@@ -33,7 +33,8 @@ public class Restart : MonoBehaviour
         if (other.gameObject.CompareTag("Floor") && touched)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            touched = false;
+           
         }
+        touched = false;
     }
 }

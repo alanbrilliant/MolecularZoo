@@ -15,7 +15,7 @@ public class Rotator : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        transform.Rotate (new Vector3(15,30,45) *Time.deltaTime*degreesPerSecond);
+        transform.Rotate (new Vector3(0,0,3) *Time.deltaTime*degreesPerSecond);
         /*
         tempPos = posOffset;
         tempPos.y += Mathf.Sin(Time.fixedTime * Mathf.PI * frequency) * amplitude;

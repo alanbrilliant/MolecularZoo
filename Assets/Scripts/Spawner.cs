@@ -42,7 +42,11 @@ public class Spawner : MonoBehaviour
             Debug.Log(GameObject.Find("Ammo").transform.position);
    
             GetComponent<AudioSource>().Play();
-            touched = false;
         }
+        touched = false;
+        /*else
+        {
+            touched = false;
+        }*/
     }
 }

@@ -9,11 +9,13 @@ public class Wand : MonoBehaviour {
 	private SteamVR_TrackedObject trackedObj;
 	private SteamVR_Controller.Device controller;
 	public GameObject slugs;
-	public GameObject redSlugs;
+    public GameObject throwCards;
+    public GameObject redSlugs;
 	private AudioSource audio;
 	private GameObject gun;
 	private GameObject redGun;
 	private FixedJoint grabJoint;
+    private GameObject cards;
 	private Vector3 grabbedObjectVelocity;
 	private Vector3 previousGrabbedObjectPosition;
 
@@ -22,7 +24,7 @@ public class Wand : MonoBehaviour {
 	private List<GameObject> gunChildObjects;
 
 	private int controllerState;
-
+    
 	private GameObject tractoredObject;
 
 	private GameObject laser;
@@ -33,7 +35,7 @@ public class Wand : MonoBehaviour {
 	AudioClip moleculeNameCooldown;
 
 
-	private enum arsenal {hands, tractor, pistol, heavyPistol,};
+	private enum arsenal {hands, tractor, pistol, heavyPistol, cards,};
 
 
 	void Awake() {
@@ -76,9 +78,33 @@ public class Wand : MonoBehaviour {
 
 
 
-		}
+        }
 
-		if (controllerState == (int)arsenal.pistol) {
+        if (controllerState == (int)arsenal.cards)
+        {
+            if (controller.GetHairTriggerDown())
+            {
+                audio.clip = gunshot;
+                audio.volume = .05f;
+                audio.Play();
+
+                Debug.Log("Trigger Press");
+
+
+                GameObject bullet;
+                bullet = throwCards;
+
+                GameObject shot = Instantiate(bullet, transform.position + transform.forward * .2f, transform.rotation);
+
+                Rigidbody shotRB = shot.GetComponent<Rigidbody>();
+                shotRB.velocity = shotRB.transform.forward * 10;
+                shot.transform.Rotate(90, 0, 0);
+            }
+
+
+
+        }
+        if (controllerState == (int)arsenal.pistol) {
 			if (controller.GetHairTriggerDown()) {
 				audio.clip = gunshot;
 				audio.volume = .05f;
@@ -199,6 +225,7 @@ public class Wand : MonoBehaviour {
 
 
 		}
+
 
 
 
@@ -326,7 +353,10 @@ public class Wand : MonoBehaviour {
 		case (int)arsenal.heavyPistol:
 			activeWeaponName = "HeavyPistol";
 			break;
-		}
+        case (int)arsenal.cards:
+            activeWeaponName = "Cards";
+             break;
+        }
 
 		for (int i = 0; i < gunChildObjects.Count; i++) {
 			gunChildObjects [i].SetActive (false);

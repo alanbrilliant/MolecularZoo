@@ -53,6 +53,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\CardSpawner.cs" />
+     <Compile Include="Assets\CardSpin.cs" />
      <Compile Include="Assets\Restart.cs" />
      <Compile Include="Assets\Scripts\Atomic Scripts\AtomScript.cs" />
      <Compile Include="Assets\Scripts\Atomic Scripts\AtomSpawn.cs" />
