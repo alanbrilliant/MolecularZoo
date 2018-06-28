@@ -65,11 +65,13 @@ public class MoleculeCreator : MonoBehaviour {
 			if (atomList [i] == 16) {
 				atomPrefab = sulfurPrefab;
 			}
+            
+            Debug.Log("This is the StartingPos"+startingPos);
+			//GameObject newAtom = GameObject.Instantiate (atomPrefab, new Vector3 (xCoords [i]+ startingPos.x, yCoords [i] + startingPos.y, zCoords [i] + startingPos.z) * molSize, Quaternion.identity);
+            GameObject newAtom = GameObject.Instantiate(atomPrefab, new Vector3(xCoords[i] * molSize + startingPos.x, yCoords[i] * molSize + startingPos.y, zCoords[i] * molSize + startingPos.z), Quaternion.identity);
 
-
-			GameObject newAtom = GameObject.Instantiate (atomPrefab, new Vector3 (xCoords [i]+ startingPos.x, yCoords [i] + startingPos.y, zCoords [i] + startingPos.z) * molSize, Quaternion.identity);
-			//newAtom.transform.localScale *= molSize;
-			newAtom.transform.parent = parentMol.transform;
+            //newAtom.transform.localScale *= molSize;
+            newAtom.transform.parent = parentMol.transform;
 			instantiatedAtoms.Add(newAtom);
 
 

@@ -61,6 +61,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\CardSpawner.cs" />
+    <Compile Include="Assets\CardSpin.cs" />
+    <Compile Include="Assets\Restart.cs" />
     <Compile Include="Assets\Scripts\Atomic Scripts\AtomScript.cs" />
     <Compile Include="Assets\Scripts\Atomic Scripts\AtomSpawn.cs" />
     <Compile Include="Assets\Scripts\Atomic Scripts\Bond.cs" />
@@ -140,6 +143,7 @@
     <Compile Include="Assets\Source\Reflection\fsMetaType.cs" />
     <Compile Include="Assets\Source\Reflection\fsReflectionUtility.cs" />
     <Compile Include="Assets\Source\Reflection\fsTypeCache.cs" />
+    <Compile Include="Assets\Spinner.cs" />
     <Compile Include="Assets\SteamVR\InteractionSystem\Core\Scripts\BodyCollider.cs" />
     <Compile Include="Assets\SteamVR\InteractionSystem\Core\Scripts\CircularDrive.cs" />
     <Compile Include="Assets\SteamVR\InteractionSystem\Core\Scripts\ComplexThrowable.cs" />

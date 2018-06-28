@@ -7,12 +7,11 @@ public class Spawner : MonoBehaviour
     MoleculeData saturatedfatData = new MoleculeData();
     public GameObject gameController;
     bool touched = false;
-    // Use this for initialization
-    public AudioClip saw;
+   
+
     void Start()
     {
         GetComponent<AudioSource>().playOnAwake = false;
-        Debug.Log("We've got a run!");
 
         gameController = GameObject.FindWithTag("GameController");
         DataManager script1 = gameController.GetComponent<DataManager>();
@@ -25,28 +24,29 @@ public class Spawner : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
 
-        Debug.Log("We've got a trigger!");
         if (other.CompareTag("Arm"))
         {
             touched = true;
-
-
         }
         
     }
     void OnCollisionEnter(Collision other)
     {
-        Debug.Log("We've got a Collision!");
 
         if (other.gameObject.CompareTag("Floor") && touched)
         {
             MoleculeCreator script = gameObject.GetComponent<MoleculeCreator>();
-            script.instantiateMolecule(saturatedfatData, GetComponent<Rigidbody>().position);
-            //AudioSource audio = GetComponent<AudioSource>();
-            // audio.Play();
-            Debug.Log("Audio should be playing!");
+            //GetComponent<Rigidbody>().position
+            //GameObject.Find("Your_Name_Here").transform.position;
+            script.instantiateMolecule(saturatedfatData, GameObject.Find("Ammo").transform.position);
+            Debug.Log(GameObject.Find("Ammo").transform.position);
+   
             GetComponent<AudioSource>().Play();
-            touched = false;
         }
+        touched = false;
+        /*else
+        {
+            touched = false;
+        }*/
     }
 }
