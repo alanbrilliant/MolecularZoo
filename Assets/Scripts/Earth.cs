@@ -22,7 +22,7 @@ public class Earth : MonoBehaviour {
 
 	void OnCollisionEnter(Collision col){
 		GameObject obj = col.collider.gameObject;
-		if (obj.tag == "Bullet" || obj.tag == "ExplosiveBullet") {
+		if (obj.tag.Contains("Bullet")) {
 			audio.volume = .07f;
 			if(audio.isPlaying == false)
 				audio.Play ();

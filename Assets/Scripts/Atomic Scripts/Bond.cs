@@ -17,7 +17,7 @@ public class Bond : MonoBehaviour {
 	float time = 0;
 	// Use this for initialization
 	void Start () {
-		posMod = transform.localPosition   * transform.parent.transform.localScale.x * .5f;
+		posMod = transform.localPosition    *transform.parent.transform.localScale.x * .5f;
 	}
 	
 	// Update is called once per frame

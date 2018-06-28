@@ -20,10 +20,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4789180064214050}
   - component: {fileID: 33681730536088342}
-  - component: {fileID: 136984059560410186}
   - component: {fileID: 23799344926776788}
   - component: {fileID: 54090342743654516}
   - component: {fileID: 114709265805925622}
+  - component: {fileID: 135885638662526722}
   m_Layer: 0
   m_Name: Red Slugs
   m_TagString: ExplosiveBullet
@@ -38,7 +38,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1568580263867662}
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 0.6940017, y: 5.73, z: 2.097442}
+  m_LocalPosition: {x: -4.08, y: 3.462297, z: 1.1865833}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -85,7 +85,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1568580263867662}
-  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!54 &54090342743654516
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -112,8 +112,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11df62dbabeb16841850e634005acdc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!136 &136984059560410186
-CapsuleCollider:
+--- !u!135 &135885638662526722
+SphereCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -121,7 +121,6 @@ CapsuleCollider:
   m_Material: {fileID: 13400000, guid: 579bc915778004e44a61fb8a6db8b907, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
+  serializedVersion: 2
+  m_Radius: 0.5000001
   m_Center: {x: 0, y: 0, z: 0}

@@ -161,7 +161,10 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 		GameObject obj = col.collider.gameObject;
 
 
-		if (obj.tag == "ExplosiveBullet") {
+        //Checks if the tag of the collided object contains a certain string
+        //.contains is used instead of == incase the collided object contains two tags
+        //Such as a bullet that is also an atom
+		if (obj.tag.Contains( "ExplosiveBullet")) {
 			//TODO: Move this to explosiveBulletCollide method, and others
 			//TODO: Break single bonds even if double bonds exist?
 			if (!hasDoubleBond ()) {
@@ -184,35 +187,52 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 			audioSrc.clip = bangSound;
 			audioSrc.Play ();
 
+            
+            
 
-		
 
-		} else if (obj.tag == "Bullet") {
+        } else if (obj.tag.Contains( "Bullet")) {
 			audioSrc.volume = .2f;
 			audioSrc.clip = bounceSound;
 			audioSrc.Play ();
-		
 
-		} else if (obj.tag == "Atom") {
-			AtomScript collidedAtomScript = obj.GetComponent<AtomScript> ();
+            
+            
 
-			if (nBondConnections < allowedBonds && collidedAtomScript.nBondConnections < collidedAtomScript.allowedBonds ) {
-				if (bondedAtoms.Contains(obj) == false) {  //Ignore collision with atom I am already bonded to
-					
-					//TODO: THis code not used yet
-					int possibleBondsOfThisAtom = allowedBonds - bondedAtoms.Count;
-					int possibleBondsOfCollidedAtom = collidedAtomScript.allowedBonds - collidedAtomScript.bondedAtoms.Count;
-					int newBondOrder = Mathf.Min (possibleBondsOfThisAtom, possibleBondsOfCollidedAtom);
 
-					GameObject newBond = Instantiate (bondGameObject, gameObject.transform.position, Quaternion.identity);
-					newBond.GetComponent<Bond> ().formBond (gameObject, obj, 1);
+        } else if (obj.tag.Contains( "Atom")) {
 
-				}
-			}
 
+            bondWithAtom(obj);
 		}
 		
 	}
+
+
+    public void bondWithAtom(GameObject obj){
+        AtomScript collidedAtomScript = obj.GetComponent<AtomScript>();
+
+        if (nBondConnections < allowedBonds && collidedAtomScript.nBondConnections < collidedAtomScript.allowedBonds ) {
+            if (obj.tag.Contains("Bullet"))
+            {
+                Slug slugScript = obj.GetComponent<Slug>();
+                slugScript.resetToAtom();
+            }
+
+
+            if (bondedAtoms.Contains(obj) == false) {  //Ignore collision with atom I am already bonded to
+					
+				//TODO: THis code not used yet
+				int possibleBondsOfThisAtom = allowedBonds - bondedAtoms.Count;
+				int possibleBondsOfCollidedAtom = collidedAtomScript.allowedBonds - collidedAtomScript.bondedAtoms.Count;
+				int newBondOrder = Mathf.Min (possibleBondsOfThisAtom, possibleBondsOfCollidedAtom);
+
+				GameObject newBond = Instantiate (bondGameObject, gameObject.transform.position, Quaternion.identity);
+				newBond.GetComponent<Bond> ().formBond (gameObject, obj, 1);
+
+			}
+			}
+    }
 
 
 	void OnJointBreak(float breakforce) {

@@ -56,7 +56,7 @@ public class DataManager : MonoBehaviour {
 
 
         script.instantiateMolecule (atpData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,5f), Random.Range(-5f,4f)));
-        
+       
 
 
 
@@ -93,7 +93,7 @@ public class DataManager : MonoBehaviour {
 
 	public JObject LoadGameData(string fileName){
 		string filePath = Path.Combine (Application.streamingAssetsPath, fileName);
-
+        
 		if (File.Exists(filePath)){
 			string dataAsJson = File.ReadAllText (filePath);
 			JObject dataObj = JObject.Parse (dataAsJson);
