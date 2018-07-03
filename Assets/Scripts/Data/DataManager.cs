@@ -66,6 +66,7 @@ public class DataManager : MonoBehaviour {
 
 
 
+
     }
 
     // Update is called once per frame
@@ -101,7 +102,7 @@ public class DataManager : MonoBehaviour {
 
 	public JObject LoadGameData(string fileName){
 		string filePath = Path.Combine (Application.streamingAssetsPath, fileName);
-
+        
 		if (File.Exists(filePath)){
 			string dataAsJson = File.ReadAllText (filePath);
 			JObject dataObj = JObject.Parse (dataAsJson);

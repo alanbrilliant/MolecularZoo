@@ -8,9 +8,11 @@ public class Wand : MonoBehaviour {
 
 	private SteamVR_TrackedObject trackedObj;
 	private SteamVR_Controller.Device controller;
-	public GameObject slugs;
+
+	public GameObject bullets;
+	public GameObject heavyBullets;
     public GameObject throwCards;
-    public GameObject redSlugs;
+
 	private AudioSource audio;
 	// GameObject gun;
 	private GameObject redGun;
@@ -143,9 +145,12 @@ public class Wand : MonoBehaviour {
 
 
 				GameObject bullet;
-				bullet = slugs;
+				bullet = bullets;
 
 				GameObject shot = Instantiate (bullet, transform.position + transform.forward * .2f, transform.rotation);
+                shot.AddComponent<Slug>();
+
+                shot.tag = "AtomBullet";
 
 				Rigidbody shotRB = shot.GetComponent<Rigidbody> ();
 				shotRB.velocity = shotRB.transform.forward * 10;
@@ -163,9 +168,12 @@ public class Wand : MonoBehaviour {
 
 
 				GameObject bullet;
-				bullet =  redSlugs;
+				bullet =  heavyBullets;
 
 				GameObject shot = Instantiate (bullet, transform.position + transform.forward * .2f, transform.rotation);
+                shot.AddComponent<Slug>();
+
+                shot.tag = "AtomExplosiveBullet";
 
 				Rigidbody shotRB = shot.GetComponent<Rigidbody> ();
 				shotRB.velocity = shotRB.transform.forward * 10;
@@ -197,7 +205,7 @@ public class Wand : MonoBehaviour {
 				if (tractoredObject == null) {
 					Ray tractorBeamRay = new Ray (transform.position + transform.forward * .2f, transform.forward);
 					if (Physics.Raycast (tractorBeamRay, out hit)) {
-						if (hit.collider.gameObject.tag == "Atom") {
+						if (hit.collider.gameObject.tag == "Atom" || hit.collider.tag == "Tractorable") {
 							tractoredObject = hit.collider.gameObject;
 							GameObject hitAtom = hit.collider.gameObject;
 							Rigidbody hitAtomRB = hit.collider.gameObject.GetComponent<Rigidbody> ();
@@ -313,7 +321,7 @@ public class Wand : MonoBehaviour {
 					}
 				}
 
-				if (other.gameObject.tag == "Atom") {
+				if (other.gameObject.tag == "Atom" || other.gameObject.tag == "Tractorable") {
 					if (grabJoint.connectedBody == null) {
 
 
