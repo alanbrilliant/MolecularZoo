@@ -20,7 +20,7 @@ public class DataManager : MonoBehaviour {
 	private  string gameDataFileName = "atpdata.json";
 
 	// Use this for initialization
-	void Start () {
+	void Start() {
 		aspirinData = loadMolecule ("aspirindata.json", "Aspirin");
 		waterData = loadMolecule ("waterdata.json", "Water");
 		atpData = loadMolecule ("atpdata.json", "ATP");
@@ -83,14 +83,19 @@ public class DataManager : MonoBehaviour {
 		atoms atm = dataObj ["PC_Compounds"] [0]["atoms"].ToObject<atoms>() ;
 		bonds bnd = dataObj ["PC_Compounds"] [0]["bonds"].ToObject<bonds>();
 		conformers cnf =  dataObj ["PC_Compounds"] [0]["coords"][0]["conformers"][0].ToObject<conformers>();
-		//Debug.Log (atm.element [0]);
-
+        //Debug.Log (atm.element [0]);
+        Debug.Log("Loading Molecule");
 
 		newMolecule.atom = atm;
 		newMolecule.bond = bnd;
-		newMolecule.conf = cnf;
+        newMolecule.conf = cnf;
 		newMolecule.name = moleculeName;
-		return newMolecule;
+        Debug.Log("Loading Molecule2");
+        Debug.Log(newMolecule.atom);
+        Debug.Log(newMolecule.bond);
+        Debug.Log(newMolecule.conf);
+        Debug.Log(newMolecule.name);
+        return newMolecule;
 	
 	}
 

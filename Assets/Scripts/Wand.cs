@@ -12,7 +12,7 @@ public class Wand : MonoBehaviour {
     public GameObject throwCards;
     public GameObject redSlugs;
 	private AudioSource audio;
-	private GameObject gun;
+	// GameObject gun;
 	private GameObject redGun;
 	private FixedJoint grabJoint;
     private GameObject cards;
@@ -22,8 +22,14 @@ public class Wand : MonoBehaviour {
 	private GameObject[] atomSpawns = new GameObject[4];
 
 	private List<GameObject> gunChildObjects;
+    //list of card spawners
+    private List<GameObject> cardChildObjects;
 
-	private int controllerState;
+
+    private int controllerState;
+    
+    //Int tracking which card is active
+    private int cardState;
     
 	private GameObject tractoredObject;
 
@@ -31,14 +37,18 @@ public class Wand : MonoBehaviour {
 	private LaserScript laserScript;
 	public AudioClip phaserSound;
 	private AudioClip gunshot;
-
+    private GameObject CardSpinner;
 	AudioClip moleculeNameCooldown;
+    private string activeCardName;
 
 
 	private enum arsenal {hands, tractor, pistol, heavyPistol, cards,};
 
+    //enumerator with all molecule spawn types
+    private enum cardDeck { saturatedFat, water, carbonDioxide, };
 
-	void Awake() {
+
+    void Awake() {
 		audio = gameObject.GetComponent<AudioSource> ();
 		gunshot = audio.clip;
 	}
@@ -48,23 +58,42 @@ public class Wand : MonoBehaviour {
 		laserScript = gameObject.GetComponentInChildren<LaserScript> ();
 		laser = laserScript.gameObject;
 		gunChildObjects = new List<GameObject> ();
-		controllerState = (int)arsenal.tractor;
-		Gun[] gunList = gameObject.GetComponentsInChildren<Gun>(true) ;
+        //iniializing card spawner list
+        cardChildObjects = new List<GameObject>();
+	    controllerState = (int)arsenal.tractor;
+        //Initializing card state to saturated fat
+        cardState = (int)cardDeck.saturatedFat;
+
+        //populating list of cards
+        
+        card[] cardList = gameObject.GetComponentsInChildren<card>(true);
+        //Debug.Log("Card list is this long "+cardList.Length);
+        for (int i = 0; i < cardList.Length; i++)
+        {
+
+            cardChildObjects.Add(cardList[i].gameObject);
+        }
+        
+        Gun[] gunList = gameObject.GetComponentsInChildren<Gun>(true) ;
 
 		for (int i = 0; i < gunList.Length; i++) {
 
 			gunChildObjects.Add (gunList [i].gameObject);
 		}
-			
+        //Debug.Log(cardList.ToString());
+        controllerState = 0;
+        cardState = 1;
 
-		controllerState = 0;
-		updateControllerState ();
+
+        updateControllerState ();
+        updateCardControllerState();
 		trackedObj = gameObject.GetComponent<SteamVR_TrackedObject>();
 		controller = SteamVR_Controller.Input ((int)trackedObj.index);
 
 		grabJoint = gameObject.AddComponent<FixedJoint> ();
 
-	}
+        
+    }
 
 
 	void Update () {
@@ -87,14 +116,14 @@ public class Wand : MonoBehaviour {
                 audio.clip = gunshot;
                 audio.volume = .05f;
                 audio.Play();
-
+                Debug.Log("hhf43");
+                CardSpinner = GameObject.Find(activeCardName);
+                Debug.Log(CardSpinner);
+                CardSpinner.GetComponent<RotateClass>().startSpin();
                 Debug.Log("Trigger Press");
 
-
-                GameObject bullet;
-                bullet = throwCards;
-
-                GameObject shot = Instantiate(bullet, transform.position + transform.forward * .2f, transform.rotation);
+                GameObject shot = Instantiate(throwCards, transform.position + transform.forward * .2f, transform.rotation);
+                shot.GetComponent<CardSpawner>().setMoleculeToSpawn(activeCardName.Substring(0, activeCardName.Length - 4));
 
                 Rigidbody shotRB = shot.GetComponent<Rigidbody>();
                 shotRB.velocity = shotRB.transform.forward * 10;
@@ -234,13 +263,20 @@ public class Wand : MonoBehaviour {
 			grabJoint.connectedBody = null;
 			connectedRigidbody.velocity = grabbedObjectVelocity;
 		}
-		if (controller.GetPressDown (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad) || controller.GetPressDown (Valve.VR.EVRButtonId.k_EButton_Grip) ) {
-			updateControllerState ();
-			
-		}
-			
 
-		if (controller.GetHairTriggerUp ()) {
+        //Looks inportant, ask alan
+		if (controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).x>.5 &&(controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad) || controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_Grip)))
+        {
+            Debug.Log("card switching");
+            updateCardControllerState ();
+        }else if (controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad) || controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_Grip))
+        {
+            updateControllerState();
+
+        }
+        
+
+    if (controller.GetHairTriggerUp ()) {
 			
 			if (audio.isPlaying) {
 				if (audio.clip != gunshot)
@@ -357,16 +393,73 @@ public class Wand : MonoBehaviour {
             activeWeaponName = "Cards";
              break;
         }
+        
 
-		for (int i = 0; i < gunChildObjects.Count; i++) {
+        for (int i = 0; i < gunChildObjects.Count; i++) {
 			gunChildObjects [i].SetActive (false);
 			if (activeWeaponName == gunChildObjects[i].name)
 				gunChildObjects [i].SetActive (true);
 		}
-			
-	}
+        
+        
 
-	private void initializeAtomSpawns(){
+    }
+    private void updateCardControllerState()
+    {
+        //This stuff probably isnt needed
+        tractoredObject = null;
+        laserScript.disableLaser();
+
+        if (audio.isPlaying)
+        {
+            if (audio.clip != gunshot)
+                audio.Stop();
+        }
+        if (cardState == Enum.GetValues(typeof(cardDeck)).Length - 1)
+        {
+            cardState = 0;
+        }
+        else
+        {
+            cardState++;
+        }
+
+
+
+        //setting name of active card
+
+        activeCardName = "";
+
+        switch (cardState)
+        {
+
+            case (int)cardDeck.saturatedFat:
+                activeCardName = "SaturatedFatCard";
+                break;
+            case (int)cardDeck.water:
+                activeCardName = "WaterCard";
+                break;
+            case (int)cardDeck.carbonDioxide:
+                activeCardName = "CarbonDioxideCard";
+                break;
+
+        }
+
+        //Setting the active card
+
+        for (int i = 0; i < cardChildObjects.Count; i++)
+        {
+            cardChildObjects[i].SetActive(false);
+            if (activeCardName == cardChildObjects[i].name)
+                cardChildObjects[i].SetActive(true);
+        }
+        Debug.Log("This should probably happen");
+        //Setting Molecule to spawn
+       
+
+
+    }
+    private void initializeAtomSpawns(){
 		AtomSpawn[] preSpawns = gameObject.GetComponentsInChildren<AtomSpawn> ();
 		for (int i = 0; i < preSpawns.Length; i++) {
 			atomSpawns [i] = preSpawns [i].gameObject;

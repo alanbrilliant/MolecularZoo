@@ -11,6 +11,7 @@ TagManager:
   - AtomSpawn
   - Arm
   - Floor
+  - Deck
   layers:
   - Default
   - TransparentFX
