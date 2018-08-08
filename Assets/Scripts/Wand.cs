@@ -6,6 +6,8 @@ using UnityEngine;
 public class Wand : MonoBehaviour {
 
 
+    private SphereCollider col;
+
 	private SteamVR_TrackedObject trackedObj;
 	private SteamVR_Controller.Device controller;
 
@@ -46,10 +48,19 @@ public class Wand : MonoBehaviour {
 	}
 
 	void Start () {
+        SphereCollider[] possibleSphereColliders = GetComponentsInChildren<SphereCollider>();
+
+        foreach (SphereCollider collider in possibleSphereColliders)
+        {
+            if (collider.tag == "Arm" && collider.isTrigger == true)
+                col = collider;
+        }
+
+
 		initializeAtomSpawns ();
 		laserScript = gameObject.GetComponentInChildren<LaserScript> ();
 		laser = laserScript.gameObject;
-		gunChildObjects = new List<GameObject> ();
+	    gunChildObjects = new List<GameObject> ();
 		controllerState = (int)arsenal.tractor;
 		Gun[] gunList = gameObject.GetComponentsInChildren<Gun>(true) ;
 
@@ -70,17 +81,6 @@ public class Wand : MonoBehaviour {
 
 
 	void Update () {
-		if (controllerState == (int)arsenal.hands) {
-			if (grabJoint.connectedBody != null) {
-				//Debug.Log (grabJoint.connectedBody.velocity);
-				Vector3 currentPosition = grabJoint.connectedBody.transform.position;
-				grabbedObjectVelocity = (currentPosition - previousGrabbedObjectPosition) / Time.deltaTime;
-				previousGrabbedObjectPosition = currentPosition;
-			}
-
-
-
-        }
 
         if (controllerState == (int)arsenal.cards)
         {
@@ -234,10 +234,18 @@ public class Wand : MonoBehaviour {
 
 		}
 
+        if (controllerState == (int)arsenal.hands)
+        {
+
+            grabObject();
+            updatePositionAndVelocityOfGrabbedObject();    
+
+        }
 
 
 
-		if (controller.GetHairTriggerUp () && grabJoint.connectedBody != null) {
+
+        if (controller.GetHairTriggerUp () && grabJoint.connectedBody != null) {
 			Rigidbody connectedRigidbody = grabJoint.connectedBody;
 			grabJoint.connectedBody = null;
 			connectedRigidbody.velocity = grabbedObjectVelocity;
@@ -259,53 +267,6 @@ public class Wand : MonoBehaviour {
 
 	}
 		
-
-	void OnTriggerStay(Collider other) {
-
-
-		if (controller.GetHairTrigger ()) {
-			
-			if (controllerState == (int)arsenal.hands) {
-
-				if (other.gameObject.tag == "AtomSpawn") {
-					
-					if (grabJoint.connectedBody == null ) {
-						AtomSpawn spawnScript = other.gameObject.GetComponent<AtomSpawn> ();
-						GameObject newAtom = Instantiate (spawnScript.associatedAtom, other.gameObject.transform.position,other.gameObject.transform.rotation);
-
-						//TODO: Fix below and stuff under if statement that checks and atoms tag to make more efficient, i.e. don't repeat code
-
-						grabJoint.connectedBody = newAtom.GetComponent<Rigidbody>();
-						previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;
-						if (newAtom.GetComponent<AtomScript> ().getMoleculeNameSound () != moleculeNameCooldown) {
-							newAtom.GetComponent<AtomScript> ().playMoleculeNameSound ();
-							moleculeNameCooldown = newAtom.GetComponent<AtomScript> ().getMoleculeNameSound ();
-						}
-
-					}
-				}
-
-				if (other.gameObject.tag == "Atom" || other.gameObject.tag == "Tractorable") {
-					if (grabJoint.connectedBody == null) {
-
-
-
-						grabJoint.connectedBody = other.attachedRigidbody;
-						previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;
-
-						if (other.GetComponent<AtomScript> ().getMoleculeNameSound () != moleculeNameCooldown) {
-							other.GetComponent<AtomScript> ().playMoleculeNameSound ();
-							moleculeNameCooldown = other.GetComponent<AtomScript> ().getMoleculeNameSound ();
-						}
-							
-
-					}
-				}
-
-			}
-
-		} 
-	}
 
 	private Vector3 incrementDimension(Vector3 initial, float value, char dimension){
 		Vector3 final = new Vector3 (0, 0, 0);
@@ -380,6 +341,98 @@ public class Wand : MonoBehaviour {
 			atomSpawns [i] = preSpawns [i].gameObject;
 		}
 	}
+
+
+    private void grabObject() {
+        if (controller.GetHairTrigger())
+        {
+            //Find all the colliders in the sphere collider of the hand
+            Collider[] collidersInRangeOfHand = Physics.OverlapSphere(transform.TransformPoint(col.center), col.radius * col.transform.localScale.x);
+
+            //The next piece of code, up until the end of the for loop, checks to find the collider closest to the center of the hand collider
+            //Also checks to make sure that collider's tag either contains atom, or is tractorable
+            Collider closestCollider = null;
+
+            //Large temporary number placed in closestColliderDistance temporarily
+            float closestColliderDistance = 10000000;
+
+            foreach (Collider possibleCol in collidersInRangeOfHand)
+            {
+                if (Vector3.Distance(transform.TransformPoint(col.center), possibleCol.ClosestPoint(transform.TransformPoint(col.center))) < closestColliderDistance
+                    && (possibleCol.tag.Contains("Atom") || possibleCol.tag == "Tractorable"))
+                {
+
+                    closestCollider = possibleCol;
+                    closestColliderDistance = Vector3.Distance(transform.TransformPoint(col.center), possibleCol.ClosestPoint(transform.TransformPoint(col.center)));
+                }
+            }
+            //If there are any colliders in range at all
+            if (closestCollider != null)
+            {
+
+                
+
+
+
+                //If the closest collider is an atom spawner, then the code will instantiate an atom, and attach that to the hand
+                if (closestCollider.gameObject.tag == "AtomSpawn")
+                {
+
+                    if (grabJoint.connectedBody == null)
+                    {
+                        AtomSpawn spawnScript = closestCollider.gameObject.GetComponent<AtomSpawn>();
+                        GameObject newAtom = Instantiate(spawnScript.associatedAtom, closestCollider.gameObject.transform.position, closestCollider.gameObject.transform.rotation);
+
+                        //TODO: Fix below and stuff under if statement that checks and atoms tag to make more efficient, i.e. don't repeat code
+
+                        grabJoint.connectedBody = newAtom.GetComponent<Rigidbody>();
+                        previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;
+                        if (newAtom.GetComponent<AtomScript>().getMoleculeNameSound() != moleculeNameCooldown)
+                        {
+                            newAtom.GetComponent<AtomScript>().playMoleculeNameSound();
+                            moleculeNameCooldown = newAtom.GetComponent<AtomScript>().getMoleculeNameSound();
+                        }
+
+                    }
+                }
+
+                //If the closest collider is an atom or some other "Tractorable" object, then it can be grabbed. If the object is an atom, then it will play it's molecule name if the cooldown has run out
+                //Examples of "Tractorable" objects include the green cube and the reset sphere
+                if (closestCollider.gameObject.tag == "Atom" || closestCollider.gameObject.tag == "Tractorable")
+                {
+                    if (grabJoint.connectedBody == null)
+                    {
+
+
+                        grabJoint.connectedBody = closestCollider.attachedRigidbody;
+                        previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;
+
+                        if (closestCollider.tag == "Atom" && closestCollider.GetComponent<AtomScript>().getMoleculeNameSound() != moleculeNameCooldown)
+                        {
+                            closestCollider.GetComponent<AtomScript>().playMoleculeNameSound();
+                            moleculeNameCooldown = closestCollider.GetComponent<AtomScript>().getMoleculeNameSound();
+                        }
+
+
+                    }
+                }
+            }
+        }
+    }
+
+    //Updates the field for the previous object velocity and position of the grabbed object
+    //This is necessary to throw an object, as otherwise when the trigger is released, the object will have no velocity and will not be thrown
+    private void updatePositionAndVelocityOfGrabbedObject() {
+        if (grabJoint.connectedBody != null)
+        {
+            //Debug.Log (grabJoint.connectedBody.velocity);
+            Vector3 currentPosition = grabJoint.connectedBody.transform.position;
+            grabbedObjectVelocity = (currentPosition - previousGrabbedObjectPosition) / Time.deltaTime;
+            previousGrabbedObjectPosition = currentPosition;
+            if (grabbedObjectVelocity.magnitude < .15f)
+                grabbedObjectVelocity = Vector3.zero;
+        }
+    }
 			
 
 	

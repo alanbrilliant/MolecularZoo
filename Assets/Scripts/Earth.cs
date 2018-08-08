@@ -12,7 +12,7 @@ public class Earth : MonoBehaviour {
 		audio = gameObject.GetComponent<AudioSource> ();
 	}
 	void Start () {
-		gameObject.GetComponent<Rigidbody> ().AddTorque (new Vector3 (0, 100, 0));
+		gameObject.GetComponent<Rigidbody> ().AddTorque (new Vector3 (0, -100, 0));
 	}
 	
 	// Update is called once per frame
