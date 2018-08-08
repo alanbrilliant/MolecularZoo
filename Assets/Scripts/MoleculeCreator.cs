@@ -12,6 +12,12 @@ public class MoleculeCreator : MonoBehaviour
     public GameObject nitrogenPrefab;
     public GameObject phosphorusPrefab;
     public GameObject sulfurPrefab;
+    public GameObject chlorinePrefab;
+    public GameObject fluorinePrefab;
+    public GameObject ironPrefab;
+    public GameObject sodiumPrefab;
+    public GameObject aluminiumPrefab;
+    public GameObject lithiumPrefab;
 
 
     public GameObject bondModel;
@@ -54,26 +60,54 @@ public class MoleculeCreator : MonoBehaviour
                 atomPrefab = oxygenPrefab;
 
             }
-            if (atomList[i] == 1)
+            else if (atomList[i] == 1)
             {
                 atomPrefab = hydrogenPrefab;
             }
+            else if (atomList[i] == 3)
+            {
+                atomPrefab = lithiumPrefab;
+            }
 
-            if (atomList[i] == 6)
+            else if (atomList[i] == 6)
             {
                 atomPrefab = carbonPrefab;
             }
-            if (atomList[i] == 7)
+            else if (atomList[i] == 7)
             {
                 atomPrefab = nitrogenPrefab;
             }
-            if (atomList[i] == 15)
+            else if (atomList[i] == 9)
+            {
+                atomPrefab = fluorinePrefab;
+            }
+            else if (atomList[i] == 11)
+            {
+                atomPrefab = sodiumPrefab;
+            }
+            else if (atomList[i] == 13)
+            {
+                atomPrefab = aluminiumPrefab;
+            }
+            else if (atomList[i] == 15)
             {
                 atomPrefab = phosphorusPrefab;
             }
-            if (atomList[i] == 16)
+            else if (atomList[i] == 16)
             {
                 atomPrefab = sulfurPrefab;
+            }
+            else if (atomList[i] == 17)
+            {
+                atomPrefab = chlorinePrefab;
+            }
+            else if (atomList[i] == 26)
+            {
+                atomPrefab = ironPrefab;
+            }
+            else
+            {
+                Debug.Log("Trying to instantiate atom without prefab. Atomic Number: " + atomList[i]);
             }
 
             Debug.Log("This is the StartingPos" + startingPos);
@@ -89,6 +123,7 @@ public class MoleculeCreator : MonoBehaviour
         }
         for (int i = 0; i < bondStart.Count; i++)
         {
+            Debug.Log("Making Bond! "+i);
             int startAtomID = bondStart[i];
             int endAtomID = bondEnd[i];
 

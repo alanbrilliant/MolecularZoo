@@ -3,7 +3,18 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Wall
+  - Tractorable
+  - Floor
+  - Atom
+  - AtomSpawn
+  - Arm
+  - Deck
+  - RightWand
+  - LeftWand
+  - DictationResult
+  - DictationPosition
   layers:
   - Default
   - TransparentFX

@@ -28,7 +28,7 @@ public class Wand : MonoBehaviour {
     private List<GameObject> cardChildObjects;
 
 
-    private int controllerState;
+    public int controllerState;
     
     //Int tracking which card is active
     private int cardState;
@@ -42,9 +42,12 @@ public class Wand : MonoBehaviour {
     private GameObject CardSpinner;
 	AudioClip moleculeNameCooldown;
     private string activeCardName;
+    public bool _isGrabbing;
+    Animator anim;
+    public SteamVR_Controller.Device mDevice;
+    private float axisValue;
 
-
-	private enum arsenal {hands, tractor, pistol, heavyPistol, cards,};
+    private enum arsenal {hands, tractor, pistol, heavyPistol, cards,};
 
     //enumerator with all molecule spawn types
     private enum cardDeck { saturatedFat, water, carbonDioxide, };
@@ -56,7 +59,9 @@ public class Wand : MonoBehaviour {
 	}
 
 	void Start () {
-		initializeAtomSpawns ();
+        anim = GetComponent<Animator>();
+
+        initializeAtomSpawns();
 		laserScript = gameObject.GetComponentInChildren<LaserScript> ();
 		laser = laserScript.gameObject;
 		gunChildObjects = new List<GameObject> ();
@@ -93,13 +98,18 @@ public class Wand : MonoBehaviour {
 		controller = SteamVR_Controller.Input ((int)trackedObj.index);
 
 		grabJoint = gameObject.AddComponent<FixedJoint> ();
-
+     // _isGrabbing = false;
+        anim.SetBool("IsGrabbing", true);
         
     }
 
 
 	void Update () {
-		if (controllerState == (int)arsenal.hands) {
+        axisValue = controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger).x;
+        anim.SetFloat("GrabbingFloat", axisValue);
+
+        //Debug.Log("This is the axisValue" + axisValue);
+        if (controllerState == (int)arsenal.hands) {
 			if (grabJoint.connectedBody != null) {
 				//Debug.Log (grabJoint.connectedBody.velocity);
 				Vector3 currentPosition = grabJoint.connectedBody.transform.position;
@@ -113,15 +123,29 @@ public class Wand : MonoBehaviour {
 
         if (controllerState == (int)arsenal.cards)
         {
+            anim.SetBool("IsGrabbing", true);
+            anim.SetFloat("GrabbingFloat", 0);
+
             if (controller.GetHairTriggerDown())
             {
                 audio.clip = gunshot;
                 audio.volume = .05f;
                 audio.Play();
                 Debug.Log("hhf43");
-                CardSpinner = GameObject.Find(activeCardName);
+                //Problem Line
+                
+                     for (int i = 0; i < cardChildObjects.Count; i++)
+                {
+                    
+                    if (activeCardName == cardChildObjects[i].name)
+                        CardSpinner= cardChildObjects[i];
+                }
+                //CardSpinner = GameObject.Find(activeCardName);
                 Debug.Log(CardSpinner);
+
+                
                 CardSpinner.GetComponent<RotateClass>().startSpin();
+
                 Debug.Log("Trigger Press");
 
                 GameObject shot = Instantiate(throwCards, transform.position + transform.forward * .2f, transform.rotation);
@@ -136,8 +160,11 @@ public class Wand : MonoBehaviour {
 
         }
         if (controllerState == (int)arsenal.pistol) {
-			if (controller.GetHairTriggerDown()) {
-				audio.clip = gunshot;
+            anim.SetBool("IsGrabbing", true);
+            anim.SetFloat("GrabbingFloat", 0);
+
+            if (controller.GetHairTriggerDown()) {
+                audio.clip = gunshot;
 				audio.volume = .05f;
 				audio.Play ();
 
@@ -157,9 +184,12 @@ public class Wand : MonoBehaviour {
 				shot.transform.Rotate (90, 0, 0);
 			}
 		}
-
+        
 		if (controllerState == (int)arsenal.heavyPistol) {
-			if (controller.GetHairTriggerDown()) {
+            anim.SetBool("IsGrabbing", true);
+            anim.SetFloat("GrabbingFloat", 0);
+
+            if (controller.GetHairTriggerDown()) {
 				audio.clip = gunshot;
 				audio.volume = .05f;
 				audio.Play ();
@@ -182,10 +212,13 @@ public class Wand : MonoBehaviour {
 		}
 
 		if (controllerState == (int)arsenal.tractor){
+            anim.SetBool("IsGrabbing", true);
+            anim.SetFloat("GrabbingFloat", 0);
 
 
 
-			if (controller.GetHairTriggerDown ()) {
+
+            if (controller.GetHairTriggerDown ()) {
 				if (tractoredObject != null)
 					tractoredObject = null;
 			}
@@ -263,13 +296,18 @@ public class Wand : MonoBehaviour {
 
 		}
 
+        if (controller.GetHairTriggerUp())
+        {
+            anim.SetBool("IsGrabbing", true);
+        }
 
 
 
-		if (controller.GetHairTriggerUp () && grabJoint.connectedBody != null) {
+        if (controller.GetHairTriggerUp () && grabJoint.connectedBody != null) {
 			Rigidbody connectedRigidbody = grabJoint.connectedBody;
 			grabJoint.connectedBody = null;
-			connectedRigidbody.velocity = grabbedObjectVelocity;
+            
+            connectedRigidbody.velocity = grabbedObjectVelocity;
 		}
 
         //Looks inportant, ask alan
@@ -302,11 +340,13 @@ public class Wand : MonoBehaviour {
 		if (controller.GetHairTrigger ()) {
 			
 			if (controllerState == (int)arsenal.hands) {
+                _isGrabbing = true;
+                anim.SetBool("IsGrabbing", false);
 
-				if (other.gameObject.tag == "AtomSpawn") {
+                if (other.gameObject.tag == "AtomSpawn") {
 					
 					if (grabJoint.connectedBody == null ) {
-						AtomSpawn spawnScript = other.gameObject.GetComponent<AtomSpawn> ();
+                        AtomSpawn spawnScript = other.gameObject.GetComponent<AtomSpawn> ();
 						GameObject newAtom = Instantiate (spawnScript.associatedAtom, other.gameObject.transform.position,other.gameObject.transform.rotation);
 
 						//TODO: Fix below and stuff under if statement that checks and atoms tag to make more efficient, i.e. don't repeat code
@@ -325,8 +365,7 @@ public class Wand : MonoBehaviour {
 					if (grabJoint.connectedBody == null) {
 
 
-
-						grabJoint.connectedBody = other.attachedRigidbody;
+                        grabJoint.connectedBody = other.attachedRigidbody;
 						previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;
 
 						if (other.GetComponent<AtomScript> ().getMoleculeNameSound () != moleculeNameCooldown) {
@@ -340,10 +379,12 @@ public class Wand : MonoBehaviour {
 
 			}
 
-		} 
-	}
+		}
 
-	private Vector3 incrementDimension(Vector3 initial, float value, char dimension){
+    }
+
+
+    private Vector3 incrementDimension(Vector3 initial, float value, char dimension){
 		Vector3 final = new Vector3 (0, 0, 0);
 
 		float initX = initial.x;
@@ -365,7 +406,7 @@ public class Wand : MonoBehaviour {
 		return final;
 	}
 
-	private void updateControllerState(){
+	public void updateControllerState(){
 		tractoredObject = null;
 		laserScript.disableLaser ();
 

@@ -10,6 +10,7 @@
 //
 //=============================================================================
 
+using System;
 using UnityEngine;
 using Valve.VR;
 
@@ -50,7 +51,13 @@ public class SteamVR_Controller
 
 		public VRControllerState_t GetState() { Update(); return state; }
 		public VRControllerState_t GetPrevState() { Update(); return prevState; }
-		public TrackedDevicePose_t GetPose() { Update(); return pose; }
+
+        internal Vector2 GetAxis(ulong trigger)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TrackedDevicePose_t GetPose() { Update(); return pose; }
 
 		VRControllerState_t state, prevState;
 		TrackedDevicePose_t pose;

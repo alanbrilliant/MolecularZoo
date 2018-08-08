@@ -57,6 +57,8 @@
      <Compile Include="Assets\CardSpawner.cs" />
      <Compile Include="Assets\CardSpin.cs" />
      <Compile Include="Assets\Deck.cs" />
+     <Compile Include="Assets\HandGrabbing.cs" />
+     <Compile Include="Assets\HandGrabbingTest.cs" />
      <Compile Include="Assets\Restart.cs" />
      <Compile Include="Assets\RotateClass.cs" />
      <Compile Include="Assets\Scripts\Atomic Scripts\AtomScript.cs" />
@@ -77,6 +79,7 @@
      <Compile Include="Assets\Scripts\Gun.cs" />
      <Compile Include="Assets\Scripts\LaserScript.cs" />
      <Compile Include="Assets\Scripts\MoleculeCreator.cs" />
+     <Compile Include="Assets\Scripts\PubChemPuller.cs" />
      <Compile Include="Assets\Scripts\Rotator.cs" />
      <Compile Include="Assets\Scripts\Slug.cs" />
      <Compile Include="Assets\Scripts\Spawner.cs" />
@@ -237,6 +240,7 @@
      <Compile Include="Assets\SteamVR\Scripts\SteamVR_Utils.cs" />
      <Compile Include="Assets\UnityPackages\JsonNetSample\JsonNetSample.cs" />
      <Compile Include="Assets\Various Models\Planet Earth Free\SpinFree.cs" />
+     <Compile Include="Assets\VoiceRecog.cs" />
      <None Include="Assets\Various Models\Arms\Credit.txt" />
      <None Include="Assets\SteamVR\Resources\SteamVR_Fade.shader" />
      <None Include="Assets\SteamVR\Resources\SteamVR_ClearAll.shader" />

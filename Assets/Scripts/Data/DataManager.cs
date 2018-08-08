@@ -16,6 +16,7 @@ public class DataManager : MonoBehaviour {
 	MoleculeData carbondioxideData = new MoleculeData();
 	MoleculeData saturatedfatData = new MoleculeData();
 	MoleculeData sulfuricacidData = new MoleculeData();
+    MoleculeData nitroData = new MoleculeData();
 
 	private  string gameDataFileName = "atpdata.json";
 
@@ -28,6 +29,7 @@ public class DataManager : MonoBehaviour {
 		carbondioxideData = loadMolecule ("carbondioxidedata.json", "CarbonDioxide");
 	    saturatedfatData = loadMolecule ("saturatedfatdata.json", "SaturatedFat");
 		sulfuricacidData = loadMolecule ("sulfuricaciddata.json", "SulfuricAcid");
+        nitroData = loadMolecule("nitrodata.json", "Nitroglycerin");
 		/*atoms waterAtoms = new atoms(new List<int>{8,1,1});
 		bonds waterBonds = new bonds (new List<int> {1, 1}, new List<int> {2, 3}, new List<int> {1, 1});
 		coords waterCoords = new coords (new conformers(new List<float> {0,0.2774f,0.6068f}, new List<float> {0,0.8929f,-0.2383f}, new List<float> {0,0.2544f,-0.7169f}));
@@ -35,6 +37,7 @@ public class DataManager : MonoBehaviour {
 		MoleculeCreator script = gameObject.GetComponent<MoleculeCreator> ();
 		//Debug.Log(waterData.atom.element[0]);
 		//Debug.Log(waterData.conf.x[1]);
+        /*
 		for (int i = 0; i < 3; i++) {
 			script.instantiateMolecule (aspirinData, new Vector3(Random.Range(-3f,4f),Random.Range(2f,4f), Random.Range(-4f,4f))*spawnDist);
 		}
@@ -54,10 +57,12 @@ public class DataManager : MonoBehaviour {
 
 
         script.instantiateMolecule(sulfuricacidData, new Vector3(Random.Range(-3f, 4f), Random.Range(3f, 4f), Random.Range(-4f, 4f)) * spawnDist);
+        */
+        script.instantiateMolecule(nitroData, new Vector3(Random.Range(-3f, 4f), Random.Range(3f, 4f), Random.Range(-4f, 4f)) * spawnDist);
 
 
 
-        script.instantiateMolecule (atpData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,4f), Random.Range(-4f,4f)) * spawnDist);
+        //script.instantiateMolecule (atpData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,4f), Random.Range(-4f,4f)) * spawnDist);
 
 
 
@@ -91,11 +96,14 @@ public class DataManager : MonoBehaviour {
 		newMolecule.bond = bnd;
         newMolecule.conf = cnf;
 		newMolecule.name = moleculeName;
+
+        /*
         Debug.Log("Loading Molecule2");
         Debug.Log(newMolecule.atom);
         Debug.Log(newMolecule.bond);
         Debug.Log(newMolecule.conf);
         Debug.Log(newMolecule.name);
+        */
         return newMolecule;
 	
 	}
