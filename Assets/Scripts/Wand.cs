@@ -58,7 +58,7 @@ public class Wand : MonoBehaviour {
 		gunshot = audio.clip;
 	}
 
-	void Start () {
+    void Start () {
         anim = GetComponent<Animator>();
 
         initializeAtomSpawns();
@@ -104,7 +104,7 @@ public class Wand : MonoBehaviour {
     }
 
 
-	void Update () {
+    void Update () {
         axisValue = controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger).x;
         anim.SetFloat("GrabbingFloat", axisValue);
 
@@ -336,7 +336,9 @@ public class Wand : MonoBehaviour {
 
 	void OnTriggerStay(Collider other) {
 
-
+	     	if (controller == null)
+			return; // Vive tracker
+			
 		if (controller.GetHairTrigger ()) {
 			
 			if (controllerState == (int)arsenal.hands) {
@@ -368,9 +370,10 @@ public class Wand : MonoBehaviour {
                         grabJoint.connectedBody = other.attachedRigidbody;
 						previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;
 
-						if (other.GetComponent<AtomScript> ().getMoleculeNameSound () != moleculeNameCooldown) {
-							other.GetComponent<AtomScript> ().playMoleculeNameSound ();
-							moleculeNameCooldown = other.GetComponent<AtomScript> ().getMoleculeNameSound ();
+						var otherAtomScript = other.GetComponent<AtomScript> ();
+						if (otherAtomScript != null && otherAtomScript.getMoleculeNameSound () != moleculeNameCooldown) {
+							otherAtomScript.playMoleculeNameSound ();
+							moleculeNameCooldown = otherAtomScript.getMoleculeNameSound ();
 						}
 							
 
@@ -502,7 +505,7 @@ public class Wand : MonoBehaviour {
             if (activeCardName == cardChildObjects[i].name)
                 cardChildObjects[i].SetActive(true);
         }
-        Debug.Log("This should probably happen");
+
         //Setting Molecule to spawn
        
 

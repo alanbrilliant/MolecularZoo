@@ -37,7 +37,7 @@ public class DataManager : MonoBehaviour {
 		MoleculeCreator script = gameObject.GetComponent<MoleculeCreator> ();
 		//Debug.Log(waterData.atom.element[0]);
 		//Debug.Log(waterData.conf.x[1]);
-        /*
+
 		for (int i = 0; i < 3; i++) {
 			script.instantiateMolecule (aspirinData, new Vector3(Random.Range(-3f,4f),Random.Range(2f,4f), Random.Range(-4f,4f))*spawnDist);
 		}
@@ -57,7 +57,7 @@ public class DataManager : MonoBehaviour {
 
 
         script.instantiateMolecule(sulfuricacidData, new Vector3(Random.Range(-3f, 4f), Random.Range(3f, 4f), Random.Range(-4f, 4f)) * spawnDist);
-        */
+
         script.instantiateMolecule(nitroData, new Vector3(Random.Range(-3f, 4f), Random.Range(3f, 4f), Random.Range(-4f, 4f)) * spawnDist);
 
 
@@ -90,7 +90,7 @@ public class DataManager : MonoBehaviour {
 		bonds bnd = dataObj ["PC_Compounds"] [0]["bonds"].ToObject<bonds>();
 		conformers cnf =  dataObj ["PC_Compounds"] [0]["coords"][0]["conformers"][0].ToObject<conformers>();
         //Debug.Log (atm.element [0]);
-        Debug.Log("Loading Molecule");
+//        Debug.Log("Loading Molecule");
 
 		newMolecule.atom = atm;
 		newMolecule.bond = bnd;

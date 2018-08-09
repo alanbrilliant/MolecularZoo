@@ -30,8 +30,8 @@ public class MoleculeCreator : MonoBehaviour
 
     public void instantiateMolecule(MoleculeData molecule, Vector3 startingPos)
     {
-        Debug.Log(startingPos);
-        Debug.Log(molecule.ToString ());
+        //Debug.Log(startingPos);
+        //Debug.Log(molecule.ToString ());
         //Debug.Log(molecule);
 
 
@@ -110,7 +110,7 @@ public class MoleculeCreator : MonoBehaviour
                 Debug.Log("Trying to instantiate atom without prefab. Atomic Number: " + atomList[i]);
             }
 
-            Debug.Log("This is the StartingPos" + startingPos);
+            //Debug.Log("This is the StartingPos" + startingPos);
             //GameObject newAtom = GameObject.Instantiate (atomPrefab, new Vector3 (xCoords [i]+ startingPos.x, yCoords [i] + startingPos.y, zCoords [i] + startingPos.z) * molSize, Quaternion.identity);
             GameObject newAtom = GameObject.Instantiate(atomPrefab, new Vector3(xCoords[i] * molSize + startingPos.x, yCoords[i] * molSize + startingPos.y, zCoords[i] * molSize + startingPos.z), Quaternion.identity);
 
@@ -123,7 +123,7 @@ public class MoleculeCreator : MonoBehaviour
         }
         for (int i = 0; i < bondStart.Count; i++)
         {
-            Debug.Log("Making Bond! "+i);
+            //Debug.Log("Making Bond! "+i);
             int startAtomID = bondStart[i];
             int endAtomID = bondEnd[i];
 
