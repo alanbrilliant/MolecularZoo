@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class MoleculeCreator : MonoBehaviour
 {
 
@@ -30,8 +31,8 @@ public class MoleculeCreator : MonoBehaviour
 
     public void instantiateMolecule(MoleculeData molecule, Vector3 startingPos)
     {
-        Debug.Log(startingPos);
-        Debug.Log(molecule.ToString ());
+        //Debug.Log(startingPos);
+        //Debug.Log(molecule.ToString ());
         //Debug.Log(molecule);
 
 
@@ -110,23 +111,21 @@ public class MoleculeCreator : MonoBehaviour
                 Debug.Log("Trying to instantiate atom without prefab. Atomic Number: " + atomList[i]);
             }
 
-            Debug.Log("This is the StartingPos" + startingPos);
+            //Debug.Log("This is the StartingPos" + startingPos);
             //GameObject newAtom = GameObject.Instantiate (atomPrefab, new Vector3 (xCoords [i]+ startingPos.x, yCoords [i] + startingPos.y, zCoords [i] + startingPos.z) * molSize, Quaternion.identity);
             GameObject newAtom = GameObject.Instantiate(atomPrefab, new Vector3(xCoords[i] * molSize + startingPos.x, yCoords[i] * molSize + startingPos.y, zCoords[i] * molSize + startingPos.z), Quaternion.identity);
 
             //newAtom.transform.localScale *= molSize;
             newAtom.transform.parent = parentMol.transform;
+
             instantiatedAtoms.Add(newAtom);
-
-
 
         }
         for (int i = 0; i < bondStart.Count; i++)
         {
-            Debug.Log("Making Bond! "+i);
+            //Debug.Log("Making Bond! "+i);
             int startAtomID = bondStart[i];
             int endAtomID = bondEnd[i];
-
 
             GameObject startAtom = instantiatedAtoms[startAtomID - 1];
             GameObject endAtom = instantiatedAtoms[endAtomID - 1];
@@ -168,102 +167,25 @@ public class MoleculeCreator : MonoBehaviour
 
 
 
-            /*
-			List<GameObject> startAtomBonds = startScript.getBonds ();
-			for (int j = 0; j < bondOrder [i]; j++) {
-				for (int k = 0; k < startAtomBonds.Count; k++) {
+           
+        }
 
-					Bond bondScript = startAtomBonds [k].GetComponent<Bond> ();
-					GameObject[] newBondConnectedAtoms = bondScript.getConnectedAtoms ();
-					if (newBondConnectedAtoms [1] == null) {
-						bondScript.setConnectedAtom (endAtom);
 
-						if (bondOrder [i] == 1) {
-							bondScript.setOrderModifier (0);
-						} else if (bondOrder [i] == 2) {
-							if (j == 0)
-								bondScript.setOrderModifier (1);
-							if (j == 1)
-								bondScript.setOrderModifier (-1);
-						} else if (bondOrder [i] == 3) {
-							if (j == 0)
-								bondScript.setOrderModifier (0);
-							if (j == 1)
-								bondScript.setOrderModifier (-1);
-							if (j == 2)
-								bondScript.setOrderModifier (1);
-						}
-						break;
-					}
 
+			
+
+
+
+		for (int i = 0; i < instantiatedAtoms.Count; i++) {
+			
+			for (int j = 0; j < moleculeNameSounds.Count; j++) {
+				string soundNameRepaired = moleculeNameSounds [j].name.Substring (0,moleculeNameSounds[j].name.IndexOf("Sound"));
+				if (soundNameRepaired == molecule.name) {
+					
+					instantiatedAtoms [i].GetComponent<AtomScript> ().setMoleculeNameSound (moleculeNameSounds [j]);
 				}
-
-				List<GameObject> endAtomBonds = endScript.getBonds ();
-				*/
-            /*
-            for (int k = 0; k < endAtomBonds.Count; k++) {
-
-                Bond bondScript = endAtomBonds [k].GetComponent<Bond> ();
-                GameObject[] newBondConnectedAtoms = bondScript.getConnectedAtoms ();
-                if (newBondConnectedAtoms [1] == null) {
-                    bondScript.setConnectedAtom (startAtom);
-
-                    if (bondOrder [i] == 1) {
-                        bondScript.setOrderModifier (0);
-                    } else if (bondOrder [i] == 2) {
-                        if (j == 0)
-                            bondScript.setOrderModifier (1);
-                        if (j == 1)
-                            bondScript.setOrderModifier (-1);
-                    } else if (bondOrder [i] == 3) {
-                        if (j == 0)
-                            bondScript.setOrderModifier (0);
-                        if (j == 1)
-                            bondScript.setOrderModifier (-1);
-                        if (j == 2)
-                            bondScript.setOrderModifier (1);
-                    }
-                    break;
-                }
-
-            }*/
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        for (int i = 0; i < instantiatedAtoms.Count; i++)
-        {
-            /*
-			CharacterJoint[] atomJoints = instantiatedAtoms [i].GetComponents<CharacterJoint> ();
-			for (int j = 0; j < atomJoints.Length; j++) {
-				atomJoints [j].breakForce = 5000f;
-			}*/
-            for (int j = 0; j < moleculeNameSounds.Count; j++)
-            {
-                string soundNameRepaired = moleculeNameSounds[j].name.Substring(0, moleculeNameSounds[j].name.IndexOf("Sound"));
-                if (soundNameRepaired == molecule.name)
-                {
-
-                    instantiatedAtoms[i].GetComponent<AtomScript>().setMoleculeNameSound(moleculeNameSounds[j]);
-                }
-            }
-        }
+			}
+		}
 
 
 

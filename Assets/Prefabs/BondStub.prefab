@@ -36,7 +36,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4404259971736544}
   - component: {fileID: 33410148588291946}
-  - component: {fileID: 136102423288272462}
   - component: {fileID: 23639684925788822}
   m_Layer: 0
   m_Name: Bond
@@ -125,16 +124,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2792fc568db7f894eb686c124dfb72a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!136 &136102423288272462
-CapsuleCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1980971298191562}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  connectedAtoms:
+  - {fileID: 0}
+  - {fileID: 0}
+  bondShared: {fileID: 0}
+  posMod: {x: 0, y: 0, z: 0}
+  stubBondReferenceStartAtom: []
+  stubBondReferenceEndAtom: []
+  startingTargetPos: {x: 0, y: 0, z: 0}

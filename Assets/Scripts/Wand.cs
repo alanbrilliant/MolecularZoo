@@ -6,6 +6,8 @@ using UnityEngine;
 public class Wand : MonoBehaviour {
 
 
+    private SphereCollider col;
+
 	private SteamVR_TrackedObject trackedObj;
 	private SteamVR_Controller.Device controller;
 
@@ -59,8 +61,21 @@ public class Wand : MonoBehaviour {
 		gunshot = audio.clip;
 	}
 
+
 	void Start () {
+
         isHoldingTool = false;
+
+        SphereCollider[] possibleSphereColliders = GetComponentsInChildren<SphereCollider>();
+
+        foreach (SphereCollider collider in possibleSphereColliders)
+        {
+            if (collider.tag == "Arm" && collider.isTrigger == true)
+                col = collider;
+        }
+
+
+
         anim = GetComponent<Animator>();
 
         initializeAtomSpawns();
@@ -106,45 +121,15 @@ public class Wand : MonoBehaviour {
     }
 
 
+
 	void Update () {
+
         axisValue = controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger).x;
         anim.SetFloat("GrabbingFloat", axisValue);
 
-        //Debug.Log("This is the axisValue" + axisValue);
-        if (controllerState == (int)arsenal.hands) {
-			if (grabJoint.connectedBody != null) {
-				//Debug.Log (grabJoint.connectedBody.velocity);
-				Vector3 currentPosition = grabJoint.connectedBody.transform.position;
-				grabbedObjectVelocity = (currentPosition - previousGrabbedObjectPosition) / Time.deltaTime;
-				previousGrabbedObjectPosition = currentPosition;
 
-                if (controller.GetHairTriggerUp()&& isHoldingTool)
-                {
-                    audio.clip = gunshot;
-                    audio.volume = .05f;
-                    audio.Play();
-           
-                    GameObject bullet;
-                    bullet = bullets;
-                
-                    GameObject shot = Instantiate(bullet, grabJoint.connectedBody.transform.position + grabJoint.connectedBody.transform.forward * .2f, grabJoint.connectedBody.transform.rotation);
-                    shot.AddComponent<Slug>();
-                    shot.tag = "AtomBullet";
-                    Rigidbody shotRB = shot.GetComponent<Rigidbody>();
-                    shotRB.velocity = shotRB.transform.forward * 10;
-                    shot.transform.Rotate(90, 0, 0);
-                }
-                
-                    if (grabJoint.connectedBody.CompareTag("Pistol"))
-                {
-                    Debug.Log("Holding the pistol!");
-                }
+      
 
-            }
-
-
-
-        }
 
         if (controllerState == (int)arsenal.cards)
         {
@@ -193,7 +178,7 @@ public class Wand : MonoBehaviour {
 				audio.volume = .05f;
 				audio.Play ();
 
-				Debug.Log ("Trigger Press");
+				// Debug.Log ("Trigger Press");
 
 
 				GameObject bullet;
@@ -219,7 +204,7 @@ public class Wand : MonoBehaviour {
 				audio.volume = .05f;
 				audio.Play ();
 
-				Debug.Log ("Trigger Press");
+				//Debug.Log ("Trigger Press");
 
 
 				GameObject bullet;
@@ -321,9 +306,44 @@ public class Wand : MonoBehaviour {
 
 		}
 
-        if (controller.GetHairTriggerUp())
+        if (controllerState == (int)arsenal.hands)
         {
-            anim.SetBool("IsGrabbing", true);
+            if (controller.GetHairTriggerUp())
+            {
+                anim.SetBool("IsGrabbing", true);
+            }
+
+            grabObject();
+            updatePositionAndVelocityOfGrabbedObject();
+
+            if (grabJoint.connectedBody != null)
+            {
+
+
+                if (controller.GetHairTriggerUp() && isHoldingTool)
+                {
+                    audio.clip = gunshot;
+                    audio.volume = .05f;
+                    audio.Play();
+
+                    GameObject bullet;
+                    bullet = bullets;
+
+                    GameObject shot = Instantiate(bullet, grabJoint.connectedBody.transform.position + grabJoint.connectedBody.transform.forward * .2f, grabJoint.connectedBody.transform.rotation);
+                    shot.AddComponent<Slug>();
+                    shot.tag = "AtomBullet";
+                    Rigidbody shotRB = shot.GetComponent<Rigidbody>();
+                    shotRB.velocity = shotRB.transform.forward * 10;
+                    shot.transform.Rotate(90, 0, 0);
+                }
+
+                if (grabJoint.connectedBody.CompareTag("Pistol"))
+                {
+                    Debug.Log("Holding the pistol!");
+                }
+
+            }
+
         }
 
 
@@ -331,9 +351,11 @@ public class Wand : MonoBehaviour {
         if (controller.GetHairTriggerUp () && grabJoint.connectedBody != null && (grabJoint.connectedBody.gameObject.tag == "Atom"|| grabJoint.connectedBody.gameObject.tag == "Tractorable")) {
 			Rigidbody connectedRigidbody = grabJoint.connectedBody;
 			grabJoint.connectedBody = null;
-            
+            ;
+
             connectedRigidbody.velocity = grabbedObjectVelocity;
-		}
+
+        }
 
         //Release of trigger when holding a tool
         if (controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_Grip)&&isHoldingTool){
@@ -370,61 +392,11 @@ public class Wand : MonoBehaviour {
 	}
 		
 
-	void OnTriggerStay(Collider other) {
 
 
-		if (controller.GetHairTrigger ()) {
-			
-			if (controllerState == (int)arsenal.hands) {
-                _isGrabbing = true;
-                anim.SetBool("IsGrabbing", false);
-
-                if (other.gameObject.tag == "AtomSpawn") {
-					
-					if (grabJoint.connectedBody == null ) {
-                        AtomSpawn spawnScript = other.gameObject.GetComponent<AtomSpawn> ();
-						GameObject newAtom = Instantiate (spawnScript.associatedAtom, other.gameObject.transform.position,other.gameObject.transform.rotation);
-
-						//TODO: Fix below and stuff under if statement that checks and atoms tag to make more efficient, i.e. don't repeat code
-
-						grabJoint.connectedBody = newAtom.GetComponent<Rigidbody>();
-						previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;
-						if (newAtom.GetComponent<AtomScript> ().getMoleculeNameSound () != moleculeNameCooldown) {
-							newAtom.GetComponent<AtomScript> ().playMoleculeNameSound ();
-							moleculeNameCooldown = newAtom.GetComponent<AtomScript> ().getMoleculeNameSound ();
-						}
-
-					}
-				}
-
-				if (other.gameObject.tag == "Atom" || other.gameObject.tag == "Tractorable"||other.gameObject.tag == "Pistol") {
-					if (grabJoint.connectedBody == null) {
+	private Vector3 incrementDimension(Vector3 initial, float value, char dimension){
 
 
-                        grabJoint.connectedBody = other.attachedRigidbody;
-						previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;
-                        if (other.gameObject.tag == "Pistol")
-                        {
-                            isHoldingTool = true;
-                        }
-						if (other.GetComponent<AtomScript> ().getMoleculeNameSound () != moleculeNameCooldown) {
-							other.GetComponent<AtomScript> ().playMoleculeNameSound ();
-							moleculeNameCooldown = other.GetComponent<AtomScript> ().getMoleculeNameSound ();
-						}
-                        
-							
-
-					}
-				}
-
-			}
-
-		}
-
-    }
-
-
-    private Vector3 incrementDimension(Vector3 initial, float value, char dimension){
 		Vector3 final = new Vector3 (0, 0, 0);
 
 		float initX = initial.x;
@@ -542,7 +514,7 @@ public class Wand : MonoBehaviour {
             if (activeCardName == cardChildObjects[i].name)
                 cardChildObjects[i].SetActive(true);
         }
-        Debug.Log("This should probably happen");
+
         //Setting Molecule to spawn
        
 
@@ -554,6 +526,104 @@ public class Wand : MonoBehaviour {
 			atomSpawns [i] = preSpawns [i].gameObject;
 		}
 	}
+
+
+    private void grabObject() {
+        if (controller.GetHairTrigger())
+        {
+            //Find all the colliders in the sphere collider of the hand
+            Collider[] collidersInRangeOfHand = Physics.OverlapSphere(transform.TransformPoint(col.center), col.radius * col.transform.localScale.x);
+
+            //The next piece of code, up until the end of the for loop, checks to find the collider closest to the center of the hand collider
+            //Also checks to make sure that collider's tag either contains atom, or is tractorable
+            Collider closestCollider = null;
+
+            //Large temporary number placed in closestColliderDistance temporarily
+            float closestColliderDistance = 10000000;
+
+            foreach (Collider possibleCol in collidersInRangeOfHand)
+            {
+                if (Vector3.Distance(transform.TransformPoint(col.center), possibleCol.ClosestPoint(transform.TransformPoint(col.center))) < closestColliderDistance
+                    && (possibleCol.tag.Contains("Atom") || possibleCol.tag == "Tractorable"))
+                {
+
+                    closestCollider = possibleCol;
+                    closestColliderDistance = Vector3.Distance(transform.TransformPoint(col.center), possibleCol.ClosestPoint(transform.TransformPoint(col.center)));
+                }
+            }
+
+
+            //_isGrabbing = true;
+           // anim.SetBool("IsGrabbing", false);
+            //If there are any colliders in range at all
+            if (closestCollider != null)
+            {
+
+                
+
+
+
+                //If the closest collider is an atom spawner, then the code will instantiate an atom, and attach that to the hand
+                if (closestCollider.gameObject.tag == "AtomSpawn")
+                {
+
+                    if (grabJoint.connectedBody == null)
+                    {
+                        AtomSpawn spawnScript = closestCollider.gameObject.GetComponent<AtomSpawn>();
+                        GameObject newAtom = Instantiate(spawnScript.associatedAtom, closestCollider.gameObject.transform.position, closestCollider.gameObject.transform.rotation);
+
+                        //TODO: Fix below and stuff under if statement that checks and atoms tag to make more efficient, i.e. don't repeat code
+
+                        grabJoint.connectedBody = newAtom.GetComponent<Rigidbody>();
+                        previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;
+                        if (newAtom.GetComponent<AtomScript>().getMoleculeNameSound() != moleculeNameCooldown)
+                        {
+                            newAtom.GetComponent<AtomScript>().playMoleculeNameSound();
+                            moleculeNameCooldown = newAtom.GetComponent<AtomScript>().getMoleculeNameSound();
+                        }
+
+                    }
+                }
+
+                //If the closest collider is an atom or some other "Tractorable" object, then it can be grabbed. If the object is an atom, then it will play it's molecule name if the cooldown has run out
+                //Examples of "Tractorable" objects include the green cube and the reset sphere
+                if (closestCollider.gameObject.tag == "Atom" || closestCollider.gameObject.tag == "Tractorable")
+                {
+                    if (grabJoint.connectedBody == null)
+                    {
+
+
+                        grabJoint.connectedBody = closestCollider.attachedRigidbody;
+                        previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;
+
+                        if (closestCollider.tag == "Atom" && closestCollider.GetComponent<AtomScript>().getMoleculeNameSound() != moleculeNameCooldown)
+                        {
+                            closestCollider.GetComponent<AtomScript>().playMoleculeNameSound();
+                            moleculeNameCooldown = closestCollider.GetComponent<AtomScript>().getMoleculeNameSound();
+                        }
+
+
+                    }
+                }
+            }
+        }
+    }
+
+    //Updates the field for the previous object velocity and position of the grabbed object
+    //This is necessary to throw an object, as otherwise when the trigger is released, the object will have no velocity and will not be thrown
+    private void updatePositionAndVelocityOfGrabbedObject() {
+        if (grabJoint.connectedBody != null)
+        {
+
+            //Debug.Log (grabJoint.connectedBody.velocity);
+            Vector3 currentPosition = grabJoint.connectedBody.transform.position;
+            grabbedObjectVelocity = (currentPosition - previousGrabbedObjectPosition) / Time.deltaTime;
+            Debug.Log(currentPosition - previousGrabbedObjectPosition);
+            previousGrabbedObjectPosition = currentPosition;
+            if (grabbedObjectVelocity.magnitude < .15f)
+                grabbedObjectVelocity = Vector3.zero;
+        }
+    }
 			
 
 	
