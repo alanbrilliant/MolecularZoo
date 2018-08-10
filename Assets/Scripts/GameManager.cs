@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour {
 			newAtom.transform.localScale *= .232f;
 			atomList.Add (newAtom);
 			//GameObject newAatom = (GameObject)GameObject.Instantiate (atomType, startPos, Random.rotation) as GameObject;
+
 		}
 
 

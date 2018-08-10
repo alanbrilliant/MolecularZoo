@@ -15,6 +15,11 @@ TagManager:
   - LeftWand
   - DictationResult
   - DictationPosition
+  - Bond
+  - DoubleBond
+  - Bullet
+  - ExplosiveBullet
+  - Pistol
   layers:
   - Default
   - TransparentFX

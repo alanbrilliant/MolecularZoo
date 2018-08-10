@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using Newtonsoft.Json.Linq;
-
+using System.Text.RegularExpressions;
 
 class PubChemPuller : MonoBehaviour
 {
@@ -19,6 +19,7 @@ class PubChemPuller : MonoBehaviour
     public string molName;
     public string officialMolName;
     private int CIDNum;
+    private bool isCID;
 
     //https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/962/conformers/JSON
 
@@ -37,6 +38,17 @@ class PubChemPuller : MonoBehaviour
 
     IEnumerator GetCID(String molName)
     {
+        isCID = false;
+        if  (Regex.IsMatch(molName, @"^\d+$")){
+            CID = Int32.Parse(molName);
+            StartCoroutine(GetMolName(CID));
+
+            StartCoroutine(GetConformerID(CID));
+            isCID = true;
+
+            Debug.Log("CID Entered!");
+        }
+
         string dodec = "2,3a,9a-(Methylidynetrismethylene)-5,3,6a,1,8-(1,2,3,4,5-pentanpentayl)dodecahydro-1H-phenalene";
         string dodec2 = "cubane";
 
@@ -51,7 +63,12 @@ class PubChemPuller : MonoBehaviour
 
         if (www.isNetworkError || www.isHttpError)
         {
+
+            if (!isCID) { 
+
             GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "No Molecules found!";
+            }
+
 
             Debug.Log(www.error);
             Debug.Log("No valid molecules!");
@@ -100,7 +117,14 @@ class PubChemPuller : MonoBehaviour
             Debug.Log(www.error);
             Debug.Log("No valid conformers!");
             CIDNum++;
-            StartCoroutine(GetCID(molName));
+            if (!isCID)
+            {
+                StartCoroutine(GetCID(molName));
+            }
+            else
+            {
+                 GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "No conformer for CID";
+            }
             //GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "No conformers found!";
 
 

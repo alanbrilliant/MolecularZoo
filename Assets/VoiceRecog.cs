@@ -30,7 +30,7 @@ public class VoiceRecog : MonoBehaviour {
 
     void Start () {
 
-        ListKeywords = new string[31];
+        ListKeywords = new string[33];
         ListKeywords[0] = "Reset";
         //Tool Switching
         ListKeywords[1] = "RightTractor";
@@ -67,8 +67,8 @@ public class VoiceRecog : MonoBehaviour {
         ListKeywords[28] = "SaturatedFat";
         ListKeywords[29] = "SulfuricAcid";
         ListKeywords[30] = "Create";
-        
-        
+        ListKeywords[31] = "BondCount";
+        ListKeywords[32] = "AtomCount";
 
 
 
@@ -238,6 +238,34 @@ public class VoiceRecog : MonoBehaviour {
 
             D_Recognizer.Start();
             Debug.Log("3");
+
+        }
+        if (args.text == ListKeywords[31])
+        {
+            Array getCount = GameObject.FindGameObjectsWithTag("Bond");
+            int count = getCount.Length;
+            GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "Bonds: "+count;
+
+
+
+            GameObject.FindWithTag("DictationResult").transform.position = GameObject.FindWithTag("DictationPosition").transform.position;
+            float a = Mathf.Atan2(GameObject.FindWithTag("DictationPosition").transform.position.x, GameObject.FindWithTag("DictationPosition").transform.position.z) * Mathf.Rad2Deg;
+            GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
+        }
+        if (args.text == ListKeywords[32])
+        {
+
+
+            Array getCount = GameObject.FindGameObjectsWithTag("Atom");
+            int count = getCount.Length;
+
+            GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "Atoms: "+count;
+
+
+
+            GameObject.FindWithTag("DictationResult").transform.position = GameObject.FindWithTag("DictationPosition").transform.position;
+            float a = Mathf.Atan2(GameObject.FindWithTag("DictationPosition").transform.position.x, GameObject.FindWithTag("DictationPosition").transform.position.z) * Mathf.Rad2Deg;
+            GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
 
         }
 

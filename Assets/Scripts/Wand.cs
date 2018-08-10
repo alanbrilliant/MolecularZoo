@@ -46,6 +46,7 @@ public class Wand : MonoBehaviour {
     Animator anim;
     public SteamVR_Controller.Device mDevice;
     private float axisValue;
+    private bool isHoldingTool;
 
     private enum arsenal {hands, tractor, pistol, heavyPistol, cards,};
 
@@ -59,6 +60,7 @@ public class Wand : MonoBehaviour {
 	}
 
 	void Start () {
+        isHoldingTool = false;
         anim = GetComponent<Animator>();
 
         initializeAtomSpawns();
@@ -115,7 +117,30 @@ public class Wand : MonoBehaviour {
 				Vector3 currentPosition = grabJoint.connectedBody.transform.position;
 				grabbedObjectVelocity = (currentPosition - previousGrabbedObjectPosition) / Time.deltaTime;
 				previousGrabbedObjectPosition = currentPosition;
-			}
+
+                if (controller.GetHairTriggerUp()&& isHoldingTool)
+                {
+                    audio.clip = gunshot;
+                    audio.volume = .05f;
+                    audio.Play();
+           
+                    GameObject bullet;
+                    bullet = bullets;
+                
+                    GameObject shot = Instantiate(bullet, grabJoint.connectedBody.transform.position + grabJoint.connectedBody.transform.forward * .2f, grabJoint.connectedBody.transform.rotation);
+                    shot.AddComponent<Slug>();
+                    shot.tag = "AtomBullet";
+                    Rigidbody shotRB = shot.GetComponent<Rigidbody>();
+                    shotRB.velocity = shotRB.transform.forward * 10;
+                    shot.transform.Rotate(90, 0, 0);
+                }
+                
+                    if (grabJoint.connectedBody.CompareTag("Pistol"))
+                {
+                    Debug.Log("Holding the pistol!");
+                }
+
+            }
 
 
 
@@ -238,7 +263,7 @@ public class Wand : MonoBehaviour {
 				if (tractoredObject == null) {
 					Ray tractorBeamRay = new Ray (transform.position + transform.forward * .2f, transform.forward);
 					if (Physics.Raycast (tractorBeamRay, out hit)) {
-						if (hit.collider.gameObject.tag == "Atom" || hit.collider.tag == "Tractorable") {
+						if (hit.collider.gameObject.tag == "Atom" || hit.collider.tag == "Tractorable"|| hit.collider.tag == "Pistol") {
 							tractoredObject = hit.collider.gameObject;
 							GameObject hitAtom = hit.collider.gameObject;
 							Rigidbody hitAtomRB = hit.collider.gameObject.GetComponent<Rigidbody> ();
@@ -303,15 +328,26 @@ public class Wand : MonoBehaviour {
 
 
 
-        if (controller.GetHairTriggerUp () && grabJoint.connectedBody != null) {
+        if (controller.GetHairTriggerUp () && grabJoint.connectedBody != null && (grabJoint.connectedBody.gameObject.tag == "Atom"|| grabJoint.connectedBody.gameObject.tag == "Tractorable")) {
 			Rigidbody connectedRigidbody = grabJoint.connectedBody;
 			grabJoint.connectedBody = null;
             
             connectedRigidbody.velocity = grabbedObjectVelocity;
 		}
 
+        //Release of trigger when holding a tool
+        if (controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_Grip)&&isHoldingTool){
+            Rigidbody connectedRigidbody = grabJoint.connectedBody;
+            grabJoint.connectedBody = null;
+
+            connectedRigidbody.velocity = grabbedObjectVelocity;
+            controllerState = 3;
+            updateControllerState();
+        }
+
+
         //Looks inportant, ask alan
-		if (controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).x>.5 &&(controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad) || controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_Grip)))
+        if (controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).x>.5 &&(controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad) || controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_Grip)))
         {
             Debug.Log("card switching");
             updateCardControllerState ();
@@ -361,17 +397,21 @@ public class Wand : MonoBehaviour {
 					}
 				}
 
-				if (other.gameObject.tag == "Atom" || other.gameObject.tag == "Tractorable") {
+				if (other.gameObject.tag == "Atom" || other.gameObject.tag == "Tractorable"||other.gameObject.tag == "Pistol") {
 					if (grabJoint.connectedBody == null) {
 
 
                         grabJoint.connectedBody = other.attachedRigidbody;
 						previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;
-
+                        if (other.gameObject.tag == "Pistol")
+                        {
+                            isHoldingTool = true;
+                        }
 						if (other.GetComponent<AtomScript> ().getMoleculeNameSound () != moleculeNameCooldown) {
 							other.GetComponent<AtomScript> ().playMoleculeNameSound ();
 							moleculeNameCooldown = other.GetComponent<AtomScript> ().getMoleculeNameSound ();
 						}
+                        
 							
 
 					}
