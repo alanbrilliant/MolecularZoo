@@ -4,25 +4,54 @@ using UnityEngine;
 
 public class CardSpawner : MonoBehaviour
 {
+    MoleculeData molData = new MoleculeData();
     MoleculeData saturatedfatData = new MoleculeData();
     private GameObject gameController;
     //bool touched = false;
     public Rigidbody rb;
-
+    private DataManager script1;
+    private string testString;
+    private string nullString;
 
     void Start()
     {
-        //GetComponent<AudioSource>().playOnAwake = false;
-
-        gameController = GameObject.FindWithTag("GameController");
-        DataManager script1 = gameController.GetComponent<DataManager>();
-
-        saturatedfatData = script1.loadMolecule("saturatedfatdata.json", "SaturatedFat");
+        
         rb = GetComponent<Rigidbody>();
+        
+
+        /*Functional spawning, test suite
+        gameController = GameObject.FindWithTag("GameController");
+        script1 = gameController.GetComponent<DataManager>();
+        saturatedfatData = script1.loadMolecule("saturatedfatdata.json", "SaturatedFat");
+        */
+        /*
+        DataManager script1 = gameController.GetComponent<DataManager>();
+        saturatedfatData = script1.loadMolecule("saturatedfatdata.json", "SaturatedFat");
+        */
+
+    }
+
+    public void setMoleculeToSpawn(string molName)
+    {
+        
+        gameController = GameObject.FindWithTag("GameController");
+        
+
+    
+        script1 = gameController.GetComponent<DataManager>();
+        
+        molData = script1.loadMolecule(molName.ToLower() + "data.json", molName);
+
+        //saturatedfatData = script1.loadMolecule("saturatedfatdata.json", "SaturatedFat");
+
+        
+
+
     }
 
     void update()
     {
+
         transform.Rotate(10*Vector3.up * Time.deltaTime);
     }
 
@@ -31,24 +60,32 @@ public class CardSpawner : MonoBehaviour
 
         if (other.CompareTag("Arm"))
         {
-            //touched = true;
+           
         }
 
     }
 
     void OnCollisionEnter(Collision other)
     {
+        /*
+        Debug.Log("(((((((((((((((((((((((((((((");
+        Debug.Log(testString);
+        Debug.Log(nullString);
+        Debug.Log("(((((((((((((((((((((((((((((");
+        Debug.Log(saturatedfatData.ToString());
+        */
 
         if (other.gameObject.CompareTag("Floor") 
-            //&& touched
+            
            )
         {
             MoleculeCreator script = gameObject.GetComponent<MoleculeCreator>();
-            script.instantiateMolecule(saturatedfatData, transform.position);
             
-            //Debug.Log(GameObject.Find("ThrowingCard").transform.position);
-
-            // GetComponent<AudioSource>().Play();
+            //Debug.Log("Script: "+script);
+            
+            script.instantiateMolecule(molData, transform.position);
+            
+           
         }
         
         else { Destroy(gameObject);
@@ -56,7 +93,7 @@ public class CardSpawner : MonoBehaviour
 }
 
         
-        //touched = false;
+        
 
     }
 

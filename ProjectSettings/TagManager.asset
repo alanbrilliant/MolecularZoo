@@ -5,15 +5,18 @@ TagManager:
   serializedVersion: 2
   tags:
   - Wall
+  - Tractorable
+  - Floor
   - Atom
-  - ExplosiveBullet
-  - Bullet
   - AtomSpawn
   - Arm
-  - Floor
-  - Tractorable
+  - Deck
+  - RightWand
+  - LeftWand
+  - DictationResult
+  - DictationPosition
   - AtomBullet
-  - AtomExplosiveBullet
+  - ExplosiveAtomBullet
   layers:
   - Default
   - TransparentFX
@@ -23,8 +26,8 @@ TagManager:
   - UI
   - 
   - 
-  - Projectiles
-  - Walls
+  - 
+  - 
   - 
   - 
   - 

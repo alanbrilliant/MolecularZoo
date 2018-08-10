@@ -42,11 +42,11 @@ public class MoleculeData {
 	
 	public string ToString() {
 		
-		string final = "g: ";
-
-		//final += atomData.element [0];
-		//final += compound;
-		return final;
+		string final = "g: "+"}" +name+"}" + bond + "/ " + conf + "/ " + atom;
+        //+" "+bond+" "+conf+" "+atom
+        //final += atomData.element [0];
+        //final += compound;
+        return final;
 	}
 
 

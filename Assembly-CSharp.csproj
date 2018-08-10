@@ -61,6 +61,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\card.cs" />
+    <Compile Include="Assets\Deck.cs" />
     <Compile Include="Assets\External Libraries\Source\Aot\fsAotCompilationManager.cs" />
     <Compile Include="Assets\External Libraries\Source\Aot\fsAotConfiguration.cs" />
     <Compile Include="Assets\External Libraries\Source\Aot\fsAotVersionInfo.cs" />
@@ -117,6 +119,9 @@
     <Compile Include="Assets\External Libraries\Source\Reflection\fsReflectionUtility.cs" />
     <Compile Include="Assets\External Libraries\Source\Reflection\fsTypeCache.cs" />
     <Compile Include="Assets\External Libraries\UnityPackages\JsonNetSample\JsonNetSample.cs" />
+    <Compile Include="Assets\HandGrabbing.cs" />
+    <Compile Include="Assets\HandGrabbingTest.cs" />
+    <Compile Include="Assets\RotateClass.cs" />
     <Compile Include="Assets\Scripts\Atomic Scripts\AtomScript.cs" />
     <Compile Include="Assets\Scripts\Atomic Scripts\AtomSpawn.cs" />
     <Compile Include="Assets\Scripts\Atomic Scripts\Bond.cs" />
@@ -140,6 +145,7 @@
     <Compile Include="Assets\Scripts\Gun.cs" />
     <Compile Include="Assets\Scripts\LaserScript.cs" />
     <Compile Include="Assets\Scripts\MoleculeCreator.cs" />
+    <Compile Include="Assets\Scripts\PubChemPuller.cs" />
     <Compile Include="Assets\Scripts\Rotator.cs" />
     <Compile Include="Assets\Scripts\Slug.cs" />
     <Compile Include="Assets\Scripts\StringSerializationAPI.cs" />
@@ -242,6 +248,7 @@
     <Compile Include="Assets\SteamVR\Scripts\SteamVR_UpdatePoses.cs" />
     <Compile Include="Assets\SteamVR\Scripts\SteamVR_Utils.cs" />
     <Compile Include="Assets\Various Models\Planet Earth Free\SpinFree.cs" />
+    <Compile Include="Assets\VoiceRecog.cs" />
     <None Include="Assets\Various Models\Arms\Credit.txt" />
     <None Include="Assets\SteamVR\Resources\SteamVR_Fade.shader" />
     <None Include="Assets\SteamVR\Resources\SteamVR_ClearAll.shader" />

@@ -26,7 +26,7 @@ GameObject:
   - component: {fileID: 135885638662526722}
   m_Layer: 0
   m_Name: Red Slugs
-  m_TagString: ExplosiveBullet
+  m_TagString: Undefined
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

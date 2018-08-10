@@ -94,10 +94,40 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 		} else if (gameObject.name == "Sulfur Atom") {
 			gameObject.transform.localScale = new Vector3(.1f,.1f,.1f);
 			bondNum = 6;
-		} 
+		}
+        else if (gameObject.name == "Chlorine Atom")
+        {
+            gameObject.transform.localScale = new Vector3(.1f, .1f, .1f);
+            bondNum = 1;
+        }
+        else if (gameObject.name == "Fluorine Atom")
+        {
+            gameObject.transform.localScale = new Vector3(.1f, .1f, .1f);
+            bondNum = 1;
+        }
+        else if (gameObject.name == "Iron Atom")
+        {
+            gameObject.transform.localScale = new Vector3(.1f, .1f, .1f);
+            //This is sketchy, iron doesn't seem to have a clear bond cap, depends on circumstance heavily
+            bondNum = 3;
+        }
+        else if (gameObject.name == "Aluminium Atom")
+        {
+            gameObject.transform.localScale = new Vector3(.1f, .1f, .1f);
+            bondNum = 3;
+        }
+        else if (gameObject.name == "Lithium Atom")
+        {
+            gameObject.transform.localScale = new Vector3(.1f, .1f, .1f);
+            bondNum = 1;
+        }
+        else if (gameObject.name == "Sodium Atom")
+        {
+            gameObject.transform.localScale = new Vector3(.1f, .1f, .1f);
+            bondNum = 1;
+        }
 
-
-		allowedBonds = bondNum;
+        allowedBonds = bondNum;
 
 		createStubBonds ();
 
@@ -427,6 +457,7 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
             {
                 brokenBondWithAtom = currentBondedAtoms[i];
 
+
             }
 
         }
@@ -537,7 +568,12 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 
 				}
 			}
-			stubBondReference.Add (closestBondStub);
+
+            if (closestBondStub != null)
+            {
+                stubBondReference.Add(closestBondStub);
+            }
+
 			foreach (GameObject stub in stubBondReference) {
 				stub.SetActive (false);
 			}

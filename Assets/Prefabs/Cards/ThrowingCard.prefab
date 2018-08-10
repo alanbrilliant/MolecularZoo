@@ -25,7 +25,7 @@ GameObject:
   - component: {fileID: 114854964248467192}
   - component: {fileID: 114886089218467622}
   m_Layer: 0
-  m_Name: ThrowingCard 1
+  m_Name: ThrowingCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
