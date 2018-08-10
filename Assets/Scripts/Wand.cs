@@ -168,7 +168,7 @@ public class Wand : MonoBehaviour {
 				audio.volume = .05f;
 				audio.Play ();
 
-				Debug.Log ("Trigger Press");
+				// Debug.Log ("Trigger Press");
 
 
 				GameObject bullet;
@@ -194,7 +194,7 @@ public class Wand : MonoBehaviour {
 				audio.volume = .05f;
 				audio.Play ();
 
-				Debug.Log ("Trigger Press");
+				//Debug.Log ("Trigger Press");
 
 
 				GameObject bullet;
