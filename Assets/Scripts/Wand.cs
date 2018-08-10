@@ -60,6 +60,7 @@ public class Wand : MonoBehaviour {
 		gunshot = audio.clip;
 	}
 
+
 	void Start () {
         SphereCollider[] possibleSphereColliders = GetComponentsInChildren<SphereCollider>();
 
@@ -68,6 +69,7 @@ public class Wand : MonoBehaviour {
             if (collider.tag == "Arm" && collider.isTrigger == true)
                 col = collider;
         }
+
 
         anim = GetComponent<Animator>();
 
@@ -112,6 +114,7 @@ public class Wand : MonoBehaviour {
         anim.SetBool("IsGrabbing", true);
         
     }
+
 
 
 	void Update () {
@@ -166,7 +169,7 @@ public class Wand : MonoBehaviour {
 				audio.volume = .05f;
 				audio.Play ();
 
-				Debug.Log ("Trigger Press");
+				// Debug.Log ("Trigger Press");
 
 
 				GameObject bullet;
@@ -192,7 +195,7 @@ public class Wand : MonoBehaviour {
 				audio.volume = .05f;
 				audio.Play ();
 
-				Debug.Log ("Trigger Press");
+				//Debug.Log ("Trigger Press");
 
 
 				GameObject bullet;
@@ -341,7 +344,9 @@ public class Wand : MonoBehaviour {
 	}
 		
 
+
 	private Vector3 incrementDimension(Vector3 initial, float value, char dimension){
+
 
 		Vector3 final = new Vector3 (0, 0, 0);
 
@@ -460,7 +465,7 @@ public class Wand : MonoBehaviour {
             if (activeCardName == cardChildObjects[i].name)
                 cardChildObjects[i].SetActive(true);
         }
-        Debug.Log("This should probably happen");
+
         //Setting Molecule to spawn
        
 

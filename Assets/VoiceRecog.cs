@@ -108,7 +108,7 @@ public class VoiceRecog : MonoBehaviour {
         for (int i = 1; i < 6; i++)
         {
 
-            Debug.Log("This should update the controller state!"+args.text);
+            //Debug.Log("This should update the controller state!"+args.text);
             if (args.text == ListKeywords[i])
             {
 
@@ -224,8 +224,8 @@ public class VoiceRecog : MonoBehaviour {
 
             
             float a = Mathf.Atan2(GameObject.FindWithTag("DictationPosition").transform.position.x, GameObject.FindWithTag("DictationPosition").transform.position.z) * Mathf.Rad2Deg;
-            Debug.Log("Transform position x"+ GameObject.FindWithTag("DictationPosition").transform.position.x + " Transform position z"+ GameObject.FindWithTag("DictationPosition").transform.position.z);
-            Debug.Log("Angle: "+a);
+            //Debug.Log("Transform position x"+ GameObject.FindWithTag("DictationPosition").transform.position.x + " Transform position z"+ GameObject.FindWithTag("DictationPosition").transform.position.z);
+			//Debug.Log("Angle: "+a);
             GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
             
 

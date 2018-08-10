@@ -16,8 +16,9 @@ public class Bond : MonoBehaviour {
 	bool stuffSet = false;
 	float time = 0;
 	void Start () {
-       
+      
     }
+
 	
 	// Update is called once per frame
 	void Update () {
