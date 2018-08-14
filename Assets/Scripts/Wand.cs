@@ -535,7 +535,7 @@ public class Wand : MonoBehaviour {
         if (controller.GetHairTrigger())
         {
             //Find all the colliders in the sphere collider of the hand
-            Collider[] collidersInRangeOfHand = Physics.OverlapSphere(transform.TransformPoint(col.center), col.radius * col.transform.localScale.x);
+            Collider[] collidersInRangeOfHand = Physics.OverlapSphere(transform.TransformPoint(col.center), col.radius * Math.Abs(col.transform.localScale.x));
 
             //The next piece of code, up until the end of the for loop, checks to find the collider closest to the center of the hand collider
             //Also checks to make sure that collider's tag either contains atom, or is tractorable
