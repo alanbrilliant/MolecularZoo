@@ -255,7 +255,7 @@ class PubChemPuller : MonoBehaviour
     {
         Debug.Log("Starting text clearer");
         float timeWaited = 0;
-        while (timeWaited < 1)
+        while (timeWaited < 3)
         {
             timeWaited += Time.deltaTime;
 

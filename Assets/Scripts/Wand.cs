@@ -322,6 +322,8 @@ public class Wand : MonoBehaviour {
 
                 if (controller.GetHairTriggerUp() && isHoldingTool)
                 {
+
+
                     audio.clip = gunshot;
                     audio.volume = .05f;
                     audio.Play();
@@ -335,6 +337,7 @@ public class Wand : MonoBehaviour {
                     Rigidbody shotRB = shot.GetComponent<Rigidbody>();
                     shotRB.velocity = shotRB.transform.forward * 10;
                     shot.transform.Rotate(90, 0, 0);
+
                 }
 
                 if (grabJoint.connectedBody.CompareTag("Pistol"))
@@ -544,7 +547,7 @@ public class Wand : MonoBehaviour {
             foreach (Collider possibleCol in collidersInRangeOfHand)
             {
                 if (Vector3.Distance(transform.TransformPoint(col.center), possibleCol.ClosestPoint(transform.TransformPoint(col.center))) < closestColliderDistance
-                    && (possibleCol.tag.Contains("Atom") || possibleCol.tag == "Tractorable"))
+                    && (possibleCol.tag.Contains("Atom") || possibleCol.tag == "Tractorable"||possibleCol.tag == "Pistol"))
                 {
 
                     closestCollider = possibleCol;
@@ -554,12 +557,12 @@ public class Wand : MonoBehaviour {
 
 
             //_isGrabbing = true;
-           // anim.SetBool("IsGrabbing", false);
+            // anim.SetBool("IsGrabbing", false);
             //If there are any colliders in range at all
             if (closestCollider != null)
             {
 
-                
+
 
 
 
@@ -587,7 +590,7 @@ public class Wand : MonoBehaviour {
 
                 //If the closest collider is an atom or some other "Tractorable" object, then it can be grabbed. If the object is an atom, then it will play it's molecule name if the cooldown has run out
                 //Examples of "Tractorable" objects include the green cube and the reset sphere
-                if (closestCollider.gameObject.tag == "Atom" || closestCollider.gameObject.tag == "Tractorable")
+                if (closestCollider.gameObject.tag == "Atom" || closestCollider.gameObject.tag == "Tractorable"||closestCollider.gameObject.tag == "Pistol")
                 {
                     if (grabJoint.connectedBody == null)
                     {
@@ -595,13 +598,18 @@ public class Wand : MonoBehaviour {
 
                         grabJoint.connectedBody = closestCollider.attachedRigidbody;
                         previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;
-
+                        
                         if (closestCollider.tag == "Atom" && closestCollider.GetComponent<AtomScript>().getMoleculeNameSound() != moleculeNameCooldown)
                         {
                             closestCollider.GetComponent<AtomScript>().playMoleculeNameSound();
                             moleculeNameCooldown = closestCollider.GetComponent<AtomScript>().getMoleculeNameSound();
                         }
 
+                        
+                        if (closestCollider.gameObject.tag == "Pistol")
+                        {
+                            isHoldingTool = true;
+                        }
 
                     }
                 }
