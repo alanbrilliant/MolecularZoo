@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Wand : MonoBehaviour {
 
-
+    public GameObject grabPosition;
     private SphereCollider col;
 
 	private SteamVR_TrackedObject trackedObj;
@@ -19,6 +19,8 @@ public class Wand : MonoBehaviour {
 	// GameObject gun;
 	private GameObject redGun;
 	private FixedJoint grabJoint;
+    //private SpringJoint pullJoint;
+
     private GameObject cards;
 	private Vector3 grabbedObjectVelocity;
 	private Vector3 previousGrabbedObjectPosition;
@@ -49,6 +51,7 @@ public class Wand : MonoBehaviour {
     public SteamVR_Controller.Device mDevice;
     private float axisValue;
     private bool isHoldingTool;
+    private Transform grabPos;
 
     private enum arsenal {hands, tractor, pistol, heavyPistol, cards,};
 
@@ -115,7 +118,8 @@ public class Wand : MonoBehaviour {
 		controller = SteamVR_Controller.Input ((int)trackedObj.index);
 
 		grabJoint = gameObject.AddComponent<FixedJoint> ();
-     // _isGrabbing = false;
+
+        
         anim.SetBool("IsGrabbing", true);
         
     }
@@ -123,6 +127,9 @@ public class Wand : MonoBehaviour {
 
 
 	void Update () {
+
+        
+
 
         axisValue = controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger).x;
         anim.SetFloat("GrabbingFloat", axisValue);
@@ -350,7 +357,7 @@ public class Wand : MonoBehaviour {
         }
 
 
-
+        //Release of objects
         if (controller.GetHairTriggerUp () && grabJoint.connectedBody != null && (grabJoint.connectedBody.gameObject.tag == "Atom"|| grabJoint.connectedBody.gameObject.tag == "Tractorable")) {
 			Rigidbody connectedRigidbody = grabJoint.connectedBody;
 			grabJoint.connectedBody = null;
@@ -371,7 +378,6 @@ public class Wand : MonoBehaviour {
         }
 
 
-        //Looks inportant, ask alan
         if (controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).x>.5 &&(controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad) || controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_Grip)))
         {
             Debug.Log("card switching");
@@ -470,7 +476,7 @@ public class Wand : MonoBehaviour {
     }
     private void updateCardControllerState()
     {
-        //This stuff probably isnt needed
+        //This stuff probably isn't needed
         tractoredObject = null;
         laserScript.disableLaser();
 
@@ -534,6 +540,7 @@ public class Wand : MonoBehaviour {
     private void grabObject() {
         if (controller.GetHairTrigger())
         {
+            //Math.Abs(col.transform.localScale.x))
             //Find all the colliders in the sphere collider of the hand
             Collider[] collidersInRangeOfHand = Physics.OverlapSphere(transform.TransformPoint(col.center), col.radius * Math.Abs(col.transform.localScale.x));
 
@@ -561,7 +568,7 @@ public class Wand : MonoBehaviour {
             //If there are any colliders in range at all
             if (closestCollider != null)
             {
-
+                //Debug.Log("Grabbing!!");
 
 
 
@@ -594,18 +601,28 @@ public class Wand : MonoBehaviour {
                 {
                     if (grabJoint.connectedBody == null)
                     {
+                        
 
 
+
+                        StartCoroutine(MoveOverSeconds(closestCollider.attachedRigidbody.gameObject, grabPosition.transform.position, .25f));
+
+
+                        
                         grabJoint.connectedBody = closestCollider.attachedRigidbody;
                         previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;
                         
+                        
+                        
+
+
                         if (closestCollider.tag == "Atom" && closestCollider.GetComponent<AtomScript>().getMoleculeNameSound() != moleculeNameCooldown)
                         {
                             closestCollider.GetComponent<AtomScript>().playMoleculeNameSound();
                             moleculeNameCooldown = closestCollider.GetComponent<AtomScript>().getMoleculeNameSound();
                         }
 
-                        
+
                         if (closestCollider.gameObject.tag == "Pistol")
                         {
                             isHoldingTool = true;
@@ -622,19 +639,69 @@ public class Wand : MonoBehaviour {
     private void updatePositionAndVelocityOfGrabbedObject() {
         if (grabJoint.connectedBody != null)
         {
-
+            
             //Debug.Log (grabJoint.connectedBody.velocity);
             Vector3 currentPosition = grabJoint.connectedBody.transform.position;
             grabbedObjectVelocity = (currentPosition - previousGrabbedObjectPosition) / Time.deltaTime;
             Debug.Log(currentPosition - previousGrabbedObjectPosition);
             previousGrabbedObjectPosition = currentPosition;
+
+            //Keeps objects from moving if they are too slow
             if (grabbedObjectVelocity.magnitude < .15f)
                 grabbedObjectVelocity = Vector3.zero;
+                
         }
     }
-			
 
-	
+    /*
+    IEnumerator MoveToPosition()
+    {
+        float timeWaited = 0;
+        while (timeWaited < 2)
+        {
+            timeWaited += Time.deltaTime;
+
+            yield return null;
+        }
+
+
+    }*/
+
+    /*
+    public IEnumerator MoveOverSpeed(GameObject objectToMove, Vector3 end, float speed)
+    {
+        // speed should be 1 unit per second
+        while (objectToMove.transform.position != end)
+        {
+            objectToMove.transform.position = Vector3.MoveTowards(objectToMove.transform.position, end, speed * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+    }*/
+
+    //Move 
+    public IEnumerator MoveOverSeconds(GameObject objectToMove, Vector3 end, float seconds)
+    {
+        grabJoint.connectedBody = null;
+        float elapsedTime = 0;
+        Vector3 startingPos = objectToMove.transform.position;
+        while (elapsedTime < seconds)
+        {
+            grabJoint.connectedBody = null;
+
+            objectToMove.transform.position = Vector3.Lerp(startingPos, grabPosition.transform.position, (elapsedTime / seconds));
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        objectToMove.transform.position = grabPosition.transform.position;
+
+
+        
+        grabJoint.connectedBody = objectToMove.GetComponent<Rigidbody>();
+
+    }
+
+
+
 
 }
 

@@ -30,8 +30,11 @@ public class VoiceRecog : MonoBehaviour {
 
     void Start () {
 
-        ListKeywords = new string[33];
+        ListKeywords = new string[34];
+
+        //Game Reset
         ListKeywords[0] = "Reset";
+
         //Tool Switching
         ListKeywords[1] = "RightTractor";
         ListKeywords[2] = "RightGun";
@@ -58,7 +61,7 @@ public class VoiceRecog : MonoBehaviour {
         ListKeywords[21] = "Lithium";
         ListKeywords[22] = "Aluminium";
 
-        //Molecule Spawning
+        //Preloaded Molecule Spawning
         ListKeywords[23] = "Water";
         ListKeywords[24] = "CarbonDioxide";
         ListKeywords[25] = "ATP"; 
@@ -66,9 +69,15 @@ public class VoiceRecog : MonoBehaviour {
         ListKeywords[27] = "Caffeine";
         ListKeywords[28] = "SaturatedFat";
         ListKeywords[29] = "SulfuricAcid";
+        //Pubchem Molecule Spawning
         ListKeywords[30] = "Create";
+
+        //Count of number of Bonds/Atoms (Not precise yet, but provides rough estimate)
         ListKeywords[31] = "BondCount";
         ListKeywords[32] = "AtomCount";
+
+        //Starts a Demo of how to use voice control
+        ListKeywords[33] = "Demo";
 
 
 
@@ -83,6 +92,7 @@ public class VoiceRecog : MonoBehaviour {
 
     }
 
+    //Takes a string with the molecule name, and loads that molecule to molData
     public void setMoleculeToSpawn(string molName)
     {
         
@@ -92,10 +102,12 @@ public class VoiceRecog : MonoBehaviour {
         
 
     }
+
+    //Triggered when a phrase (word contained in ListKeywords) is recognized
     private void OnPhraseRecognized(PhraseRecognizedEventArgs args)
     {
 
-        Debug.Log(args.text);
+        //Debug.Log(args.text);
         
         //Resets game
         if (args.text== ListKeywords[0])
@@ -105,10 +117,11 @@ public class VoiceRecog : MonoBehaviour {
             
         }
 
+
+        //Updates right controller state
         for (int i = 1; i < 6; i++)
         {
 
-            //Debug.Log("This should update the controller state!"+args.text);
             if (args.text == ListKeywords[i])
             {
 
@@ -117,11 +130,10 @@ public class VoiceRecog : MonoBehaviour {
 
             }
 
-            //GameObject.FindWithTag("RightWand").GetComponent<Wand>().updateControllerState();
 
         }
 
-
+        //Updates left contoller state
         for (int i = 6; i < 11; i++)
         {
             Debug.Log("This should update the controller state!");
@@ -137,12 +149,10 @@ public class VoiceRecog : MonoBehaviour {
 
 
         
-            Debug.Log("This should spawn an atom!");
-            //Spawn Atom
+            //Spawns Atoms
             MoleculeCreator spawnScript = gameObject.GetComponent<MoleculeCreator>();
             if (args.text == "Hydrogen")
             {
-                //GetComponent<PubChemPuller>().startRoutine("t");
 
             GameObject newAtom = Instantiate(spawnScript.hydrogenPrefab, transform.position, transform.rotation);
             }
@@ -192,7 +202,7 @@ public class VoiceRecog : MonoBehaviour {
 
 
 
-
+        //Spawns preloaded molecules
         for (int i=23; i<30;  i++)
         {
             if (args.text == ListKeywords[i])
@@ -209,66 +219,69 @@ public class VoiceRecog : MonoBehaviour {
                 Debug.Log(args.text+" should be spawned!");
             }
         }
+
+
+        //Spawns Molecules via Pubchem
         if (args.text == ListKeywords[30])
         {
-            Debug.Log("Stopping the keyword recognizer!");
+            //Stops keyword recognizer (needed in order to start dictator)
             PhraseRecognitionSystem.Shutdown();
             D_Recognizer = new DictationRecognizer();
 
-
+            //Updates position of "billboard" and updates its status to "Listening" 
             GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "Listening";
-
-
-
             GameObject.FindWithTag("DictationResult").transform.position = GameObject.FindWithTag("DictationPosition").transform.position;
-
-            
             float a = Mathf.Atan2(GameObject.FindWithTag("DictationPosition").transform.position.x, GameObject.FindWithTag("DictationPosition").transform.position.z) * Mathf.Rad2Deg;
-            //Debug.Log("Transform position x"+ GameObject.FindWithTag("DictationPosition").transform.position.x + " Transform position z"+ GameObject.FindWithTag("DictationPosition").transform.position.z);
-			//Debug.Log("Angle: "+a);
             GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
             
 
 
-            Debug.Log("1");
-
+            
             D_Recognizer.DictationResult += DictationRecognizer_DictationResult;
             D_Recognizer.DictationComplete += DictationRecognizer_DictationComplete;
-            Debug.Log("2");
-
+           
+            //Starts dictation recognizer
             D_Recognizer.Start();
-            Debug.Log("3");
+            
 
         }
         if (args.text == ListKeywords[31])
         {
-            Array getCount = GameObject.FindGameObjectsWithTag("Bond");
-            int count = getCount.Length;
+            //Gets array of objects tagged with "bond" and "doublebond", returns the sum of their length
+            Array getCountSingleBond = GameObject.FindGameObjectsWithTag("Bond");
+            Array getCountDoubleBond = GameObject.FindGameObjectsWithTag("DoubleBond");
+            int count = getCountSingleBond.Length+getCountDoubleBond.Length*2;
             GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "Bonds: "+count;
 
 
-
+            //Updates billboard position
             GameObject.FindWithTag("DictationResult").transform.position = GameObject.FindWithTag("DictationPosition").transform.position;
             float a = Mathf.Atan2(GameObject.FindWithTag("DictationPosition").transform.position.x, GameObject.FindWithTag("DictationPosition").transform.position.z) * Mathf.Rad2Deg;
             GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
         }
         if (args.text == ListKeywords[32])
         {
-
-
+            //Gets array of objects tagged with "atom", and returns its length
             Array getCount = GameObject.FindGameObjectsWithTag("Atom");
             int count = getCount.Length;
-
             GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "Atoms: "+count;
 
 
-
+            //Updates billboard position 
             GameObject.FindWithTag("DictationResult").transform.position = GameObject.FindWithTag("DictationPosition").transform.position;
             float a = Mathf.Atan2(GameObject.FindWithTag("DictationPosition").transform.position.x, GameObject.FindWithTag("DictationPosition").transform.position.z) * Mathf.Rad2Deg;
             GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
 
         }
+        if (args.text == ListKeywords[33])
+        {
+            GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "Commands: AtomCount, BondCount, Reset\n [Name of Atom], [Name of Molecule]\n Create +[Name of Molecule]\n Right +[Name of tool], Left+ [Name of tool]";
 
+
+            GameObject.FindWithTag("DictationResult").transform.position = GameObject.FindWithTag("DictationPosition").transform.position;
+            float a = Mathf.Atan2(GameObject.FindWithTag("DictationPosition").transform.position.x, GameObject.FindWithTag("DictationPosition").transform.position.z) * Mathf.Rad2Deg;
+            GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
+        }
 
 
 
@@ -276,27 +289,26 @@ public class VoiceRecog : MonoBehaviour {
     }
     private void DictationRecognizer_DictationComplete(DictationCompletionCause cause)
     {
-        Debug.Log("Dictation Timeout");
 
+        //Shuts off dictator and restarts keyword recognizer
+        Debug.Log("Dictation Timeout");
         D_Recognizer.Dispose();
         PhraseRecognitionSystem.Restart();
-        //L_Recognizer.Start();
+
+
     }
     private void DictationRecognizer_DictationResult(string text, ConfidenceLevel confidence)
     {
+
+
         Debug.Log("Create: "+text);
-        
+
+        //Stops dictation recognizer by calling DictationRecognizer_DictationComplete()
         D_Recognizer.Stop();
 
+        //Updates "Billboard" text to searching
         GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "Searching: "+text;
         
-        Vector3 temp = new Vector3(10.0f,0, 0);
-        /*
-        GameObject.FindWithTag("DictationResult").transform.position = GameObject.FindWithTag("DictationPosition").transform.position;
-        float a =Mathf.Atan2(transform.position.x, transform.position.z) *Mathf.Rad2Deg;
-        GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
-        */
-
 
 
 
@@ -304,68 +316,7 @@ public class VoiceRecog : MonoBehaviour {
         searchText = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/" + searchedMol + "/cids/JSON?name_type=word";
         Debug.Log("Starting Coroutine");
         GetComponent<PubChemPuller>().startRoutine(searchedMol);
-
-        /*
-        MoleculeCreator script = gameObject.GetComponent<MoleculeCreator>();
-        script.instantiateMolecule(GetComponent<PubChemPuller>().molData, transform.position);
-        */
-        //GetComponent<PubChemPuller>().startRoutine(searchText);
-
-
-        //StartCoroutine(GetText());
-        //https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/dihydrogen_monoxide/cids/XML?name_type=word
-
-
-        //D_Recognizer.Dispose();
-        //PhraseRecognitionSystem.Restart();
-
-        //GetComponent<PubChemPuller>().startRoutine("t");
-
+        
     }
-
-
-
-
-    /*
-     IEnumerator GetText()
- {
-         Debug.Log("SearchedMol: ");
-     UnityWebRequest www = UnityWebRequest.Get(searchText);
-         Debug.Log("Made web request");
-
-         yield return www.SendWebRequest();
-
-         Debug.Log("Checking for network error");
-
-         if (www.isNetworkError || www.isHttpError)
-     {
-         Debug.Log(www.error);
-     }
-     else
-     {
-         // Show results as text
-         Debug.Log(www.downloadHandler.text);
-
-         // Or retrieve results as binary data
-         byte[] results = www.downloadHandler.data;
-     }
- }*/
-
- /*
-    IEnumerator GetText()
-    {
-        using (UnityWebRequest req = UnityWebRequest.Get("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/dihydrogen_monoxide/cids/XML?name_type=word"))
-        {
-            yield return req.SendWebRequest();
-            while (!req.isDone)
-                yield return null;
-            Debug.Log(req.downloadHandler.text);
-            byte[] result = req.downloadHandler.data;
-            string molCidJSON = System.Text.Encoding.Default.GetString(result);
-            
-        }
-    }*/
-
-
 
 }

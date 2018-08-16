@@ -23,21 +23,23 @@ class PubChemPuller : MonoBehaviour
 
     //https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/962/conformers/JSON
 
+
+    //Called upon start, initiates CIDNum (The CID that will be taken from the CID list) to 0
     public void startRoutine(String goalMol)
     {
         molName = goalMol;
         CIDNum = 0;
-        if (!loading)
-        {
-            StartCoroutine(GetCID(molName));
+        
+        StartCoroutine(GetCID(molName));
 
-        }
-
-
+        
     }
+
+
 
     IEnumerator GetCID(String molName)
     {
+        //Checks whether molName is numeric, if so it starts coruntines using the CID, and skips the CID search web request
         isCID = false;
         if  (Regex.IsMatch(molName, @"^\d+$")){
             CID = Int32.Parse(molName);
@@ -49,68 +51,73 @@ class PubChemPuller : MonoBehaviour
             Debug.Log("CID Entered!");
         }
 
-        string dodec = "2,3a,9a-(Methylidynetrismethylene)-5,3,6a,1,8-(1,2,3,4,5-pentanpentayl)dodecahydro-1H-phenalene";
-        string dodec2 = "cubane";
+        
 
-        loading = true;
-        Debug.Log("SearchedMol: "+molName);
-        UnityWebRequest www = UnityWebRequest.Get("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/" + molName + "/cids/JSON?name_type=word");
-        Debug.Log("Made web request");
-
-        yield return www.SendWebRequest();
-        loading = false;
-        Debug.Log("Checking for network error");
-
-        if (www.isNetworkError || www.isHttpError)
+        
+        if (!isCID)
         {
+            //Creates a UnityWebRequest in order to search for CIDs matching molname, yields until request is returned
+            Debug.Log("SearchedMol: " + molName);
+            UnityWebRequest www = UnityWebRequest.Get("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/" + molName + "/cids/JSON?name_type=word");
 
-            if (!isCID) { 
+            Debug.Log("Made web request");
 
-            GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "No Molecules found!";
+            yield return www.SendWebRequest();
+            Debug.Log("Checking for network error");
+
+
+            //If the request returned a network error (No CIDS were found) display the billboard stating that none were found
+            if (www.isNetworkError || www.isHttpError)
+            {
+
+                GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "No Molecules found!";
+                Debug.Log(www.error);
+                Debug.Log("No valid molecules!");
+
             }
+            else
+            {
+
+                // Show results as text
+                Debug.Log(www.downloadHandler.text);
+
+                
 
 
-            Debug.Log(www.error);
-            Debug.Log("No valid molecules!");
+                JObject dataObj = JObject.Parse(www.downloadHandler.text);
+                Debug.Log("CID" + parseForCID(dataObj));
 
-        }
-        else
-        {
+                CID = parseForCID(dataObj);
 
-            // Show results as text
-            Debug.Log(www.downloadHandler.text);
+                StartCoroutine(GetMolName(CID));
 
-            // Or retrieve results as binary data
-            byte[] results = www.downloadHandler.data;
+                StartCoroutine(GetConformerID(CID));
 
-
-            JObject dataObj = JObject.Parse(www.downloadHandler.text);
-            Debug.Log("CID" + parseForCID(dataObj));
-            CID = parseForCID(dataObj);
-
-            StartCoroutine(GetMolName(CID));
-
-            StartCoroutine(GetConformerID(CID));
-
+            }
         }
     }
+
+    //Returns the (CIDNum)th CID from dataOBJ
     public int parseForCID(JObject dataObj)
     {
         return (int)dataObj["IdentifierList"]["CID"][CIDNum];
 
     }
+
+    //Uses a CID to get the first conformer ID if one exists
     IEnumerator GetConformerID(int CID)
     {
 
 
 
-
+        //Creates webRequest to find ConformerIDs
         UnityWebRequest www = UnityWebRequest.Get("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/" + CID + "/conformers/JSON");
 
 
         yield return www.SendWebRequest();
 
-
+        //If no conformers are found, increment CIDNum, and attempt to find conformers on the (CIDNum)th CID\
+        //Note:Still need to properly handle situations where none of the CIDs have conformers, currently increasing CIDNum until it is larger than the number of CIDs, and returning an "Index out of range" error
         if (www.isNetworkError || www.isHttpError)
         {
 
@@ -125,18 +132,17 @@ class PubChemPuller : MonoBehaviour
             {
                  GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "No conformer for CID";
             }
-            //GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "No conformers found!";
 
 
         }
+        //Takes the first conformerID and passes it into GetConformer
         else
         {
 
             // Show results as text
             Debug.Log(www.downloadHandler.text);
 
-            // Or retrieve results as binary data
-            byte[] results = www.downloadHandler.data;
+
 
 
             JObject dataObj = JObject.Parse(www.downloadHandler.text);
@@ -147,53 +153,54 @@ class PubChemPuller : MonoBehaviour
             StartCoroutine(GetConformer(ConformerID));
         }
     }
-
+    
+    //Gets the JSON conformer file
     IEnumerator GetConformer(string ConformerID)
     {
 
-
-
-
+        //Creates web request to load the JSON conformer via the conformerID
         UnityWebRequest www = UnityWebRequest.Get("https://pubchem.ncbi.nlm.nih.gov/rest/pug/conformers/" + ConformerID + "/JSON");
-
 
         yield return www.SendWebRequest();
 
-
+        //This should only happen with a real network error
         if (www.isNetworkError || www.isHttpError)
         {
 
             Debug.Log(www.error);
         }
+
+
         else
         {
 
             // Show results as text
             Debug.Log(www.downloadHandler.text);
 
-            // Or retrieve results as binary data
-            byte[] results = www.downloadHandler.data;
-
+         
 
             JObject dataObj = JObject.Parse(www.downloadHandler.text);
-            //Debug.Log("ConformerID" + dataObj["InformationList"]["Information"][0]["ConformerID"][0]);
-            //ConformerID = (string)dataObj["InformationList"]["Information"][0]["ConformerID"][0];
+            
+            //Loads molecule from JObject and instantiates it at the position of the VoiceRecognizer
             molData = loadMolecule(dataObj);
             MoleculeCreator script = gameObject.GetComponent<MoleculeCreator>();
             script.instantiateMolecule(molData, transform.position);
             GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "Loaded: " + officialMolName;
+
+            //Starts a couroutine to clear the billboard after a number of seconds
             StartCoroutine(ClearText());
 
 
         }
     }
 
+    //Returns the first Synonym (Molecule Name) of a CID
     IEnumerator GetMolName(int CID)
     {
 
 
 
-
+        //Creates web request for Synonyms
         UnityWebRequest www = UnityWebRequest.Get("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/"+CID+"/synonyms/JSON");
 
 
@@ -211,10 +218,7 @@ class PubChemPuller : MonoBehaviour
             // Show results as text
             Debug.Log(www.downloadHandler.text);
 
-            // Or retrieve results as binary data
-            byte[] results = www.downloadHandler.data;
-
-
+            //Parses JObject, takes first Synonym
             JObject dataObj = JObject.Parse(www.downloadHandler.text);
             officialMolName= (string)dataObj["InformationList"]["Information"][0]["Synonym"][0];
             Debug.Log("This is the official molecule name: "+officialMolName);
@@ -223,7 +227,7 @@ class PubChemPuller : MonoBehaviour
         }
     }
 
-
+    //Returns a molecule after parsing through a JObject 
     public MoleculeData loadMolecule(JObject dataObj)
     {
         MoleculeData newMolecule = new MoleculeData();
@@ -242,15 +246,11 @@ class PubChemPuller : MonoBehaviour
         newMolecule.conf = cnf;
         newMolecule.name = moleculeName;
 
-        /*
-        Debug.Log("Loading Molecule2");
-        Debug.Log(newMolecule.atom);
-        Debug.Log(newMolecule.bond);
-        Debug.Log(newMolecule.conf);
-        Debug.Log(newMolecule.name);
-        */
+        
         return newMolecule;
     }
+
+    //Coroutine to remove text from the screen after a number of seconds
     IEnumerator ClearText()
     {
         Debug.Log("Starting text clearer");

@@ -20,6 +20,7 @@ TagManager:
   - Deck
   - AtomBullet
   - AtomExplosiveBullet
+  - GrabPosition
   layers:
   - Default
   - TransparentFX
