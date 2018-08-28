@@ -1,10 +1,18 @@
 fileFormatVersion: 2
 guid: 04115c7ace230954094c588e010f9d7f
-timeCreated: 1504305802
-licenseType: Free
 MonoImporter:
+  externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - bondGameObject: {fileID: 1333853292811182, guid: 5fd0606056b32af4cb8604a7d81d2bee,
+      type: 2}
+  - doubleBondGameObject: {fileID: 1248653620577640, guid: 3dbedfa28e812074e9e265ac21f16022,
+      type: 2}
+  - stubBondGameObject: {fileID: 1117931225248788, guid: 948a85c38007b5b4695ce819e9e85f87,
+      type: 2}
+  - bounceSound: {instanceID: 0}
+  - bangSound: {instanceID: 0}
+  - snapSound: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

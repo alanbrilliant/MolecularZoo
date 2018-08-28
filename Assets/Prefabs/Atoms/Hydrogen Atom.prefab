@@ -114,9 +114,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bondGameObject: {fileID: 1333853292811182, guid: 5fd0606056b32af4cb8604a7d81d2bee,
     type: 2}
+  doubleBondGameObject: {fileID: 1248653620577640, guid: 3dbedfa28e812074e9e265ac21f16022,
+    type: 2}
   stubBondGameObject: {fileID: 1117931225248788, guid: 948a85c38007b5b4695ce819e9e85f87,
     type: 2}
   bondedAtoms: []
+  nBondConnections: 0
   bounceSound: {fileID: 8300000, guid: de29f31c53e92c146a17a665172a0aa9, type: 3}
   bangSound: {fileID: 8300000, guid: 60ced46af25642c4d963e0f50e0fd483, type: 3}
   snapSound: {fileID: 8300000, guid: 67735b242d3bf9e42bfed3bd0d7a2351, type: 3}

@@ -11,7 +11,8 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 
 	Rigidbody rb;
 
-	public GameObject bondGameObject;
+    public GameObject bondGameObject;
+    public GameObject doubleBondGameObject;
 	public GameObject stubBondGameObject;
 
 	//TODO: change GameObject to AtomScript in List<>
@@ -25,6 +26,7 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 	private List<GameObject> stubBonds = new List<GameObject> ();
 
 	public int nBondConnections = 0;
+    int availableBonds;
 
 	private AudioSource audioSrc;
 	public AudioClip bounceSound;
@@ -48,6 +50,7 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 		set;
 	}
 
+    
     SphereCollider col;
 
 
@@ -93,7 +96,7 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 
 		} else if (gameObject.name == "Sulfur Atom") {
 			gameObject.transform.localScale = new Vector3(.1f,.1f,.1f);
-			bondNum = 6;
+			bondNum = 2;
 		}
         else if (gameObject.name == "Chlorine Atom")
         {
@@ -130,7 +133,7 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
         allowedBonds = bondNum;
 
 		createStubBonds ();
-
+        availableBonds = allowedBonds;
 
         //col.radius = 0.5f;
 
@@ -241,7 +244,6 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 
     public void bondWithAtom(GameObject obj){
         AtomScript collidedAtomScript = obj.GetComponent<AtomScript>();
-
         if (nBondConnections < allowedBonds && collidedAtomScript.nBondConnections < collidedAtomScript.allowedBonds ) {
             if (obj.tag.Contains("Bullet"))
             {
@@ -252,48 +254,20 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 
             if (bondedAtoms.Contains(obj) == false) {  //Ignore collision with atom I am already bonded to
 
+
+
+
+
                 GameObject startAtom = gameObject;
                 AtomScript startAtomScript = this;
                 GameObject endAtom = obj;
                 AtomScript endAtomScript = collidedAtomScript;
-                
+
                 //Has no bonds
                 bool startAtomIsSingletonAtom = startAtomScript.getBondedAtoms().Count == 0;
                 bool endAtomIsSingletonAtom = endAtomScript.getBondedAtoms().Count == 0;
 
-                //Temporarily set closestStubBondDistance to be a very large number, one that is likely larger than any of the stub bond distance
-                float closestStubBondOnEndAtomDistance = 100000000000;
-                int closestStubBondOnEndAtomIndex = 0;
 
-                //Find closest stub bond to start atom from end atom
-                for (int i = 0; i < endAtomScript.getStubBondsList().Count; i++)
-                {
-                    if (Vector3.Distance(startAtom.transform.position, endAtomScript.getStubBondsList()[i].transform.position) < closestStubBondOnEndAtomDistance
-                        && endAtomScript.getStubBondsList()[i].activeSelf)
-                    {
-
-                        closestStubBondOnEndAtomDistance = Vector3.Distance(startAtom.transform.position, endAtomScript.getStubBondsList()[i].transform.position);
-                        closestStubBondOnEndAtomIndex = i;
-                    }
-                }
-
-
-                float closestStubBondOnStartAtomDistance = 100000000000;
-                int closestStubBondOnStartAtomIndex = 0;
-
-                
-
-                //Find closest stub bond to end atom from start atom
-                for (int i = 0; i < startAtomScript.getStubBondsList().Count; i++)
-                {
-                    if (Vector3.Distance(endAtom.transform.position, startAtomScript.getStubBondsList()[i].transform.position) < closestStubBondOnStartAtomDistance
-                        && startAtomScript.getStubBondsList()[i].activeSelf)
-                    {
-
-                        closestStubBondOnStartAtomDistance = Vector3.Distance(endAtom.transform.position, startAtomScript.getStubBondsList()[i].transform.position);
-                        closestStubBondOnStartAtomIndex = i;
-                    }
-                }
 
 
                 Vector3 startAtomOldPosition = startAtom.transform.position;
@@ -303,55 +277,99 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
                 Quaternion endAtomOldRotation = endAtom.transform.rotation;
 
 
-                GameObject endAtomStub = endAtomScript.getStubBondsList()[closestStubBondOnEndAtomIndex];
-                GameObject startAtomStub = startAtomScript.getStubBondsList()[closestStubBondOnStartAtomIndex];
-
-                
-              //  Debug.Log(Vector3.Angle(oldEndAtomStubDirection, oldStartAtomStubDirection));
+                GameObject endAtomStub = closestStubBond(endAtomScript, startAtomScript); //endAtomScript.getStubBondsList()[closestStubBondOnEndAtomIndex];
+                GameObject startAtomStub = closestStubBond(startAtomScript, endAtomScript);
 
 
 
 
+                Vector3 endAtomStubDirection = (endAtomStub.transform.position - endAtom.transform.position).normalized;
+
+                Vector3 startAtomStubDirection = (startAtomStub.transform.position - startAtom.transform.position).normalized;
+
+
+                //Checks to see if a double bond should be formed
+                int possibleBondsOfThisAtom = allowedBonds - nBondConnections;
+                int possibleBondsOfCollidedAtom = collidedAtomScript.allowedBonds - collidedAtomScript.nBondConnections;
+
+                //selects the lowest number of open bonds
+                int newBondOrder = Mathf.Min(possibleBondsOfThisAtom, possibleBondsOfCollidedAtom);
+                //If the lowest number of open bonds is greater than 2, then it will default to 2, since triple bonds haven't been added yet
+                if (newBondOrder > 2)
+                    newBondOrder = 2;
+
+                //bondPrefab is the placeholder for either a single or double bond
+                GameObject bondPrefab;
+
+                if (newBondOrder == 1)
+                {
+                    bondPrefab = bondGameObject;
+                }
+                else if (newBondOrder == 2)
+                {
+                    bondPrefab = doubleBondGameObject;
+                    GameObject endAtomSecondClosestStub = closestStubBond(endAtomScript, startAtomScript, endAtomStub);
+                    GameObject startAtomSecondClosestStub = closestStubBond(startAtomScript, endAtomScript, startAtomStub);
+
+                    endAtomStubDirection = ((endAtomStub.transform.position + endAtomSecondClosestStub.transform.position) / 2 - endAtom.transform.position).normalized;
+
+                    startAtomStubDirection = ((startAtomStub.transform.position + startAtomSecondClosestStub.transform.position) / 2 - startAtom.transform.position).normalized;
+
+
+
+                }
+                else
+                {
+                    bondPrefab = bondGameObject;
+                }
 
 
                 if (startAtomIsSingletonAtom)
                 {
                     Vector3 directionFromStartToEndAtom = endAtom.transform.position - startAtom.transform.position;
-                    Vector3 oldStartAtomStubDirection = (startAtomStub.transform.position - startAtom.transform.position).normalized;
-                    startAtom.transform.rotation = Quaternion.FromToRotation(oldStartAtomStubDirection, directionFromStartToEndAtom) * startAtomOldRotation;
+                    //Vector3 oldStartAtomStubDirection = (startAtomStub.transform.position - startAtom.transform.position).normalized;
+
+                    startAtom.transform.rotation = Quaternion.FromToRotation(startAtomStubDirection, directionFromStartToEndAtom) * startAtomOldRotation;
                 }
 
                 if (endAtomIsSingletonAtom)
                 {
-                    Vector3 oldEndAtomStubDirection = (endAtomStub.transform.position - endAtom.transform.position).normalized;
-
                     Vector3 directionFromEndToStartAtom = startAtom.transform.position - endAtom.transform.position;
-                    endAtom.transform.rotation = Quaternion.FromToRotation(oldEndAtomStubDirection, directionFromEndToStartAtom) * endAtomOldRotation;
+                    // Vector3 oldEndAtomStubDirection = (endAtomStub.transform.position - endAtom.transform.position).normalized;
+
+                    endAtom.transform.rotation = Quaternion.FromToRotation(endAtomStubDirection, directionFromEndToStartAtom) * endAtomOldRotation;
                 }
 
-                
-
-                Vector3 endAtomStubDirection = (endAtomStub.transform.position - endAtom.transform.position).normalized;
-                
-                Vector3 startAtomStubDirection = (startAtomStub.transform.position - startAtom.transform.position).normalized;
 
 
-                Debug.Log(Vector3.Angle(endAtomStubDirection, startAtomStubDirection));
+                //reset the bond directions
 
-                
-                //Set temporary position of atoms. THis will be their real position once the joints drag them into positioj
+                if (newBondOrder == 2)
+                {
+                    GameObject endAtomSecondClosestStub = closestStubBond(endAtomScript, startAtomScript, endAtomStub);
+                    GameObject startAtomSecondClosestStub = closestStubBond(startAtomScript, endAtomScript, startAtomStub);
+                    endAtomStubDirection = ((endAtomStub.transform.position + endAtomSecondClosestStub.transform.position) / 2 - endAtom.transform.position).normalized;
+
+                    startAtomStubDirection = ((startAtomStub.transform.position + startAtomSecondClosestStub.transform.position) / 2 - startAtom.transform.position).normalized;
+
+                } else if (newBondOrder == 1){
+                    endAtomStubDirection = (endAtomStub.transform.position - endAtom.transform.position).normalized;
+                    startAtomStubDirection = (startAtomStub.transform.position - startAtom.transform.position).normalized;
+                }
+
+
+
+
+                //Set temporary position of atoms. This will be their real position once the joints drag them into position
                 float bondDistanceModifier = (endAtom.transform.localScale.x + startAtom.transform.localScale.x) * (.65f);
                 startAtom.transform.position = endAtom.transform.position + bondDistanceModifier  * endAtomStubDirection;
                 startAtom.transform.rotation = Quaternion.FromToRotation(startAtomStubDirection, -endAtomStubDirection) * startAtomOldRotation;
 
-                //TODO: THis code not used yet
-                int possibleBondsOfThisAtom = allowedBonds - bondedAtoms.Count;
-				int possibleBondsOfCollidedAtom = collidedAtomScript.allowedBonds - collidedAtomScript.bondedAtoms.Count;
-				int newBondOrder = Mathf.Min (possibleBondsOfThisAtom, possibleBondsOfCollidedAtom);
-                //TODO ends here----
+                
 
-				GameObject newBond = Instantiate (bondGameObject, gameObject.transform.position, Quaternion.identity);
-                newBond.GetComponent<Bond> ().formBond (startAtom, endAtom, 1);
+                //The new bond is instantiated, and then formBond is called on the two connected atoms (along with bondOrder, which says whether the bond is a single, double, or triple bond)
+				GameObject newBond = Instantiate (bondPrefab, gameObject.transform.position, Quaternion.identity);
+                newBond.GetComponent<Bond> ().formBond (startAtom, endAtom, newBondOrder);
 
                 startAtom.transform.position = startAtomOldPosition;
 
@@ -363,7 +381,40 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
     }
 
 
-	void OnJointBreak(float breakforce) {
+    //Finds closest stub bond on atom1 to atom2
+    //Excludes "exclude" object from search
+    private GameObject closestStubBond(AtomScript atom1, AtomScript atom2, GameObject exclude) {
+
+        //Temporarily set closestStubBondDistance to be a very large number, one that is likely larger than any of the stub bond distance
+        float closestStubBondDistance = 10000000000;
+        int closestStubBondIndex = 0;
+
+        List<GameObject> atom1StubBonds = atom1.getStubBondsList();
+
+        for (int i = 0; i < atom1.getStubBondsList().Count; i++)
+        {
+            if (Vector3.Distance(atom2.transform.position, atom1StubBonds[i].transform.position) < closestStubBondDistance
+                && atom1StubBonds[i].activeSelf)
+            {
+                if (atom1StubBonds[i] != exclude)
+                {
+                    closestStubBondDistance = Vector3.Distance(atom2.transform.position, atom1StubBonds[i].transform.position);
+                    closestStubBondIndex = i;
+                }
+            }
+        }
+        return atom1StubBonds[closestStubBondIndex];
+    }
+
+    //Overloads closestStubBond method without eclude parameter
+    private GameObject closestStubBond(AtomScript atom1, AtomScript atom2) {
+       return closestStubBond(atom1, atom2, null);
+    }
+
+
+
+
+        void OnJointBreak(float breakforce) {
         // Debug.Log(gameObject.name + " broke");
 
         hasBroken = true;
@@ -578,8 +629,7 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 				stub.SetActive (false);
 			}
 
-			nBondConnections++;
-
+            nBondConnections++;
 		}
 
 

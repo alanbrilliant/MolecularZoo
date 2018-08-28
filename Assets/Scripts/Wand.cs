@@ -618,7 +618,6 @@ public class Wand : MonoBehaviour {
             //Debug.Log (grabJoint.connectedBody.velocity);
             Vector3 currentPosition = grabJoint.connectedBody.transform.position;
             grabbedObjectVelocity = (currentPosition - previousGrabbedObjectPosition) / Time.deltaTime;
-            Debug.Log(currentPosition - previousGrabbedObjectPosition);
             previousGrabbedObjectPosition = currentPosition;
             if (grabbedObjectVelocity.magnitude < .15f)
                 grabbedObjectVelocity = Vector3.zero;
