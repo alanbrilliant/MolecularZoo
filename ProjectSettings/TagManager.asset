@@ -5,21 +5,22 @@ TagManager:
   serializedVersion: 2
   tags:
   - Wall
+  - Pistol
   - DictationResult
   - LeftWand
   - RightWand
   - Tractorable
   - Atom
-  - Pistol
   - DictationPosition
+  - GrabPosition
   - Floor
   - Bond
   - DoubleBond
   - AtomSpawn
   - Arm
   - Deck
-  - AtomBullet
   - AtomExplosiveBullet
+  - AtomBullet
   layers:
   - Default
   - TransparentFX
