@@ -35,25 +35,27 @@ public class DataManager : MonoBehaviour {
 		coords waterCoords = new coords (new conformers(new List<float> {0,0.2774f,0.6068f}, new List<float> {0,0.8929f,-0.2383f}, new List<float> {0,0.2544f,-0.7169f}));
 		MoleculeData water = new MoleculeData( waterAtoms,waterBonds,waterCoords, "water");*/
 		MoleculeCreator script = gameObject.GetComponent<MoleculeCreator> ();
-		//Debug.Log(waterData.atom.element[0]);
-		//Debug.Log(waterData.conf.x[1]);
-        /*
+        //Debug.Log(waterData.atom.element[0]);
+        //Debug.Log(waterData.conf.x[1]);
+        
 		for (int i = 0; i < 3; i++) {
 			script.instantiateMolecule (aspirinData, new Vector3(Random.Range(-3f,4f),Random.Range(2f,4f), Random.Range(-4f,4f))*spawnDist);
 		}
-		for (int i = 0; i < 30; i++) {
+		for (int i = 0; i < 100; i++) {
 			script.instantiateMolecule (waterData, new Vector3(Random.Range(-3f,4f),Random.Range(2f,4f), Random.Range(-4f,4f)) * spawnDist);
 		}
 
-		for (int i = 0; i < 30; i++) {
+		for (int i = 0; i < 50; i++) {
 			script.instantiateMolecule (carbondioxideData, new Vector3(Random.Range(-3f,4f),Random.Range(2f,4f), Random.Range(-4,4f)) * spawnDist);
 		}
 
 		script.instantiateMolecule (caffeineData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,4f), Random.Range(-4f,4f)) * spawnDist);
 		script.instantiateMolecule (caffeineData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,4f), Random.Range(-4f,4f)) * spawnDist);
+        script.instantiateMolecule(caffeineData, new Vector3(Random.Range(-3f, 4f), Random.Range(3f, 4f), Random.Range(-4f, 4f)) * spawnDist);
 
 
-		script.instantiateMolecule (saturatedfatData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,4f), Random.Range(-4f,4f)) * spawnDist);
+
+        script.instantiateMolecule (saturatedfatData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,4f), Random.Range(-4f,4f)) * spawnDist);
 
 
         script.instantiateMolecule(sulfuricacidData, new Vector3(Random.Range(-3f, 4f), Random.Range(3f, 4f), Random.Range(-4f, 4f)) * spawnDist);
@@ -61,12 +63,17 @@ public class DataManager : MonoBehaviour {
         script.instantiateMolecule(nitroData, new Vector3(Random.Range(-3f, 4f), Random.Range(3f, 4f), Random.Range(-4f, 4f)) * spawnDist);
 
 
+        
+        script.instantiateMolecule (atpData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,4f), Random.Range(-4f,4f)) * spawnDist);
 
-        script.instantiateMolecule (atpData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,4f), Random.Range(-4f,4f)) * spawnDist);*/
+       script.instantiateMiniatureRigidMolecule(saturatedfatData, new Vector3(Random.Range(-3f, 4f), Random.Range(3f, 4f), Random.Range(-4f, 4f)) * spawnDist);
+
+      script.instantiateMiniatureRigidMolecule(atpData, new Vector3(Random.Range(-3f, 4f), Random.Range(3f, 4f), Random.Range(-4f, 4f)) * spawnDist);
 
 
+        script.instantiateMiniatureRigidMolecule(caffeineData, new Vector3(Random.Range(-3f, 4f), Random.Range(3f, 4f), Random.Range(-4f, 4f)) * spawnDist);
 
-
+        script.instantiateMiniatureRigidMolecule(aspirinData, new Vector3(Random.Range(-3f, 4f), Random.Range(2f, 4f), Random.Range(-4f, 4f)) * spawnDist);
 
 
 

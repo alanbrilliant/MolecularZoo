@@ -90,7 +90,7 @@ public class Bond : MonoBehaviour {
         AtomScript endAtomScript = endAtom.GetComponent<AtomScript>();
 
 
-        
+        Debug.Log("hello");
 
 
         CharacterJoint joint1 = startAtom.AddComponent<CharacterJoint> ();
@@ -141,46 +141,7 @@ public class Bond : MonoBehaviour {
 
 	}
 
-    //Form bond at specific location of start and end atom
-    public void formBond(GameObject startAtom, GameObject endAtom, int bondOrder,Vector3 startAtomJointLocation, Vector3 endAtomJointLocation) {
-        Rigidbody endAtomRB = endAtom.GetComponent<Rigidbody>();
-        Rigidbody startAtomRB = startAtom.GetComponent<Rigidbody>();
-
-        AtomScript endAtomScript = endAtom.GetComponent<AtomScript>();
-
-
-
-
-
-        CharacterJoint joint1 = startAtom.AddComponent<CharacterJoint>();
-        joint1.connectedBody = endAtomRB;
-
-        joint1.breakForce = 1000000f * bondOrder;
-        joint1.autoConfigureConnectedAnchor = false;
-        joint1.connectedAnchor = endAtomJointLocation;
-        
-       
-        
-        CharacterJoint joint2 = endAtom.AddComponent<CharacterJoint>();
-        joint2.connectedBody = startAtomRB;
-
-        joint2.breakForce = 1000000f * bondOrder;
-        joint2.autoConfigureConnectedAnchor = false;
-        joint2.connectedAnchor = startAtomJointLocation;
-
-
-        setConnectedAtoms(startAtom, endAtom);
-
-        orderModifier = bondOrder;
-        stubBondReferenceStartAtom = startAtom.GetComponent<AtomScript>().makeBondConnection(endAtom, gameObject, bondOrder);
-        stubBondReferenceStartAtom.Add(startAtom);
-
-        stubBondReferenceEndAtom = endAtom.GetComponent<AtomScript>().makeBondConnection(startAtom, gameObject, bondOrder);
-        stubBondReferenceEndAtom.Add(endAtom);
-    }
-
-    
-
+   
 
 	public List<GameObject> getStubBondReferences(GameObject parentAtom){
 

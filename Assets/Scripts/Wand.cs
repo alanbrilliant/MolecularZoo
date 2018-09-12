@@ -456,7 +456,8 @@ public class Wand : MonoBehaviour {
 
     //Will do the math to set the controller state of the wand to whatever the empty hand is
     public void setControllerStateToHand() {
-        controllerState = 0;
+        controllerState = gunChildObjects.Count;
+        updateControllerState();
 
     }
 

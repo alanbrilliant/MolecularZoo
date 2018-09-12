@@ -88,7 +88,7 @@ public class Tractor : Gun {
 
                 if (Vector3.Distance(tractoredObjRB.transform.position, transform.position) < .2f)
                 {
-                    base.wand.updateControllerState();
+                    base.wand.setControllerStateToHand();
                     laserScript.disableLaser();
                     tractoredObject = null;
                     base.wandAudio.Stop();
