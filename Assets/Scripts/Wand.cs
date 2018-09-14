@@ -17,7 +17,7 @@ public class Wand : MonoBehaviour {
 	private AudioSource audio;
 	// GameObject gun;
 	private GameObject redGun;
-	private FixedJoint grabJoint;
+	public FixedJoint grabJoint;
     //private SpringJoint pullJoint;
 
     private GameObject cards;
@@ -128,9 +128,9 @@ public class Wand : MonoBehaviour {
 
 	void Update () {
 
-        /*
+        
         axisValue = controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger).x;
-        anim.SetFloat("GrabbingFloat", axisValue);*/
+        anim.SetFloat("GrabbingFloat", axisValue);
 
 
         
@@ -186,7 +186,6 @@ public class Wand : MonoBehaviour {
         if (controller.GetHairTriggerUp () && grabJoint.connectedBody != null && (grabJoint.connectedBody.gameObject.tag == "Atom"|| grabJoint.connectedBody.gameObject.tag == "Tractorable")) {
 			Rigidbody connectedRigidbody = grabJoint.connectedBody;
 			grabJoint.connectedBody = null;
-            
 
             connectedRigidbody.velocity = grabbedObjectVelocity;
 
@@ -203,7 +202,7 @@ public class Wand : MonoBehaviour {
         }
 
 
-        if (controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad) || controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_Grip) &&
+        if (controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad)  &&
             !(controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).x > .5 ))
         {
             updateControllerState();
@@ -297,14 +296,20 @@ public class Wand : MonoBehaviour {
         {
             //Math.Abs(col.transform.localScale.x))
             //Find all the colliders in the sphere collider of the hand
-            Collider[] collidersInRangeOfHand = Physics.OverlapSphere(transform.TransformPoint(col.center), col.radius * Math.Abs(col.transform.localScale.x));
+            Collider[] collidersInRangeOfHand = Physics.OverlapSphere(col.transform.TransformPoint(col.center), col.radius * Math.Abs(col.transform.localScale.x));
+          // GameObject testSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            //testSphere.transform.position = col.transform.TransformPoint(col.center);
+            
+            //testSphere.transform.localScale = new Vector3( col.radius * Math.Abs(col.transform.localScale.x), col.radius * Math.Abs(col.transform.localScale.x), col.radius * Math.Abs(col.transform.localScale.x));
 
             //The next piece of code, up until the end of the for loop, checks to find the collider closest to the center of the hand collider
             //Also checks to make sure that collider's tag either contains atom, or is tractorable
             Collider closestCollider = null;
 
-            //Large temporary number placed in closestColliderDistance temporarily
+            //Large number placed in closestColliderDistance temporarily
             float closestColliderDistance = 10000000;
+
+            Debug.Log(col.name);
 
             foreach (Collider possibleCol in collidersInRangeOfHand)
             {
@@ -318,8 +323,6 @@ public class Wand : MonoBehaviour {
             }
 
 
-            //_isGrabbing = true;
-            // anim.SetBool("IsGrabbing", false);
             //If there are any colliders in range at all
             if (closestCollider != null)
             {
@@ -360,9 +363,9 @@ public class Wand : MonoBehaviour {
 
 
 
-                        StartCoroutine(MoveOverSeconds(closestCollider.attachedRigidbody.gameObject, grabPosition.transform.position, .25f));
+                      //  StartCoroutine(MoveOverSeconds(closestCollider.attachedRigidbody.gameObject, grabPosition.transform.position, .25f));
 
-
+                        
                         
                         grabJoint.connectedBody = closestCollider.attachedRigidbody;
                         previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;

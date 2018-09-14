@@ -7,9 +7,10 @@ using System.Linq;
 using UnityEngine;
 
 public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
-	
 
-	Rigidbody rb;
+    public int atomicNumber;
+
+	private Rigidbody rb;
 
     public GameObject bondGameObject;
     public GameObject doubleBondGameObject;
@@ -26,7 +27,7 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 	private List<GameObject> stubBonds = new List<GameObject> ();
 
 	public int nBondConnections = 0;
-    int availableBonds;
+    private int availableBonds;
 
 	private AudioSource audioSrc;
 	public AudioClip bounceSound;
@@ -57,6 +58,55 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
     public float speed;
 
 	void Awake () {
+
+        //Maps the atomic number to the element name
+        Dictionary<int, string> elementNameMap = new Dictionary<int, string>{
+            { 1,"Hydrogen" },
+            {3, "Lithium" },
+            {4, "Carbon" },
+            {5, "Nitrogen"},
+            {6, "Oxygen" },
+            {7, "Fluorine" },
+            {11, "Sodium" },
+            {13, "Aluinum" },
+            {15, "Phosphorus" },
+            {16, "Sulfur" },
+            {17, "Chlorine" },
+            {26, "Iron" }
+
+        };
+
+        //maps the atomic number to the elemental atom radius
+        Dictionary<int, float> elementAtomRadiusMap = new Dictionary<int, float>{
+            { 1, .075f },
+            { 3, .1f },
+            { 4, .1f },
+            { 5, .1f},
+            { 6, .1f },
+            { 7, .1f },
+            { 11, .1f },
+            { 13, .1f },
+            { 15, .1f },
+            { 16, .1f },
+            { 17, .1f },
+            { 26, .1f}
+        };
+        
+        //Maps the atomic number to the number of allowed bonds for each element
+        Dictionary<int, int> elementBondNumMap = new Dictionary<int, int> {
+            { 1, 1 },
+            { 3, 1 },
+            { 4, 4 },
+            { 5, 3},
+            { 6, 2 },
+            { 7, 1 },
+            { 11, 1 },
+            { 13, 3 },
+            { 15, 5 },
+            { 16, 2 },
+            { 17, 1 },
+            { 26, 3}
+        };
         col = gameObject.GetComponent<SphereCollider>();
        // col.radius = 0.5f;
 
@@ -71,111 +121,32 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 		//transform.localScale = new Vector3 (.1f, .1f, .1f);
 		int bondNum = 0;
 
-		//TODO: Have method for setting element number, name, bond count and radius
-		//TODO: Should the atom prefabs be one prefab?
-		if (gameObject.name == "Oxygen Atom") {
-			gameObject.transform.localScale = new Vector3(.1f,.1f,.1f);
-			//gameObject.transform.localScale *= .1f;
-			bondNum = 2;
+        
+        //TODO: Should the atom prefabs be one prefab?
 
-		} else if (gameObject.name == "Carbon Atom") {
-			gameObject.transform.localScale = new Vector3(.1f,.1f,.1f);
-			bondNum = 4;
-
-		} else if (gameObject.name == "Nitrogen Atom") {
-			gameObject.transform.localScale = new Vector3(.1f,.1f,.1f);
-			bondNum = 3;
-
-		} else if (gameObject.name == "Hydrogen Atom") {
-			gameObject.transform.localScale = new Vector3(.075f,.075f,.075f);
-			bondNum = 1;
-
-		} else if (gameObject.name == "Phosphorus Atom") {
-			gameObject.transform.localScale = new Vector3(.1f,.1f,.1f);
-			bondNum = 5;
-
-		} else if (gameObject.name == "Sulfur Atom") {
-			gameObject.transform.localScale = new Vector3(.1f,.1f,.1f);
-			bondNum = 2;
-		}
-        else if (gameObject.name == "Chlorine Atom")
-        {
-            gameObject.transform.localScale = new Vector3(.1f, .1f, .1f);
-            bondNum = 1;
-        }
-        else if (gameObject.name == "Fluorine Atom")
-        {
-            gameObject.transform.localScale = new Vector3(.1f, .1f, .1f);
-            bondNum = 1;
-        }
-        else if (gameObject.name == "Iron Atom")
-        {
-            gameObject.transform.localScale = new Vector3(.1f, .1f, .1f);
-            //This is sketchy, iron doesn't seem to have a clear bond cap, depends on circumstance heavily
-            bondNum = 3;
-        }
-        else if (gameObject.name == "Aluminium Atom")
-        {
-            gameObject.transform.localScale = new Vector3(.1f, .1f, .1f);
-            bondNum = 3;
-        }
-        else if (gameObject.name == "Lithium Atom")
-        {
-            gameObject.transform.localScale = new Vector3(.1f, .1f, .1f);
-            bondNum = 1;
-        }
-        else if (gameObject.name == "Sodium Atom")
-        {
-            gameObject.transform.localScale = new Vector3(.1f, .1f, .1f);
-            bondNum = 1;
-        }
+        gameObject.name = elementNameMap[atomicNumber] + " Atom";
+        bondNum = elementBondNumMap[atomicNumber];
+        gameObject.transform.localScale = new Vector3(elementAtomRadiusMap[atomicNumber], elementAtomRadiusMap[atomicNumber], elementAtomRadiusMap[atomicNumber]);
 
         allowedBonds = bondNum;
 
 		createStubBonds ();
         availableBonds = allowedBonds;
 
-        //col.radius = 0.5f;
-
-
-        
 
     }
 
-
-
-
-	// Update is called once per frame
 
 	void Update (){
 
 
 		if (jointBreak) {
-			//TODO: Change to easier to understand name? EX: breakBonds, figureOutWhichBondHasBrokenAndBreakThem
-			bondedAtomsRecalibration ();
+            //TODO: Change to easier to understand name? EX: breakBonds, 
+            figureOutWhichBondHasBrokenAndBreakThem();
 		}
-      //  col.radius = 0.5f;
 
     }
 
-    private void LateUpdate()
-    {
-       // col.radius = 0.5f;
-
-    }
-
-    void FixedUpdate () {
-
-		//Debug.Log (gameObject.name+": " + bondForming);
-		//rb.AddForce (force * Vector3.up);
-		//rb.velocity = gameObject.transform.forward * 10;
-		//transform.rotation.x = 5;
-		//rb.velocity = rb.velocity.normalized * speed;
-
-		//Debug.Log (rb.velocity.magnitude);
-
-
-	}
 
 	public void addBondedAtom(GameObject atom) {
 		bondedAtoms.Add (atom);
@@ -406,7 +377,7 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
         return atom1StubBonds[closestStubBondIndex];
     }
 
-    //Overloads closestStubBond method without eclude parameter
+    //Overloads closestStubBond method without exclude parameter
     private GameObject closestStubBond(AtomScript atom1, AtomScript atom2) {
        return closestStubBond(atom1, atom2, null);
     }
@@ -477,7 +448,7 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 
 
 	//Figure out which joints broke and break bonds
-	private void bondedAtomsRecalibration(){
+	private void figureOutWhichBondHasBrokenAndBreakThem(){
 
         GameObject brokenBond = null;
 		GameObject brokenBondWithAtom = null;

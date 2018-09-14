@@ -112,6 +112,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04115c7ace230954094c588e010f9d7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  atomicNumber: 5
   bondGameObject: {fileID: 1333853292811182, guid: 5fd0606056b32af4cb8604a7d81d2bee,
     type: 2}
   doubleBondGameObject: {fileID: 1248653620577640, guid: 3dbedfa28e812074e9e265ac21f16022,

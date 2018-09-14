@@ -90,7 +90,6 @@ public class Bond : MonoBehaviour {
         AtomScript endAtomScript = endAtom.GetComponent<AtomScript>();
 
 
-        Debug.Log("hello");
 
 
         CharacterJoint joint1 = startAtom.AddComponent<CharacterJoint> ();
