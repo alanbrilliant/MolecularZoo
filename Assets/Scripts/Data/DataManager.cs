@@ -41,7 +41,7 @@ public class DataManager : MonoBehaviour {
 		for (int i = 0; i < 3; i++) {
 			script.instantiateMolecule (aspirinData, new Vector3(Random.Range(-3f,4f),Random.Range(2f,4f), Random.Range(-4f,4f))*spawnDist);
 		}
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 50; i++) {
 			script.instantiateMolecule (waterData, new Vector3(Random.Range(-3f,4f),Random.Range(2f,4f), Random.Range(-4f,4f)) * spawnDist);
 		}
 
@@ -66,14 +66,14 @@ public class DataManager : MonoBehaviour {
         
         script.instantiateMolecule (atpData, new Vector3(Random.Range(-3f,4f),Random.Range(3f,4f), Random.Range(-4f,4f)) * spawnDist);
 
-       script.instantiateMiniatureRigidMolecule(saturatedfatData, new Vector3(Random.Range(-3f, 4f), Random.Range(3f, 4f), Random.Range(-4f, 4f)) * spawnDist);
+       script.instantiateMiniatureRigidMolecule(saturatedfatData, new Vector3(Random.Range(-3f, 4f), Random.Range(3f, 4f), Random.Range(-4f, 4f)));
 
-      script.instantiateMiniatureRigidMolecule(atpData, new Vector3(Random.Range(-3f, 4f), Random.Range(3f, 4f), Random.Range(-4f, 4f)) * spawnDist);
+      script.instantiateMiniatureRigidMolecule(atpData, new Vector3(Random.Range(-3f, 4f), Random.Range(3f, 4f), Random.Range(-4f, 4f)) );
 
 
-        script.instantiateMiniatureRigidMolecule(caffeineData, new Vector3(Random.Range(-3f, 4f), Random.Range(3f, 4f), Random.Range(-4f, 4f)) * spawnDist);
+        script.instantiateMiniatureRigidMolecule(caffeineData, new Vector3(Random.Range(-3f, 4f), Random.Range(3f, 4f), Random.Range(-4f, 4f)));
 
-        script.instantiateMiniatureRigidMolecule(aspirinData, new Vector3(Random.Range(-3f, 4f), Random.Range(2f, 4f), Random.Range(-4f, 4f)) * spawnDist);
+        script.instantiateMiniatureRigidMolecule(aspirinData, new Vector3(Random.Range(-3f, 4f), Random.Range(2f, 4f), Random.Range(-4f, 4f)));
 
 
 

@@ -30,7 +30,7 @@ public class VoiceRecog : MonoBehaviour {
 
     void Start () {
 
-        ListKeywords = new string[34];
+        ListKeywords = new string[35];
 
         //Game Reset
         ListKeywords[0] = "Reset";
@@ -77,8 +77,10 @@ public class VoiceRecog : MonoBehaviour {
         ListKeywords[32] = "AtomCount";
 
         //Starts a Demo of how to use voice control
-        ListKeywords[33] = "Demo";
+        ListKeywords[33] = "Help";
 
+        //Creates a "black hole." Pulls all atoms to a single point
+        ListKeywords[34] = "BlackHole";
 
 
 
@@ -281,6 +283,14 @@ public class VoiceRecog : MonoBehaviour {
             GameObject.FindWithTag("DictationResult").transform.position = GameObject.FindWithTag("DictationPosition").transform.position;
             float a = Mathf.Atan2(GameObject.FindWithTag("DictationPosition").transform.position.x, GameObject.FindWithTag("DictationPosition").transform.position.z) * Mathf.Rad2Deg;
             GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
+        }
+        if (args.text == ListKeywords[34])
+        {
+            GameObject[] atoms = GameObject.FindGameObjectsWithTag ("Atom");
+            foreach(GameObject atom in atoms)
+            {
+                atom.GetComponent<Rigidbody>().velocity = Vector3.zero - atom.transform.position.normalized * 10f;
+            }
         }
 
 

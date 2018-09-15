@@ -79,14 +79,14 @@ public class Tractor : Gun {
             if (tractoredObject != null)
             {
                 Rigidbody tractoredObjRB = tractoredObject.GetComponent<Rigidbody>();
-                float targetSpeed = 2f * Vector3.Distance(tractoredObject.transform.position, transform.position);
+                float targetSpeed = (2f * Vector3.Distance(tractoredObject.transform.position, wand.transform.position)) + .2f;
                 float currentAtomSpeed = Vector3.Dot((transform.position - tractoredObject.transform.position).normalized, tractoredObjRB.velocity);
-                tractoredObjRB.velocity = targetSpeed * (transform.position - tractoredObjRB.transform.position).normalized;
+                tractoredObjRB.velocity = targetSpeed * (wand.transform.position - tractoredObjRB.transform.position).normalized;
 
                 laserScript.enableLaser(transform.position, tractoredObject.transform.position);
 
 
-                if (Vector3.Distance(tractoredObjRB.transform.position, transform.position) < .05f)
+                if (Vector3.Distance(tractoredObjRB.transform.position, wand.transform.position) < .05f)
                 {
                     wand.grabJoint.connectedBody = tractoredObject.GetComponent<Rigidbody>();
                     base.wand.setControllerStateToHand();
