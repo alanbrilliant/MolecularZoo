@@ -141,7 +141,6 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 
 
 		if (jointBreak) {
-            //TODO: Change to easier to understand name? EX: breakBonds, 
             figureOutWhichBondHasBrokenAndBreakThem();
 		}
 
@@ -207,13 +206,13 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
         } else if (obj.tag.Contains( "Atom")) {
 
 
-            bondWithAtom(obj);
+            bondWithAtom(obj, 1);
 		}
 		
 	}
 
 
-    public void bondWithAtom(GameObject obj){
+    public void bondWithAtom(GameObject obj, int bondOrder){
         AtomScript collidedAtomScript = obj.GetComponent<AtomScript>();
         if (nBondConnections < allowedBonds && collidedAtomScript.nBondConnections < collidedAtomScript.allowedBonds ) {
             if (obj.tag.Contains("Bullet"))
@@ -258,7 +257,7 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 
                 Vector3 startAtomStubDirection = (startAtomStub.transform.position - startAtom.transform.position).normalized;
 
-
+                /*
                 //Checks to see if a double bond should be formed
                 int possibleBondsOfThisAtom = allowedBonds - nBondConnections;
                 int possibleBondsOfCollidedAtom = collidedAtomScript.allowedBonds - collidedAtomScript.nBondConnections;
@@ -267,11 +266,12 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
                 int newBondOrder = Mathf.Min(possibleBondsOfThisAtom, possibleBondsOfCollidedAtom);
                 //If the lowest number of open bonds is greater than 2, then it will default to 2, since triple bonds haven't been added yet
                 if (newBondOrder > 2)
-                    newBondOrder = 2;
+                    newBondOrder = 2;*/
 
                 //bondPrefab is the placeholder for either a single or double bond
                 GameObject bondPrefab;
 
+               int  newBondOrder = bondOrder;
                 if (newBondOrder == 1)
                 {
                     bondPrefab = bondGameObject;
@@ -385,32 +385,58 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 
 
 
-        void OnJointBreak(float breakforce) {
-        // Debug.Log(gameObject.name + " broke");
+    void OnJointBreak(float breakforce) {
+      // Debug.Log(gameObject.name + " broke");
 
         hasBroken = true;
-		jointBreak = true;
+        jointBreak = true;
 
-		audioSrc.volume = .1f;
-		audioSrc.clip = snapSound;
-		audioSrc.Play ();
-	}
-		
+        audioSrc.volume = .1f;
+        audioSrc.clip = snapSound;
+        audioSrc.Play ();
+    }
 
 
-	public void breakBondWith(GameObject atom){ 
-		bondedAtoms.Remove (atom);
+   
+
+    public void breakBondWith(GameObject atom){
+        Debug.Log("ues");
+
+        bondedAtoms.Remove (atom);
 		CharacterJoint[] joints = gameObject.GetComponents<CharacterJoint> ();
 		for (int i = 0; i < joints.Length; i++) {
 			if (joints[i].connectedBody.gameObject == atom) {
 				Destroy (joints[i]);
 			}
 		}
+        GameObject brokenBond = null;
 
-        OnJointBreak(0f);
+        for (int i = 0; i < bonds.Count; i++)
+        {
+            GameObject[] bondConnections = bonds[i].GetComponent<Bond>().getConnectedAtoms();
+            if (atom != null && (bondConnections[0] == atom || bondConnections[1] == atom))
+                brokenBond = bonds[i];
+        }
+
+     //   OnJointBreak(0f);
+        if (brokenBond != null)
+        {
+            breakBond(brokenBond);
+            atom.GetComponent<AtomScript>().breakBond(brokenBond);
+            bondedAtoms.Remove(atom);
+            atom.GetComponent<AtomScript>().breakBondWith(gameObject);
 
 
-	}
+            Destroy(brokenBond);
+        } else
+        {
+            jointBreak = false;
+        }
+       
+
+        
+
+    }
 
 	//TODO: Atoms are not placed in bondedAtoms twice, so this will never work
 	private bool hasDoubleBond(){
@@ -484,15 +510,14 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 
         }
 
-		for (int i = 0; i < bonds.Count; i++) {
-			GameObject[] bondConnections = bonds[i].GetComponent<Bond>().getConnectedAtoms();
-			if (brokenBondWithAtom != null && (bondConnections [0] == brokenBondWithAtom  || bondConnections [1] == brokenBondWithAtom) )
-				brokenBond = bonds [i];
-		}
 
 
-		//Break the bonds
-		if (brokenBond != null) {
+
+
+        breakBondWith(brokenBondWithAtom);
+        //Break the bonds
+        /*
+        if (brokenBond != null) {
 
             
 
@@ -509,7 +534,7 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
         } else
         {
            jointBreak= false;
-        }
+        }*/
 
 		/*
 		List<GameObject> recalibratedBondedAtoms = new List<GameObject> ();
@@ -636,5 +661,15 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
         return stubBonds;
     }
 
+    public bool hasOpenBonds() {
+        if (nBondConnections < allowedBonds)
+        {
+            return true;
+        } else
+        {
+            return false;
+        }
+    }
+    
 }
 

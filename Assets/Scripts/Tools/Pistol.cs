@@ -14,11 +14,9 @@ public class Pistol : Gun {
 	
 	// Update is called once per frame
 	void Update () {
-        Debug.Log(isActive);
+
         if (base.isActive == true)
-        {
-            Debug.Log("hello");
-            /*
+        {/*
             anim.SetBool("IsGrabbing", true);
             anim.SetFloat("GrabbingFloat", 0);*/
 

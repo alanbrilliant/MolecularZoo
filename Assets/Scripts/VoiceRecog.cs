@@ -286,11 +286,7 @@ public class VoiceRecog : MonoBehaviour {
         }
         if (args.text == ListKeywords[34])
         {
-            GameObject[] atoms = GameObject.FindGameObjectsWithTag ("Atom");
-            foreach(GameObject atom in atoms)
-            {
-                atom.GetComponent<Rigidbody>().velocity = Vector3.zero - atom.transform.position.normalized * 10f;
-            }
+            GameObject.Find("Blackhole").GetComponent<BlackHole>().createBlackHole();
         }
 
 

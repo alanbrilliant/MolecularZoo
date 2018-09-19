@@ -31,10 +31,10 @@ public class Wand : MonoBehaviour {
 
 
     public int controllerState;
-    
-    
-    
 
+
+
+    private Wand otherWand;
 	
 	public AudioClip phaserSound;
 	private AudioClip gunshot;
@@ -66,6 +66,16 @@ public class Wand : MonoBehaviour {
         {
             if (collider.tag == "Arm" && collider.isTrigger == true)
                 col = collider;
+        }
+
+        GameObject leftWand = GameObject.FindGameObjectWithTag("LeftWand");
+        GameObject rightWand = GameObject.FindGameObjectWithTag("RightWand");
+        if (leftWand == gameObject)
+        {
+            otherWand = rightWand.GetComponent<Wand>();
+        } else
+        {
+            otherWand = leftWand.GetComponent<Wand>();
         }
 
 
@@ -132,7 +142,13 @@ public class Wand : MonoBehaviour {
         axisValue = controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger).x;
         anim.SetFloat("GrabbingFloat", axisValue);
 
-
+        if (grabJoint.connectedBody != null && grabJoint.connectedBody.tag == "Atom")
+        {
+            if (otherWand.grabJoint.connectedBody != null && otherWand.grabJoint.connectedBody.tag == "Atom")
+            {
+                FormDoubleBond();
+            }
+        }
         
         if (controllerState == 0)
         {
@@ -178,7 +194,7 @@ public class Wand : MonoBehaviour {
         } else
         {
             gunChildObjects[controllerState - 1].GetComponent<Gun>().setActive(true);
-            Debug.Log(gunChildObjects[controllerState - 1].GetComponent<Gun>().isActive + gunChildObjects[controllerState - 1].GetComponent<Gun>().name);
+
         }
 
 
@@ -186,6 +202,7 @@ public class Wand : MonoBehaviour {
         if (controller.GetHairTriggerUp () && grabJoint.connectedBody != null && (grabJoint.connectedBody.gameObject.tag == "Atom"|| grabJoint.connectedBody.gameObject.tag == "Tractorable")) {
 			Rigidbody connectedRigidbody = grabJoint.connectedBody;
 			grabJoint.connectedBody = null;
+
 
             connectedRigidbody.velocity = grabbedObjectVelocity;
 
@@ -292,7 +309,7 @@ public class Wand : MonoBehaviour {
 
 
     private void grabObject() {
-        if (controller.GetHairTrigger())
+        if (controller.GetHairTriggerDown())
         {
             //Math.Abs(col.transform.localScale.x))
             //Find all the colliders in the sphere collider of the hand
@@ -309,7 +326,6 @@ public class Wand : MonoBehaviour {
             //Large number placed in closestColliderDistance temporarily
             float closestColliderDistance = 10000000;
 
-            Debug.Log(col.name);
 
             foreach (Collider possibleCol in collidersInRangeOfHand)
             {
@@ -464,7 +480,28 @@ public class Wand : MonoBehaviour {
 
     }
 
+    private void FormDoubleBond() {
+        GameObject myAtom = grabJoint.connectedBody.gameObject;
+        GameObject otherAtom = otherWand.grabJoint.connectedBody.gameObject;
+        AtomScript myAtomScript = myAtom.GetComponent<AtomScript>();
+        AtomScript otherAtomScript = otherAtom.GetComponent<AtomScript>();
+        
+        if (Vector3.Distance(myAtom.transform.position,otherAtom.transform.position) < .5f)
+        {
+            if (myAtomScript.bondedAtoms.Contains(otherAtom))
+            {
+                if (myAtomScript.hasOpenBonds() && otherAtomScript.hasOpenBonds())
+                {
 
+                    myAtomScript.breakBondWith(otherAtom);
+                    //otherAtomScript.breakBondWith(myAtom);
+                    grabJoint.connectedBody = null;
+                    // otherWand.grabJoint.connectedBody = null;
+                    myAtomScript.bondWithAtom(otherAtom, 2);
+                }     
+            }
+        } 
+    }
 
 }
 
