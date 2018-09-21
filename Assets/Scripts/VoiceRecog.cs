@@ -16,7 +16,7 @@ public class VoiceRecog : MonoBehaviour {
     private string[] ListKeywords;
 
     private KeywordRecognizer L_Recognizer;
-    private DictationRecognizer D_Recognizer;
+    public DictationRecognizer D_Recognizer;
 
     private GameObject gameController;
     MoleculeData molData = new MoleculeData();
@@ -109,14 +109,19 @@ public class VoiceRecog : MonoBehaviour {
     private void OnPhraseRecognized(PhraseRecognizedEventArgs args)
     {
 
+
+        ProcessRecognizedPhrase(args.text);
+    }
+
+    public void ProcessRecognizedPhrase(string phrase) {
         //Debug.Log(args.text);
-        
+
         //Resets game
-        if (args.text== ListKeywords[0])
+        if (phrase == ListKeywords[0])
         {
             L_Recognizer.Stop();
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            
+
         }
 
 
@@ -124,10 +129,10 @@ public class VoiceRecog : MonoBehaviour {
         for (int i = 1; i < 6; i++)
         {
 
-            if (args.text == ListKeywords[i])
+            if (phrase == ListKeywords[i])
             {
 
-                GameObject.FindWithTag("RightWand").GetComponent<Wand>().controllerState = i-1;
+                GameObject.FindWithTag("RightWand").GetComponent<Wand>().controllerState = i - 1;
                 GameObject.FindWithTag("RightWand").GetComponent<Wand>().updateControllerState();
 
             }
@@ -139,10 +144,10 @@ public class VoiceRecog : MonoBehaviour {
         for (int i = 6; i < 11; i++)
         {
             Debug.Log("This should update the controller state!");
-            if (args.text == ListKeywords[i])
+            if (phrase == ListKeywords[i])
             {
 
-                GameObject.FindWithTag("LeftWand").GetComponent<Wand>().controllerState = i-6;
+                GameObject.FindWithTag("LeftWand").GetComponent<Wand>().controllerState = i - 6;
                 GameObject.FindWithTag("LeftWand").GetComponent<Wand>().updateControllerState();
 
 
@@ -150,54 +155,54 @@ public class VoiceRecog : MonoBehaviour {
         }
 
 
-        
-            //Spawns Atoms
-            MoleculeCreator spawnScript = gameObject.GetComponent<MoleculeCreator>();
-            if (args.text == "Hydrogen")
-            {
+
+        //Spawns Atoms
+        MoleculeCreator spawnScript = gameObject.GetComponent<MoleculeCreator>();
+        if (phrase == "Hydrogen")
+        {
 
             GameObject newAtom = Instantiate(spawnScript.hydrogenPrefab, transform.position, transform.rotation);
-            }
-            if (args.text == "Oxygen")
-            {
-                GameObject newAtom = Instantiate(spawnScript.oxygenPrefab, transform.position, transform.rotation);
-            }
-            if (args.text == "Carbon")
-            {
-                GameObject newAtom = Instantiate(spawnScript.carbonPrefab, transform.position, transform.rotation);
-            }
-            if (args.text == "Nitrogen")
-            {
-                GameObject newAtom = Instantiate(spawnScript.nitrogenPrefab, transform.position, transform.rotation);
-            }
-            if (args.text == "Phosphorus")
-            {
-                GameObject newAtom = Instantiate(spawnScript.phosphorusPrefab, transform.position, transform.rotation);
-            }
-            if (args.text == "Iron")
-            {
-                GameObject newAtom = Instantiate(spawnScript.ironPrefab, transform.position, transform.rotation);
-            }
-            if (args.text == "Sodium")
-            {
-                GameObject newAtom = Instantiate(spawnScript.sodiumPrefab, transform.position, transform.rotation);
-            }
-            if (args.text == "Lithium")
-            {
-                GameObject newAtom = Instantiate(spawnScript.lithiumPrefab, transform.position, transform.rotation);
-            }
-            if (args.text == "Chlorine")
-            {
-                GameObject newAtom = Instantiate(spawnScript.chlorinePrefab, transform.position, transform.rotation);
-            }
-            if (args.text == "Fluorine")
-            {
-                GameObject newAtom = Instantiate(spawnScript.fluorinePrefab, transform.position, transform.rotation);
-            }
-            if (args.text == "Aluminium")
-            {
-                GameObject newAtom = Instantiate(spawnScript.aluminiumPrefab, transform.position, transform.rotation);
-            }
+        }
+        if (phrase == "Oxygen")
+        {
+            GameObject newAtom = Instantiate(spawnScript.oxygenPrefab, transform.position, transform.rotation);
+        }
+        if (phrase == "Carbon")
+        {
+            GameObject newAtom = Instantiate(spawnScript.carbonPrefab, transform.position, transform.rotation);
+        }
+        if (phrase == "Nitrogen")
+        {
+            GameObject newAtom = Instantiate(spawnScript.nitrogenPrefab, transform.position, transform.rotation);
+        }
+        if (phrase == "Phosphorus")
+        {
+            GameObject newAtom = Instantiate(spawnScript.phosphorusPrefab, transform.position, transform.rotation);
+        }
+        if (phrase == "Iron")
+        {
+            GameObject newAtom = Instantiate(spawnScript.ironPrefab, transform.position, transform.rotation);
+        }
+        if (phrase == "Sodium")
+        {
+            GameObject newAtom = Instantiate(spawnScript.sodiumPrefab, transform.position, transform.rotation);
+        }
+        if (phrase == "Lithium")
+        {
+            GameObject newAtom = Instantiate(spawnScript.lithiumPrefab, transform.position, transform.rotation);
+        }
+        if (phrase == "Chlorine")
+        {
+            GameObject newAtom = Instantiate(spawnScript.chlorinePrefab, transform.position, transform.rotation);
+        }
+        if (phrase == "Fluorine")
+        {
+            GameObject newAtom = Instantiate(spawnScript.fluorinePrefab, transform.position, transform.rotation);
+        }
+        if (phrase == "Aluminium")
+        {
+            GameObject newAtom = Instantiate(spawnScript.aluminiumPrefab, transform.position, transform.rotation);
+        }
 
 
 
@@ -205,26 +210,26 @@ public class VoiceRecog : MonoBehaviour {
 
 
         //Spawns preloaded molecules
-        for (int i=23; i<30;  i++)
+        for (int i = 23; i < 30; i++)
         {
-            if (args.text == ListKeywords[i])
+            if (phrase == ListKeywords[i])
             {
 
 
 
-                setMoleculeToSpawn(args.text);
+                setMoleculeToSpawn(phrase);
                 MoleculeCreator script = gameObject.GetComponent<MoleculeCreator>();
                 script.instantiateMolecule(molData, transform.position);
 
 
                 //Spawn Molecule
-                Debug.Log(args.text+" should be spawned!");
+                Debug.Log(phrase + " should be spawned!");
             }
         }
 
 
         //Spawns Molecules via Pubchem
-        if (args.text == ListKeywords[30])
+        if (phrase == ListKeywords[30])
         {
             //Stops keyword recognizer (needed in order to start dictator)
             PhraseRecognitionSystem.Shutdown();
@@ -235,25 +240,25 @@ public class VoiceRecog : MonoBehaviour {
             GameObject.FindWithTag("DictationResult").transform.position = GameObject.FindWithTag("DictationPosition").transform.position;
             float a = Mathf.Atan2(GameObject.FindWithTag("DictationPosition").transform.position.x, GameObject.FindWithTag("DictationPosition").transform.position.z) * Mathf.Rad2Deg;
             GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
-            
 
 
-            
+
+
             D_Recognizer.DictationResult += DictationRecognizer_DictationResult;
             D_Recognizer.DictationComplete += DictationRecognizer_DictationComplete;
-           
+
             //Starts dictation recognizer
             D_Recognizer.Start();
-            
+
 
         }
-        if (args.text == ListKeywords[31])
+        if (phrase == ListKeywords[31])
         {
             //Gets array of objects tagged with "bond" and "doublebond", returns the sum of their length
             Array getCountSingleBond = GameObject.FindGameObjectsWithTag("Bond");
             Array getCountDoubleBond = GameObject.FindGameObjectsWithTag("DoubleBond");
-            int count = getCountSingleBond.Length+getCountDoubleBond.Length*2;
-            GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "Bonds: "+count;
+            int count = getCountSingleBond.Length + getCountDoubleBond.Length * 2;
+            GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "Bonds: " + count;
 
 
             //Updates billboard position
@@ -261,12 +266,12 @@ public class VoiceRecog : MonoBehaviour {
             float a = Mathf.Atan2(GameObject.FindWithTag("DictationPosition").transform.position.x, GameObject.FindWithTag("DictationPosition").transform.position.z) * Mathf.Rad2Deg;
             GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
         }
-        if (args.text == ListKeywords[32])
+        if (phrase == ListKeywords[32])
         {
             //Gets array of objects tagged with "atom", and returns its length
             Array getCount = GameObject.FindGameObjectsWithTag("Atom");
             int count = getCount.Length;
-            GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "Atoms: "+count;
+            GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "Atoms: " + count;
 
 
             //Updates billboard position 
@@ -275,7 +280,7 @@ public class VoiceRecog : MonoBehaviour {
             GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
 
         }
-        if (args.text == ListKeywords[33])
+        if (phrase == ListKeywords[33])
         {
             GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "Commands: AtomCount, BondCount, Reset\n [Name of Atom], [Name of Molecule]\n Create +[Name of Molecule]\n Right +[Name of tool], Left+ [Name of tool]";
 
@@ -284,16 +289,13 @@ public class VoiceRecog : MonoBehaviour {
             float a = Mathf.Atan2(GameObject.FindWithTag("DictationPosition").transform.position.x, GameObject.FindWithTag("DictationPosition").transform.position.z) * Mathf.Rad2Deg;
             GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
         }
-        if (args.text == ListKeywords[34])
+        if (phrase == ListKeywords[34])
         {
             GameObject.Find("Blackhole").GetComponent<BlackHole>().createBlackHole();
         }
-
-
-
-
     }
-    private void DictationRecognizer_DictationComplete(DictationCompletionCause cause)
+
+    public void DictationRecognizer_DictationComplete(DictationCompletionCause cause)
     {
 
         //Shuts off dictator and restarts keyword recognizer
@@ -303,7 +305,7 @@ public class VoiceRecog : MonoBehaviour {
 
 
     }
-    private void DictationRecognizer_DictationResult(string text, ConfidenceLevel confidence)
+    public void DictationRecognizer_DictationResult(string text, ConfidenceLevel confidence)
     {
 
 

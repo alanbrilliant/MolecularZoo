@@ -21,6 +21,7 @@ TagManager:
   - Deck
   - AtomExplosiveBullet
   - AtomBullet
+  - VoiceManager
   layers:
   - Default
   - TransparentFX

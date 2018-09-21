@@ -50,7 +50,7 @@ public class Bond : MonoBehaviour {
 		
 		}else
         {
-            Debug.Log("Something is wrong. This isn't supposed to happen");
+            Debug.Log("Something is wrong. This isn't supposed to happen. ConnectedAtoms 0 = " + connectedAtoms[0] +" and ConnectedAtoms 1 = " + connectedAtoms[1] );
         }
 
 

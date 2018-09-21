@@ -41,6 +41,7 @@ public class Slug : MonoBehaviour {
     
     public void resetToAtom()
     {
+        Debug.Log("yayaf");
         gameObject.layer = 0;
 
         tag = "Atom";

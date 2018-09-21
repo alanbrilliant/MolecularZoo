@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour {
     internal bool isActive;
-    internal SteamVR_Controller.Device controller;
     internal Wand wand;
 
     internal AudioSource wandAudio;
+
+    internal SteamVR_Controller.Device controller {
+        get {
+            return wand.controller;
+        }
+    }
 
     // Use this for initialization
     void Start () {
@@ -23,8 +28,7 @@ public class Gun : MonoBehaviour {
         isActive = active;
     }
 
-    public void initialize(SteamVR_Controller.Device controller, Wand wandReference) {
-        this.controller = controller;
+    public void initialize( Wand wandReference) {
         wand = wandReference;
     }
 

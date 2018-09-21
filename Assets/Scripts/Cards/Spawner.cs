@@ -7,8 +7,8 @@ public class Spawner : MonoBehaviour
     MoleculeData saturatedfatData = new MoleculeData();
     public GameObject gameController;
     bool touched = false;
-   
 
+    public AudioClip potassium;
     void Start()
     {
         GetComponent<AudioSource>().playOnAwake = false;
@@ -40,7 +40,8 @@ public class Spawner : MonoBehaviour
             //GameObject.Find("Your_Name_Here").transform.position;
             script.instantiateMolecule(saturatedfatData, GameObject.Find("Ammo").transform.position);
             Debug.Log(GameObject.Find("Ammo").transform.position);
-   
+
+            GetComponent<AudioSource>().clip = potassium;
             GetComponent<AudioSource>().Play();
         }
         touched = false;

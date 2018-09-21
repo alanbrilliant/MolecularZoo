@@ -9,7 +9,6 @@ public class Wand : MonoBehaviour {
     private SphereCollider col;
 
 	private SteamVR_TrackedObject trackedObj;
-	private SteamVR_Controller.Device controller;
 
 	public GameObject bullets;
 	public GameObject heavyBullets;
@@ -34,17 +33,50 @@ public class Wand : MonoBehaviour {
 
 
 
-    private Wand otherWand;
 	
 	public AudioClip phaserSound;
 	private AudioClip gunshot;
 	AudioClip moleculeNameCooldown;
     public bool _isGrabbing;
     Animator anim;
-    public SteamVR_Controller.Device mDevice;
     private float axisValue;
     private bool isHoldingTool = false;
     private Transform grabPos;
+
+   /* if (leftWand  != null || rightWand != null)
+        {
+            if (leftWand == gameObject)
+            {
+                otherWand = rightWand.GetComponent<Wand>();
+            }
+            else
+            {
+                otherWand = leftWand.GetComponent<Wand>();
+            }
+        }*/
+    private Wand otherWand
+    {
+        get {
+            GameObject leftWand = GameObject.FindGameObjectWithTag("LeftWand");
+            GameObject rightWand = GameObject.FindGameObjectWithTag("RightWand");
+            if (leftWand == gameObject)
+
+                return (rightWand == null ? null : rightWand.GetComponent<Wand>());
+            else
+                return (leftWand == null ? null : leftWand.GetComponent<Wand>());
+            
+        }
+    }
+
+    public SteamVR_Controller.Device controller
+    {
+        get {
+            return (trackedObj.index == SteamVR_TrackedObject.EIndex.None ?
+                null :
+                SteamVR_Controller.Input((int)trackedObj.index));
+        }
+    }
+
 
     private enum arsenal {hands, tractor, pistol, heavyPistol, cards,};
 
@@ -68,15 +100,8 @@ public class Wand : MonoBehaviour {
                 col = collider;
         }
 
-        GameObject leftWand = GameObject.FindGameObjectWithTag("LeftWand");
-        GameObject rightWand = GameObject.FindGameObjectWithTag("RightWand");
-        if (leftWand == gameObject)
-        {
-            otherWand = rightWand.GetComponent<Wand>();
-        } else
-        {
-            otherWand = leftWand.GetComponent<Wand>();
-        }
+        
+        
 
 
 
@@ -96,9 +121,7 @@ public class Wand : MonoBehaviour {
         controllerState = 1;
 
         trackedObj = gameObject.GetComponent<SteamVR_TrackedObject>();
-        Debug.Log(((int)trackedObj.index));
 
-        controller = SteamVR_Controller.Input((int)trackedObj.index);
         Debug.Log(controller);
         //updateControllerState();
 
@@ -109,7 +132,7 @@ public class Wand : MonoBehaviour {
         Gun[] gunList = gameObject.GetComponentsInChildren<Gun>(true);
         for (int i = 0; i < gunList.Length; i++)
         {
-            gunList[i].initialize(controller, this);
+            gunList[i].initialize( this);
             gunList[i].setAudioSource(audio);
             //  if (gunList[i].name == gunList[i].GetComponentInParent<Transform>().name)
 
@@ -138,13 +161,13 @@ public class Wand : MonoBehaviour {
 
 	void Update () {
 
-        
+
         axisValue = controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger).x;
         anim.SetFloat("GrabbingFloat", axisValue);
 
         if (grabJoint.connectedBody != null && grabJoint.connectedBody.tag == "Atom")
         {
-            if (otherWand.grabJoint.connectedBody != null && otherWand.grabJoint.connectedBody.tag == "Atom")
+            if (otherWand != null && otherWand.grabJoint.connectedBody != null && otherWand.grabJoint.connectedBody.tag == "Atom")
             {
                 FormDoubleBond();
             }
@@ -271,7 +294,6 @@ public class Wand : MonoBehaviour {
 
 
         //If the controller state is at the end of the list of tools, then reset the controller back to 0
-        Debug.Log(gunChildObjects.Count);
         if (controllerState == gunChildObjects.Count)
         {
             //Set to 0, becase the hand is always at the zero'th index
@@ -375,14 +397,13 @@ public class Wand : MonoBehaviour {
                 {
                     if (grabJoint.connectedBody == null)
                     {
-                        
 
 
 
-                      //  StartCoroutine(MoveOverSeconds(closestCollider.attachedRigidbody.gameObject, grabPosition.transform.position, .25f));
 
-                        
-                        
+                        //  StartCoroutine(MoveOverSeconds(closestCollider.attachedRigidbody.gameObject, grabPosition.transform.position, .25f));
+
+                        closestCollider.gameObject.SendMessage("OnGrab");
                         grabJoint.connectedBody = closestCollider.attachedRigidbody;
                         previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;
                         

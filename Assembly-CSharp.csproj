@@ -53,7 +53,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Almgp_particle_vol_1\script\sprite_sheet.cs" />
+     <Compile Include="Assets\External Libraries\Almgp_particle_vol_1\script\sprite_sheet.cs" />
      <Compile Include="Assets\External Libraries\Source\Aot\fsAotCompilationManager.cs" />
      <Compile Include="Assets\External Libraries\Source\Aot\fsAotConfiguration.cs" />
      <Compile Include="Assets\External Libraries\Source\Aot\fsAotVersionInfo.cs" />
@@ -150,6 +150,7 @@
      <Compile Include="Assets\Scripts\Tools\Pistol.cs" />
      <Compile Include="Assets\Scripts\Tools\Tractor.cs" />
      <Compile Include="Assets\Scripts\VoiceRecog.cs" />
+     <Compile Include="Assets\Scripts\VoiceTutorial.cs" />
      <Compile Include="Assets\Scripts\Wand.cs" />
      <Compile Include="Assets\SteamVR\InteractionSystem\Core\Scripts\BodyCollider.cs" />
      <Compile Include="Assets\SteamVR\InteractionSystem\Core\Scripts\CircularDrive.cs" />
@@ -252,18 +253,19 @@
      <None Include="Assets\SteamVR\Resources\SteamVR_Fade.shader" />
      <None Include="Assets\SteamVR\Resources\SteamVR_ClearAll.shader" />
      <None Include="Assets\SteamVR\InteractionSystem\Hints\Shaders\ControllerButtonHints.shader" />
-     <None Include="Assets\Almgp_particle_vol_1\shaders\emmision_particle.shader" />
+     <None Include="Assets\External Libraries\Almgp_particle_vol_1\shaders\emmision_particle.shader" />
+     <None Include="Assets\External Libraries\StaffOfPain\readme_first.txt" />
      <None Include="Assets\SteamVR\InteractionSystem\Teleport\Shaders\Highlight.shader" />
-     <None Include="Assets\Almgp_particle_vol_1\shaders\multypower_particle.shader" />
-     <None Include="Assets\Almgp_particle_vol_1\README.txt" />
-     <None Include="Assets\Almgp_particle_vol_1\shaders\mesh_dissolve_particel.shader" />
+     <None Include="Assets\External Libraries\Almgp_particle_vol_1\shaders\multypower_particle.shader" />
+     <None Include="Assets\External Libraries\Almgp_particle_vol_1\README.txt" />
+     <None Include="Assets\External Libraries\Almgp_particle_vol_1\shaders\mesh_dissolve_particel.shader" />
      <None Include="Assets\SteamVR\Resources\SteamVR_SphericalProjection.shader" />
      <None Include="Assets\SteamVR\Resources\SteamVR_AlphaOut.shader" />
      <None Include="Assets\SteamVR\readme.txt" />
      <None Include="Assets\SteamVR\InteractionSystem\Core\Shaders\Silhouette.shader" />
      <None Include="Assets\SteamVR\Resources\SteamVR_ColorOut.shader" />
      <None Include="Assets\SteamVR\InteractionSystem\Core\Shaders\SeeThru.shader" />
-     <None Include="Assets\Almgp_particle_vol_1\shaders\face_power_particle.shader" />
+     <None Include="Assets\External Libraries\Almgp_particle_vol_1\shaders\face_power_particle.shader" />
      <None Include="Assets\SteamVR\InteractionSystem\Readme_InteractionSystem.txt" />
  <Reference Include="UnityEditor.StandardEvents">
  <HintPath>C:/Users/abrilliant/MolZoo/MolecularZoo/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>

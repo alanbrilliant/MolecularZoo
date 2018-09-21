@@ -86,17 +86,16 @@ public class Tractor : Gun {
                 laserScript.enableLaser(transform.position, tractoredObject.transform.position);
 
 
-                if (Vector3.Distance(tractoredObjRB.transform.position, wand.transform.position) < .05f)
+                if (Vector3.Distance(tractoredObjRB.transform.position, wand.transform.position) < (.05f*0 + tractoredObject.transform.localScale.x/2 ))
                 {
+                    tractoredObjRB.gameObject.BroadcastMessage("OnGrab",false);
+
                     wand.grabJoint.connectedBody = tractoredObject.GetComponent<Rigidbody>();
                     base.wand.setControllerStateToHand();
                     laserScript.disableLaser();
                     tractoredObject = null;
                     base.wandAudio.Stop();
-                    
-
-
-
+     
                 }
 
             }

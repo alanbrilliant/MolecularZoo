@@ -115,10 +115,6 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 		audioSrc.spatialBlend = .73f;
 
 
-		//Strip off (1) from the Oxygen Atom (1)
-		if (gameObject.name.Contains("("))
-			gameObject.name = gameObject.name.Substring (0, gameObject.name.IndexOf ("Atom") +4);
-		//transform.localScale = new Vector3 (.1f, .1f, .1f);
 		int bondNum = 0;
 
         
@@ -203,9 +199,9 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
             
 
 
-        } else if (obj.tag.Contains( "Atom")) {
+        } else if (obj.tag.Contains("Atom")) {
 
-
+            
             bondWithAtom(obj, 1);
 		}
 		
@@ -215,6 +211,9 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
     public void bondWithAtom(GameObject obj, int bondOrder){
         AtomScript collidedAtomScript = obj.GetComponent<AtomScript>();
         if (nBondConnections < allowedBonds && collidedAtomScript.nBondConnections < collidedAtomScript.allowedBonds ) {
+            Debug.Log(obj.tag.Contains("Bullet"));
+            Debug.Log(obj.tag);
+
             if (obj.tag.Contains("Bullet"))
             {
                 Slug slugScript = obj.GetComponent<Slug>();
@@ -400,7 +399,6 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
    
 
     public void breakBondWith(GameObject atom){
-        Debug.Log("ues");
 
         bondedAtoms.Remove (atom);
 		CharacterJoint[] joints = gameObject.GetComponents<CharacterJoint> ();
