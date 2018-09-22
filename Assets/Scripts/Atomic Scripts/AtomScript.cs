@@ -218,7 +218,11 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
             {
                 Slug slugScript = obj.GetComponent<Slug>();
                 slugScript.resetToAtom();
+            } else if (tag.Contains("Bullet")) {
+                Slug slugScript = GetComponent<Slug>();
+                slugScript.resetToAtom();
             }
+
 
 
             if (bondedAtoms.Contains(obj) == false) {  //Ignore collision with atom I am already bonded to
@@ -407,6 +411,7 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 				Destroy (joints[i]);
 			}
 		}
+        OnJointBreak(0f);
         /*
         GameObject brokenBond = null;
 
@@ -431,9 +436,9 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
         {
             jointBreak = false;
         }*/
-       
 
-        
+
+
 
     }
 
