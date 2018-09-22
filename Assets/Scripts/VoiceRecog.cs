@@ -8,12 +8,13 @@ using System;
 using System.IO;
 using System.Threading;
 using UnityEngine.Networking;
+using System.Linq;
 
 public class VoiceRecog : MonoBehaviour {
 
     // Use this for initialization
     [SerializeField]
-    private string[] ListKeywords;
+    private List<string> ListKeywords = new List<string>();
 
     private KeywordRecognizer L_Recognizer;
     public DictationRecognizer D_Recognizer;
@@ -21,70 +22,71 @@ public class VoiceRecog : MonoBehaviour {
     private GameObject gameController;
     MoleculeData molData = new MoleculeData();
 
+    private int defaultFontSize = 100;
+
     public float spawnDist;
     public string searchedMol;
     public string searchText;
     private DataManager script1;
 
 
+    private List<string> toolKeyWords = new List<string>();
+    private Dictionary<string, GameObject> atomPrefabKeywords;
+    private List<string> moleculeKeywords;
+    
+
 
     void Start () {
+        MoleculeCreator spawnScript = gameObject.GetComponent<MoleculeCreator>();
 
-        ListKeywords = new string[35];
+        toolKeyWords.Add("Hand");
+        Gun[] allTools = Resources.FindObjectsOfTypeAll<Gun>();
+        foreach (Gun tool in allTools)
+        {
+            if (!toolKeyWords.Contains(tool.gameObject.name))
+                toolKeyWords.Add(tool.gameObject.name);
+        }        //Tool Switchin
 
-        //Game Reset
-        ListKeywords[0] = "Reset";
+        foreach (string a in toolKeyWords)
+            Debug.Log(a);
 
-        //Tool Switching
-        ListKeywords[1] = "RightTractor";
-        ListKeywords[2] = "RightGun";
-        ListKeywords[3] = "RightHeavyGun";
-        ListKeywords[4] = "RightCards";
-        ListKeywords[5] = "RightHand";
-        ListKeywords[6] = "LeftTractor";
-        ListKeywords[7] = "LeftGun";
-        ListKeywords[8] = "LeftHeavyGun";
-        ListKeywords[9] = "LeftCards";
-        ListKeywords[10] = "LeftHand";
 
         //Atom Spawning
-        ListKeywords[11] = "Hydrogen";
-        ListKeywords[12] = "Oxygen";
-        ListKeywords[13] = "Carbon";
-        ListKeywords[14] = "Nitrogen";
-        ListKeywords[15] = "Phosphorus";
-        ListKeywords[16] = "Sulfur";
-        ListKeywords[17] = "Chlorine";
-        ListKeywords[18] = "Fluorine";
-        ListKeywords[19] = "Iron";
-        ListKeywords[20] = "Sodium";
-        ListKeywords[21] = "Lithium";
-        ListKeywords[22] = "Aluminium";
+
+        atomPrefabKeywords = new Dictionary<string, GameObject> {
+            { "Hydrogen" , spawnScript.hydrogenPrefab },
+            {"Lithium", spawnScript.lithiumPrefab },
+            {"Carbon", spawnScript.carbonPrefab },
+            {"Nitrogen", spawnScript.nitrogenPrefab },
+            {"Oxygen", spawnScript.oxygenPrefab },
+            {"Fluorine", spawnScript.fluorinePrefab },
+            {"Chlorine", spawnScript.chlorinePrefab },
+            {"Sodium", spawnScript.sodiumPrefab },
+            {"Phosphorus", spawnScript.phosphorusPrefab },
+            {"Sulfur", spawnScript.sulfurPrefab },
+            {"Iron", spawnScript.ironPrefab },
+            {"Aluminum", spawnScript.aluminiumPrefab }
+        };
 
         //Preloaded Molecule Spawning
-        ListKeywords[23] = "Water";
-        ListKeywords[24] = "CarbonDioxide";
-        ListKeywords[25] = "ATP"; 
-        ListKeywords[26] = "Aspirin";
-        ListKeywords[27] = "Caffeine";
-        ListKeywords[28] = "SaturatedFat";
-        ListKeywords[29] = "SulfuricAcid";
-        //Pubchem Molecule Spawning
-        ListKeywords[30] = "Create";
+        moleculeKeywords = new List<string> { "ATP", "Water", "CarbonDioxide", "Caffeine", "Aspirin", "SulfuricAcid","SaturatedFat"};
 
-        //Count of number of Bonds/Atoms (Not precise yet, but provides rough estimate)
-        ListKeywords[31] = "BondCount";
-        ListKeywords[32] = "AtomCount";
-
-        //Starts a Demo of how to use voice control
-        ListKeywords[33] = "Help";
-
-        //Creates a "black hole." Pulls all atoms to a single point
-        ListKeywords[34] = "BlackHole";
+        ListKeywords = ListKeywords.Concat(toolKeyWords).ToList();
+        ListKeywords = ListKeywords.Concat(atomPrefabKeywords.Keys).ToList();
+        ListKeywords = ListKeywords.Concat(moleculeKeywords).ToList();
+        ListKeywords.Add("Reset");        //Game Reset
+        ListKeywords.Add("Create");         //Pubchem Molecule Spawning
+        ListKeywords.Add("BondCount");        //Count of number of Bonds/Atoms (Not precise yet, but provides rough estimate)
+        ListKeywords.Add("AtomCount");
+        ListKeywords.Add("help");        //Starts a Demo of how to use voice control
+        ListKeywords.Add("Blackhole");         //Creates a "black hole." Pulls all atoms to a single point
 
 
 
-        L_Recognizer = new KeywordRecognizer(ListKeywords);
+
+
+
+        L_Recognizer = new KeywordRecognizer(ListKeywords.ToArray());
         L_Recognizer.OnPhraseRecognized += OnPhraseRecognized;
         L_Recognizer.Start();
         //StartCoroutine(GetText());
@@ -116,8 +118,10 @@ public class VoiceRecog : MonoBehaviour {
     public void ProcessRecognizedPhrase(string phrase) {
         //Debug.Log(args.text);
 
+        GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().fontSize = defaultFontSize;
+
         //Resets game
-        if (phrase == ListKeywords[0])
+        if (phrase == "Reset")
         {
             L_Recognizer.Stop();
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -125,111 +129,42 @@ public class VoiceRecog : MonoBehaviour {
         }
 
 
-        //Updates right controller state
-        for (int i = 1; i < 6; i++)
+        //Changes tool
+        if (toolKeyWords.Contains(phrase)) {
+            GameObject rightWand = GameObject.FindWithTag("RightWand");
+            GameObject leftWand = GameObject.FindWithTag("LeftWand");
+            GameObject higherWand = null;
+            higherWand = rightWand == null ? leftWand : leftWand == null ? rightWand
+                : rightWand.transform.position.y > leftWand.transform.position.y ? rightWand : leftWand;
+            if (higherWand == null)
+                Debug.LogError("Could not determine which wand has the higher y value");
+            higherWand.GetComponent<Wand>().setToolByName(phrase);
+         }
+
+
+
+
+        //Spawns atoms
+        if (atomPrefabKeywords.ContainsKey(phrase))
         {
-
-            if (phrase == ListKeywords[i])
-            {
-
-                GameObject.FindWithTag("RightWand").GetComponent<Wand>().controllerState = i - 1;
-                GameObject.FindWithTag("RightWand").GetComponent<Wand>().updateControllerState();
-
-            }
-
-
+            Instantiate(atomPrefabKeywords[phrase], transform.position, transform.rotation);
         }
-
-        //Updates left contoller state
-        for (int i = 6; i < 11; i++)
-        {
-            Debug.Log("This should update the controller state!");
-            if (phrase == ListKeywords[i])
-            {
-
-                GameObject.FindWithTag("LeftWand").GetComponent<Wand>().controllerState = i - 6;
-                GameObject.FindWithTag("LeftWand").GetComponent<Wand>().updateControllerState();
-
-
-            }
-        }
-
-
-
-        //Spawns Atoms
-        MoleculeCreator spawnScript = gameObject.GetComponent<MoleculeCreator>();
-        if (phrase == "Hydrogen")
-        {
-
-            GameObject newAtom = Instantiate(spawnScript.hydrogenPrefab, transform.position, transform.rotation);
-        }
-        if (phrase == "Oxygen")
-        {
-            GameObject newAtom = Instantiate(spawnScript.oxygenPrefab, transform.position, transform.rotation);
-        }
-        if (phrase == "Carbon")
-        {
-            GameObject newAtom = Instantiate(spawnScript.carbonPrefab, transform.position, transform.rotation);
-        }
-        if (phrase == "Nitrogen")
-        {
-            GameObject newAtom = Instantiate(spawnScript.nitrogenPrefab, transform.position, transform.rotation);
-        }
-        if (phrase == "Phosphorus")
-        {
-            GameObject newAtom = Instantiate(spawnScript.phosphorusPrefab, transform.position, transform.rotation);
-        }
-        if (phrase == "Iron")
-        {
-            GameObject newAtom = Instantiate(spawnScript.ironPrefab, transform.position, transform.rotation);
-        }
-        if (phrase == "Sodium")
-        {
-            GameObject newAtom = Instantiate(spawnScript.sodiumPrefab, transform.position, transform.rotation);
-        }
-        if (phrase == "Lithium")
-        {
-            GameObject newAtom = Instantiate(spawnScript.lithiumPrefab, transform.position, transform.rotation);
-        }
-        if (phrase == "Chlorine")
-        {
-            GameObject newAtom = Instantiate(spawnScript.chlorinePrefab, transform.position, transform.rotation);
-        }
-        if (phrase == "Fluorine")
-        {
-            GameObject newAtom = Instantiate(spawnScript.fluorinePrefab, transform.position, transform.rotation);
-        }
-        if (phrase == "Aluminium")
-        {
-            GameObject newAtom = Instantiate(spawnScript.aluminiumPrefab, transform.position, transform.rotation);
-        }
-
-
-
-
 
 
         //Spawns preloaded molecules
-        for (int i = 23; i < 30; i++)
+        if (moleculeKeywords.Contains(phrase))
         {
-            if (phrase == ListKeywords[i])
-            {
+            setMoleculeToSpawn(phrase);
+            MoleculeCreator script = gameObject.GetComponent<MoleculeCreator>();
+            script.instantiateMolecule(molData, transform.position);
 
 
-
-                setMoleculeToSpawn(phrase);
-                MoleculeCreator script = gameObject.GetComponent<MoleculeCreator>();
-                script.instantiateMolecule(molData, transform.position);
-
-
-                //Spawn Molecule
-                Debug.Log(phrase + " should be spawned!");
-            }
+            //Spawn Molecule
+            Debug.Log(phrase + " should be spawned!");
         }
 
-
         //Spawns Molecules via Pubchem
-        if (phrase == ListKeywords[30])
+        if (phrase == "Create")
         {
             //Stops keyword recognizer (needed in order to start dictator)
             PhraseRecognitionSystem.Shutdown();
@@ -252,7 +187,7 @@ public class VoiceRecog : MonoBehaviour {
 
 
         }
-        if (phrase == ListKeywords[31])
+        if (phrase == "BondCount")
         {
             //Gets array of objects tagged with "bond" and "doublebond", returns the sum of their length
             Array getCountSingleBond = GameObject.FindGameObjectsWithTag("Bond");
@@ -266,7 +201,7 @@ public class VoiceRecog : MonoBehaviour {
             float a = Mathf.Atan2(GameObject.FindWithTag("DictationPosition").transform.position.x, GameObject.FindWithTag("DictationPosition").transform.position.z) * Mathf.Rad2Deg;
             GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
         }
-        if (phrase == ListKeywords[32])
+        if (phrase == "AtomCount")
         {
             //Gets array of objects tagged with "atom", and returns its length
             Array getCount = GameObject.FindGameObjectsWithTag("Atom");
@@ -280,16 +215,19 @@ public class VoiceRecog : MonoBehaviour {
             GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
 
         }
-        if (phrase == ListKeywords[33])
+        if (phrase == "help")
         {
-            GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "Commands: AtomCount, BondCount, Reset\n [Name of Atom], [Name of Molecule]\n Create +[Name of Molecule]\n Right +[Name of tool], Left+ [Name of tool]";
+            GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().fontSize = 50;
+            GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text =
+                "Voice Commands:\n\n ATP, CAFFEINE, SATURATED FAT         Create molecule\n   WATER, CARBON DIOXIDE,\n   SULFURUC ACID, ASPIRIN,       \n CREATE + [Name of Molecule]          Fetch pubchem molecules\n[Element Name]                                   Create atom\n HAND, TRACTOR, PISTOL,            Change what you hold\n       BLASTER, CARDS     \n BLACKHOLE\n RESET                                               Reset game\n";
 
 
             GameObject.FindWithTag("DictationResult").transform.position = GameObject.FindWithTag("DictationPosition").transform.position;
             float a = Mathf.Atan2(GameObject.FindWithTag("DictationPosition").transform.position.x, GameObject.FindWithTag("DictationPosition").transform.position.z) * Mathf.Rad2Deg;
-            GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
+             GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
+            //GameObject.FindWithTag("DictationResult").transform.rotation = GameObject.FindWithTag("DictationPosition").transform.rotation;
         }
-        if (phrase == ListKeywords[34])
+        if (phrase == "Blackhole")
         {
             GameObject.Find("Blackhole").GetComponent<BlackHole>().createBlackHole();
         }

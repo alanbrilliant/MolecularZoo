@@ -407,6 +407,7 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 				Destroy (joints[i]);
 			}
 		}
+        /*
         GameObject brokenBond = null;
 
         for (int i = 0; i < bonds.Count; i++)
@@ -429,7 +430,7 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
         } else
         {
             jointBreak = false;
-        }
+        }*/
        
 
         
@@ -507,17 +508,16 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
             }
 
         }
+        for (int i = 0; i < bonds.Count; i++)
+        {
+            GameObject[] bondConnections = bonds[i].GetComponent<Bond>().getConnectedAtoms();
+            if (brokenBondWithAtom != null && (bondConnections[0] == brokenBondWithAtom || bondConnections[1] == brokenBondWithAtom))
+                brokenBond = bonds[i];
+        }
 
-
-
-
-
-        breakBondWith(brokenBondWithAtom);
         //Break the bonds
-        /*
-        if (brokenBond != null) {
-
-            
+        if (brokenBond != null)
+        {
 
 			breakBond (brokenBond);
 			brokenBondWithAtom.GetComponent<AtomScript> ().breakBond (brokenBond);
@@ -532,7 +532,7 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
         } else
         {
            jointBreak= false;
-        }*/
+        }
 
 		/*
 		List<GameObject> recalibratedBondedAtoms = new List<GameObject> ();

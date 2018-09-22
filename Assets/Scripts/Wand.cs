@@ -165,13 +165,14 @@ public class Wand : MonoBehaviour {
         axisValue = controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger).x;
         anim.SetFloat("GrabbingFloat", axisValue);
 
+        /*
         if (grabJoint.connectedBody != null && grabJoint.connectedBody.tag == "Atom")
         {
             if (otherWand != null && otherWand.grabJoint.connectedBody != null && otherWand.grabJoint.connectedBody.tag == "Atom")
             {
                 FormDoubleBond();
             }
-        }
+        }*/
         
         if (controllerState == 0)
         {
@@ -288,6 +289,8 @@ public class Wand : MonoBehaviour {
 		return final;
 	}
 
+    //TODO: Fix update controller state so that it accepts a variable representing the controller state that you want to go to, rather than-
+    //just incrememnting the controller state by one 
 	public void updateControllerState(){
 
 
@@ -403,7 +406,7 @@ public class Wand : MonoBehaviour {
 
                         //  StartCoroutine(MoveOverSeconds(closestCollider.attachedRigidbody.gameObject, grabPosition.transform.position, .25f));
 
-                        closestCollider.gameObject.SendMessage("OnGrab");
+                        closestCollider.gameObject.SendMessage("OnGrab", false);
                         grabJoint.connectedBody = closestCollider.attachedRigidbody;
                         previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;
                         
@@ -501,6 +504,7 @@ public class Wand : MonoBehaviour {
 
     }
 
+    /*
     private void FormDoubleBond() {
         GameObject myAtom = grabJoint.connectedBody.gameObject;
         GameObject otherAtom = otherWand.grabJoint.connectedBody.gameObject;
@@ -522,6 +526,26 @@ public class Wand : MonoBehaviour {
                 }     
             }
         } 
+    }*/
+
+
+    //Sets the active tool by passing in a name
+    public void setToolByName(string toolName) {
+        for(int i = 0; i < gunChildObjects.Count; i++)
+        {
+            if (gunChildObjects[i].name == toolName)
+            {
+                controllerState = i;
+                updateControllerState();
+                return;
+            }
+            
+        }
+        if (toolName == "Hand")
+        {
+            setControllerStateToHand();
+            return;
+        }
     }
 
 }
