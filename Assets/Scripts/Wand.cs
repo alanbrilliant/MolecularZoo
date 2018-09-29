@@ -226,6 +226,7 @@ public class Wand : MonoBehaviour {
         }
 
         //Release of trigger when holding a tool
+	/* Not sure what this code was trying to do.
         if (controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_Grip)&&isHoldingTool){
             Rigidbody connectedRigidbody = grabJoint.connectedBody;
             grabJoint.connectedBody = null;
@@ -234,10 +235,12 @@ public class Wand : MonoBehaviour {
             controllerState = 3;
             updateControllerState();
         }
+	*/
 
 
-        if (controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad)  &&
-            !(controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).x > .5 ))
+	// Advance to next tool if touchpad or grip button pressed.
+        if (controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad) ||
+	    controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_Grip))
         {
             updateControllerState();
 
