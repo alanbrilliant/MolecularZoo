@@ -211,8 +211,8 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
     public void bondWithAtom(GameObject obj, int bondOrder){
         AtomScript collidedAtomScript = obj.GetComponent<AtomScript>();
         if (nBondConnections < allowedBonds && collidedAtomScript.nBondConnections < collidedAtomScript.allowedBonds ) {
-            Debug.Log(obj.tag.Contains("Bullet"));
-            Debug.Log(obj.tag);
+            //Debug.Log(obj.tag.Contains("Bullet"));
+            //Debug.Log(obj.tag);
 
             if (obj.tag.Contains("Bullet"))
             {
