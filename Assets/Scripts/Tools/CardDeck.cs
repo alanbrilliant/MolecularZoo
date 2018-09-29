@@ -67,12 +67,10 @@ public class CardDeck : Gun {
                         CardSpinner = cardChildObjects[i];
                 }
                 //CardSpinner = GameObject.Find(activeCardName);
-                Debug.Log(CardSpinner);
 
 
                 CardSpinner.GetComponent<RotateClass>().startSpin();
 
-                Debug.Log("Trigger Press");
 
                 GameObject shot = Instantiate(throwCards, transform.position + transform.forward * .2f, transform.rotation);
                 shot.GetComponent<CardSpawner>().setMoleculeToSpawn(activeCardName.Substring(0, activeCardName.Length - 4));
