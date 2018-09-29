@@ -20,7 +20,6 @@ class RotateClass : MonoBehaviour
     }
     IEnumerator Spin()
     {
-        Debug.Log("Should start spinning");
         spinning = true;
         float timeSpun = 0;
         var turnIncrement = new Vector3(0, 0, turnSpeed * Time.deltaTime);
