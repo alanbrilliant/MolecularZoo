@@ -43,12 +43,12 @@ public class VoiceRecog : MonoBehaviour {
         Gun[] allTools = Resources.FindObjectsOfTypeAll<Gun>();
         foreach (Gun tool in allTools)
         {
-            if (!toolKeyWords.Contains(tool.gameObject.name))
+			if (!toolKeyWords.Contains(tool.gameObject.name) && tool.gameObject.activeSelf)
                 toolKeyWords.Add(tool.gameObject.name);
         }        //Tool Switchin
 
-        foreach (string a in toolKeyWords)
-            Debug.Log(a);
+
+		Debug.Log("Speech tool list " + String.Join(", ", toolKeyWords.ToArray()));
 
 
         //Atom Spawning
