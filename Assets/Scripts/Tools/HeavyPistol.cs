@@ -7,6 +7,10 @@ public class HeavyPistol : Gun {
     public AudioClip gunshot;
     public GameObject heavyBullet;
 
+    override public string voiceName {
+        get { return "Blaster"; }
+    }
+    
     // Use this for initialization
     void Start () {
 		
