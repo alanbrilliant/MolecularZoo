@@ -15,7 +15,7 @@ public class Wand : MonoBehaviour {
 
 	private AudioSource audio;
 	// GameObject gun;
-	private GameObject redGun;
+
 	public FixedJoint grabJoint;
     //private SpringJoint pullJoint;
 
