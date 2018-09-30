@@ -527,10 +527,10 @@ public class Wand : MonoBehaviour {
 
 
     //Sets the active tool by passing in a name
-    public void setToolByName(string toolName) {
+    public void setToolByVoiceName(string toolName) {
         for(int i = 0; i < gunChildObjects.Count; i++)
         {
-            if (gunChildObjects[i].name == toolName)
+            if (gunChildObjects[i].GetComponent<Gun>().voiceName == toolName)
             {
                 controllerState = i;
                 updateControllerState();
