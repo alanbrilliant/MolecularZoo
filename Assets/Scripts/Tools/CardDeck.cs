@@ -19,6 +19,9 @@ public class CardDeck : Gun {
 
     private enum cardDeck { saturatedFat, water, carbonDioxide, };
 
+    override public string voiceName {
+        get { return "Cards"; }
+    }
 
     // Use this for initialization
     void Start () {
