@@ -22,8 +22,6 @@ public class VoiceRecog : MonoBehaviour {
     private GameObject gameController;
     MoleculeData molData = new MoleculeData();
 
-    private int defaultFontSize = 100;
-
     public float spawnDist;
     public string searchedMol;
     public string searchText;
@@ -118,8 +116,6 @@ public class VoiceRecog : MonoBehaviour {
     public void ProcessRecognizedPhrase(string phrase) {
         //Debug.Log(args.text);
 
-        GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().fontSize = defaultFontSize;
-
         //Resets game
         if (phrase == "Reset")
         {
@@ -170,19 +166,14 @@ public class VoiceRecog : MonoBehaviour {
             PhraseRecognitionSystem.Shutdown();
             D_Recognizer = new DictationRecognizer();
 
-            //Updates position of "billboard" and updates its status to "Listening" 
-            GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "Listening";
-            GameObject.FindWithTag("DictationResult").transform.position = GameObject.FindWithTag("DictationPosition").transform.position;
-            float a = Mathf.Atan2(GameObject.FindWithTag("DictationPosition").transform.position.x, GameObject.FindWithTag("DictationPosition").transform.position.z) * Mathf.Rad2Deg;
-            GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
-
-
-
+            //Updates position of "billboard" and updates its status to "Listening"
+	    ShowOnBillboard("Listening");
 
             D_Recognizer.DictationResult += DictationRecognizer_DictationResult;
             D_Recognizer.DictationComplete += DictationRecognizer_DictationComplete;
+	    D_Recognizer.DictationError += DictationRecognizer_DictationError;
 
-            //Starts dictation recognizer
+	    //Starts dictation recognizer
             D_Recognizer.Start();
 
 
@@ -193,39 +184,19 @@ public class VoiceRecog : MonoBehaviour {
             Array getCountSingleBond = GameObject.FindGameObjectsWithTag("Bond");
             Array getCountDoubleBond = GameObject.FindGameObjectsWithTag("DoubleBond");
             int count = getCountSingleBond.Length + getCountDoubleBond.Length * 2;
-            GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "Bonds: " + count;
-
-
-            //Updates billboard position
-            GameObject.FindWithTag("DictationResult").transform.position = GameObject.FindWithTag("DictationPosition").transform.position;
-            float a = Mathf.Atan2(GameObject.FindWithTag("DictationPosition").transform.position.x, GameObject.FindWithTag("DictationPosition").transform.position.z) * Mathf.Rad2Deg;
-            GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
+	    ShowOnBillboard("Bonds: " + count);
         }
         if (phrase == "AtomCount")
         {
             //Gets array of objects tagged with "atom", and returns its length
             Array getCount = GameObject.FindGameObjectsWithTag("Atom");
             int count = getCount.Length;
-            GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "Atoms: " + count;
-
-
-            //Updates billboard position 
-            GameObject.FindWithTag("DictationResult").transform.position = GameObject.FindWithTag("DictationPosition").transform.position;
-            float a = Mathf.Atan2(GameObject.FindWithTag("DictationPosition").transform.position.x, GameObject.FindWithTag("DictationPosition").transform.position.z) * Mathf.Rad2Deg;
-            GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
-
+            ShowOnBillboard("Atoms: " + count);
         }
         if (phrase == "help")
         {
-            GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().fontSize = 50;
-            GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text =
-                "Voice Commands:\n\n ATP, CAFFEINE, SATURATED FAT         Create molecule\n   WATER, CARBON DIOXIDE,\n   SULFURUC ACID, ASPIRIN,       \n CREATE + [Name of Molecule]          Fetch pubchem molecules\n[Element Name]                                   Create atom\n HAND, TRACTOR, PISTOL,            Change what you hold\n       BLASTER, CARDS     \n BLACKHOLE\n RESET                                               Reset game\n";
-
-
-            GameObject.FindWithTag("DictationResult").transform.position = GameObject.FindWithTag("DictationPosition").transform.position;
-            float a = Mathf.Atan2(GameObject.FindWithTag("DictationPosition").transform.position.x, GameObject.FindWithTag("DictationPosition").transform.position.z) * Mathf.Rad2Deg;
-             GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
-            //GameObject.FindWithTag("DictationResult").transform.rotation = GameObject.FindWithTag("DictationPosition").transform.rotation;
+	    string help = "Voice Commands:\n\n ATP, CAFFEINE, SATURATED FAT         Create molecule\n   WATER, CARBON DIOXIDE,\n   SULFURUC ACID, ASPIRIN,       \n CREATE + [Name of Molecule]          Fetch pubchem molecules\n[Element Name]                                   Create atom\n HAND, TRACTOR, PISTOL,            Change what you hold\n       BLASTER, CARDS     \n BLACKHOLE\n RESET                                               Reset game\n";
+	    ShowOnBillboard(help, 50);
         }
         if (phrase == "Blackhole")
         {
@@ -233,6 +204,43 @@ public class VoiceRecog : MonoBehaviour {
         }
     }
 
+    private void ShowOnBillboard(string text, int font_size = 100)
+    {
+	GameObject billboard = GameObject.FindWithTag("DictationResult");
+	TextMesh textm = billboard.GetComponent<TextMesh>();
+	textm.fontSize = font_size;
+	textm.text = text;
+
+	// Position billboard in current view direction rotated to face viewer.
+	Vector3 gaze_point = GameObject.FindWithTag("DictationPosition").transform.position;
+        billboard.transform.position = gaze_point;
+        float a = Mathf.Atan2(gaze_point.x, gaze_point.z) * Mathf.Rad2Deg;
+        billboard.transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
+    }
+
+    public void DictationRecognizer_DictationError(string error, int hresult)
+    {
+	ShowOnBillboard(WrapText(error, 40));
+	D_Recognizer.Dispose();
+	// For some reason phrase recognition is broken
+	// after dictation error unless we restart it.
+	PhraseRecognitionSystem.Restart();
+    }
+
+    public string WrapText(string text, int wrap_length)
+    {
+	if (text.Length <= wrap_length)
+	    return text;
+	else
+	{
+	    int i = text.IndexOf(" ", wrap_length, text.Length-wrap_length);
+	    if (i == -1)
+	        return text;
+	    else
+		return String.Concat(text.Substring(0,i), "\n", WrapText(text.Substring(i),wrap_length));
+	}
+    }
+    
     public void DictationRecognizer_DictationComplete(DictationCompletionCause cause)
     {
 
@@ -240,13 +248,10 @@ public class VoiceRecog : MonoBehaviour {
         Debug.Log("Dictation Timeout");
         D_Recognizer.Dispose();
         PhraseRecognitionSystem.Restart();
-
-
     }
+    
     public void DictationRecognizer_DictationResult(string text, ConfidenceLevel confidence)
     {
-
-
         Debug.Log("Create: "+text);
 
         //Stops dictation recognizer by calling DictationRecognizer_DictationComplete()
@@ -255,8 +260,6 @@ public class VoiceRecog : MonoBehaviour {
         //Updates "Billboard" text to searching
         GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "Searching: "+text;
         
-
-
 
         searchedMol = text.Replace(" ", "_");
         searchText = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/" + searchedMol + "/cids/JSON?name_type=word";
