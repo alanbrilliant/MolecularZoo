@@ -41,8 +41,10 @@ public class VoiceRecog : MonoBehaviour {
         Gun[] allTools = Resources.FindObjectsOfTypeAll<Gun>();
         foreach (Gun tool in allTools)
         {
-			if (!toolKeyWords.Contains(tool.gameObject.name) && tool.gameObject.activeSelf)
-                toolKeyWords.Add(tool.gameObject.name);
+	    if (tool.gameObject.activeSelf && !toolKeyWords.Contains(tool.voiceName))
+	    {
+	        toolKeyWords.Add(tool.voiceName);
+	    }
         }        //Tool Switchin
 
 
@@ -134,7 +136,7 @@ public class VoiceRecog : MonoBehaviour {
                 : rightWand.transform.position.y > leftWand.transform.position.y ? rightWand : leftWand;
             if (higherWand == null)
                 Debug.LogError("Could not determine which wand has the higher y value");
-            higherWand.GetComponent<Wand>().setToolByName(phrase);
+            higherWand.GetComponent<Wand>().setToolByVoiceName(phrase);
          }
 
 
@@ -153,10 +155,6 @@ public class VoiceRecog : MonoBehaviour {
             setMoleculeToSpawn(phrase);
             MoleculeCreator script = gameObject.GetComponent<MoleculeCreator>();
             script.instantiateMolecule(molData, transform.position);
-
-
-            //Spawn Molecule
-            Debug.Log(phrase + " should be spawned!");
         }
 
         //Spawns Molecules via Pubchem
@@ -195,7 +193,7 @@ public class VoiceRecog : MonoBehaviour {
         }
         if (phrase == "help")
         {
-	    string help = "Voice Commands:\n\n ATP, CAFFEINE, SATURATED FAT         Create molecule\n   WATER, CARBON DIOXIDE,\n   SULFURUC ACID, ASPIRIN,       \n CREATE + [Name of Molecule]          Fetch pubchem molecules\n[Element Name]                                   Create atom\n HAND, TRACTOR, PISTOL,            Change what you hold\n       BLASTER, CARDS     \n BLACKHOLE\n RESET                                               Reset game\n";
+	    string help = "Voice Commands:\n\n ATP, CAFFEINE, SATURATED FAT         Create molecule\n   WATER, CARBON DIOXIDE,\n   SULFURIC ACID, ASPIRIN,       \n CREATE + [Name of Molecule]          Fetch pubchem molecules\n[Element Name]                                   Create atom\n HAND, TRACTOR, PISTOL,            Change what you hold\n       BLASTER, CARDS     \n BLACKHOLE\n RESET                                               Reset game\n";
 	    ShowOnBillboard(help, 50);
         }
         if (phrase == "Blackhole")
