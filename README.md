@@ -10,7 +10,7 @@ Developed for UCSF
 
 
 
-![Screenshot](https://imgur.com/YdTA2Vl.png "Zoo
+![Screenshot](https://imgur.com/YdTA2Vl.png "Zoo")
 
 
-![Screenshot](http://imgur.com/HCMVloP.jpg "Earth
+![Screenshot](http://imgur.com/HCMVloP.jpg "Earth")
