@@ -3,8 +3,18 @@ guid: a9ce92e3f8bb6224fa1e92b7adec8c65
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
+    100000: //RootNode
+    400000: //RootNode
+    2300000: //RootNode
+    3300000: //RootNode
     4300000: Jaw
-  externalObjects: {}
+    11100000: //RootNode
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: SkullMaterial
+    second: {fileID: 2100000, guid: 056b70d2849c8924398936b818eec143, type: 2}
   materials:
     importMaterials: 1
     materialName: 1

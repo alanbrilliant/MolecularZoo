@@ -34,6 +34,7 @@ public class VoiceRecog : MonoBehaviour {
     private Dictionary<string, GameObject> atomPrefabKeywords;
     private List<string> moleculeKeywords;
     
+    
 
 
     void Start () {
@@ -87,6 +88,7 @@ public class VoiceRecog : MonoBehaviour {
 
 
         L_Recognizer = new KeywordRecognizer(ListKeywords.ToArray());
+        //Subscribe VoiceRecog class to OnPhraseRecognized event, with this.OnPhraseRecognized as the event handler
         L_Recognizer.OnPhraseRecognized += OnPhraseRecognized;
         L_Recognizer.Start();
         //StartCoroutine(GetText());
@@ -166,6 +168,7 @@ public class VoiceRecog : MonoBehaviour {
         //Spawns Molecules via Pubchem
         if (phrase == "Create")
         {
+            
             //Stops keyword recognizer (needed in order to start dictator)
             PhraseRecognitionSystem.Shutdown();
             D_Recognizer = new DictationRecognizer();
@@ -182,8 +185,13 @@ public class VoiceRecog : MonoBehaviour {
             D_Recognizer.DictationResult += DictationRecognizer_DictationResult;
             D_Recognizer.DictationComplete += DictationRecognizer_DictationComplete;
 
+            //Subscribes this class as to the DictationError event, with D_Error as the event handler. See c# events for more information
+            D_Recognizer.DictationError += new DictationRecognizer.DictationErrorHandler(D_Error);
             //Starts dictation recognizer
             D_Recognizer.Start();
+            
+            
+            
 
 
         }
@@ -196,10 +204,7 @@ public class VoiceRecog : MonoBehaviour {
             GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "Bonds: " + count;
 
 
-            //Updates billboard position
-            GameObject.FindWithTag("DictationResult").transform.position = GameObject.FindWithTag("DictationPosition").transform.position;
-            float a = Mathf.Atan2(GameObject.FindWithTag("DictationPosition").transform.position.x, GameObject.FindWithTag("DictationPosition").transform.position.z) * Mathf.Rad2Deg;
-            GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
+            updateBillboardPosition();
         }
         if (phrase == "AtomCount")
         {
@@ -209,10 +214,7 @@ public class VoiceRecog : MonoBehaviour {
             GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "Atoms: " + count;
 
 
-            //Updates billboard position 
-            GameObject.FindWithTag("DictationResult").transform.position = GameObject.FindWithTag("DictationPosition").transform.position;
-            float a = Mathf.Atan2(GameObject.FindWithTag("DictationPosition").transform.position.x, GameObject.FindWithTag("DictationPosition").transform.position.z) * Mathf.Rad2Deg;
-            GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
+            updateBillboardPosition();
 
         }
         if (phrase == "help")
@@ -231,6 +233,18 @@ public class VoiceRecog : MonoBehaviour {
         {
             GameObject.Find("Blackhole").GetComponent<BlackHole>().createBlackHole();
         }
+    }
+    //Error handler for speech dictation
+     void D_Error(string error, int hresult) {
+
+        for (int i = 30; i < error.Length; i += 30) { 
+
+            int spaceIndex = error.IndexOf(' ', i);
+            error = error.Insert(spaceIndex, "\n");
+        }
+
+        GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = error;
+        StartCoroutine(waitThenClearBillboard(60));
     }
 
     public void DictationRecognizer_DictationComplete(DictationCompletionCause cause)
@@ -263,6 +277,18 @@ public class VoiceRecog : MonoBehaviour {
         Debug.Log("Starting Coroutine");
         GetComponent<PubChemPuller>().startRoutine(searchedMol);
         
+    }
+
+    private void updateBillboardPosition() {
+        //Updates billboard position
+        GameObject.FindWithTag("DictationResult").transform.position = GameObject.FindWithTag("DictationPosition").transform.position;
+        float a = Mathf.Atan2(GameObject.FindWithTag("DictationPosition").transform.position.x, GameObject.FindWithTag("DictationPosition").transform.position.z) * Mathf.Rad2Deg;
+        GameObject.FindWithTag("DictationResult").transform.rotation = Quaternion.AngleAxis(a, Vector3.up);
+    }
+    IEnumerator waitThenClearBillboard(int seconds) {
+        yield return new WaitForSeconds(seconds);
+        GameObject.FindWithTag("DictationResult").GetComponent<TextMesh>().text = "";
+
     }
 
 }
