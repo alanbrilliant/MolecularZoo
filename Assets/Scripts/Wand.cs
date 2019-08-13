@@ -15,7 +15,7 @@ public class Wand : MonoBehaviour {
 
 	private AudioSource audio;
 	// GameObject gun;
-	private GameObject redGun;
+
 	public FixedJoint grabJoint;
     //private SpringJoint pullJoint;
 
@@ -99,11 +99,7 @@ public class Wand : MonoBehaviour {
             if (collider.tag == "Arm" && collider.isTrigger == true)
                 col = collider;
         }
-
-        
-        
-
-
+			
 
         anim = GetComponent<Animator>();
 
@@ -122,10 +118,7 @@ public class Wand : MonoBehaviour {
 
         trackedObj = gameObject.GetComponent<SteamVR_TrackedObject>();
 
-        Debug.Log(controller);
         //updateControllerState();
-
-
 
 
         //Gets objects in children with the gun component, then puts them into the gunList list. Then, puts the gameObject attached to each gun component into the gunChildObjects list 
@@ -233,6 +226,7 @@ public class Wand : MonoBehaviour {
         }
 
         //Release of trigger when holding a tool
+	/* Not sure what this code was trying to do.
         if (controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_Grip)&&isHoldingTool){
             Rigidbody connectedRigidbody = grabJoint.connectedBody;
             grabJoint.connectedBody = null;
@@ -241,10 +235,12 @@ public class Wand : MonoBehaviour {
             controllerState = 3;
             updateControllerState();
         }
+	*/
 
 
-        if (controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad)  &&
-            !(controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).x > .5 ))
+	// Advance to next tool if touchpad or grip button pressed.
+        if (controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad) ||
+	    controller.GetPressDown(Valve.VR.EVRButtonId.k_EButton_Grip))
         {
             updateControllerState();
 
@@ -368,18 +364,18 @@ public class Wand : MonoBehaviour {
             if (closestCollider != null)
             {
                 //Debug.Log("Grabbing!!");
-
+				GameObject closeObject = closestCollider.gameObject;
 
 
 
                 //If the closest collider is an atom spawner, then the code will instantiate an atom, and attach that to the hand
-                if (closestCollider.gameObject.tag == "AtomSpawn")
+                if (closeObject.tag == "AtomSpawn")
                 {
 
                     if (grabJoint.connectedBody == null)
                     {
-                        AtomSpawn spawnScript = closestCollider.gameObject.GetComponent<AtomSpawn>();
-                        GameObject newAtom = Instantiate(spawnScript.associatedAtom, closestCollider.gameObject.transform.position, closestCollider.gameObject.transform.rotation);
+                        AtomSpawn spawnScript = closeObject.GetComponent<AtomSpawn>();
+                        GameObject newAtom = Instantiate(spawnScript.associatedAtom, closeObject.transform.position, closeObject.transform.rotation);
 
                         //TODO: Fix below and stuff under if statement that checks and atoms tag to make more efficient, i.e. don't repeat code
 
@@ -396,41 +392,42 @@ public class Wand : MonoBehaviour {
 
                 //If the closest collider is an atom or some other "Tractorable" object, then it can be grabbed. If the object is an atom, then it will play it's molecule name if the cooldown has run out
                 //Examples of "Tractorable" objects include the green cube and the reset sphere
-                if (closestCollider.gameObject.tag == "Atom" || closestCollider.gameObject.tag == "Tractorable"||closestCollider.gameObject.tag == "Pistol")
+                if (closeObject.tag == "Atom" || closeObject.tag == "Tractorable" || closeObject.tag == "Pistol")
                 {
-                    if (grabJoint.connectedBody == null)
-                    {
-
-
-
-
-                        //  StartCoroutine(MoveOverSeconds(closestCollider.attachedRigidbody.gameObject, grabPosition.transform.position, .25f));
-
-                        closestCollider.gameObject.SendMessage("OnGrab", false);
-                        grabJoint.connectedBody = closestCollider.attachedRigidbody;
-                        previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;
-                        
-                        
-                        
-
-
-                        if (closestCollider.tag == "Atom" && closestCollider.GetComponent<AtomScript>().getMoleculeNameSound() != moleculeNameCooldown)
-                        {
-                            closestCollider.GetComponent<AtomScript>().playMoleculeNameSound();
-                            moleculeNameCooldown = closestCollider.GetComponent<AtomScript>().getMoleculeNameSound();
-                        }
-
-
-                        if (closestCollider.gameObject.tag == "Pistol")
-                        {
-                            isHoldingTool = true;
-                        }
-
-                    }
+					if (grabJoint.connectedBody == null)
+						GrabObject (closeObject);
                 }
             }
         }
     }
+
+	public void GrabObject(GameObject closeObject)
+	{
+
+		//  StartCoroutine(MoveOverSeconds(closeObject, grabPosition.transform.position, .25f));
+
+		// Notify tractored object that it has been grabbed.
+		// This is used to start an audio tutorial.
+		closeObject.SendMessage("OnGrab", null, SendMessageOptions.DontRequireReceiver);
+
+		grabJoint.connectedBody = closeObject.GetComponent<Rigidbody>();
+		previousGrabbedObjectPosition = grabJoint.connectedBody.gameObject.transform.position;
+
+
+		AtomScript atom = closeObject.GetComponent<AtomScript> ();
+		if (atom != null && atom.getMoleculeNameSound() != moleculeNameCooldown)
+		{
+			atom.playMoleculeNameSound();
+			moleculeNameCooldown = atom.getMoleculeNameSound();
+		}
+
+
+		if (closeObject.tag == "Pistol")
+		{
+			isHoldingTool = true;
+		}
+
+	}
 
     //Updates the field for the previous object velocity and position of the grabbed object
     //This is necessary to throw an object, as otherwise when the trigger is released, the object will have no velocity and will not be thrown
@@ -530,10 +527,10 @@ public class Wand : MonoBehaviour {
 
 
     //Sets the active tool by passing in a name
-    public void setToolByName(string toolName) {
+    public void setToolByVoiceName(string toolName) {
         for(int i = 0; i < gunChildObjects.Count; i++)
         {
-            if (gunChildObjects[i].name == toolName)
+            if (gunChildObjects[i].GetComponent<Gun>().voiceName == toolName)
             {
                 controllerState = i;
                 updateControllerState();

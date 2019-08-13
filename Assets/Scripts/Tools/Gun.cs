@@ -39,4 +39,11 @@ public class Gun : MonoBehaviour {
      public virtual void onDisable() {
         setActive(false);
     }
+
+    virtual public string voiceName {
+        get {
+	    return gameObject.name;
+	}
+    }
+
 }
