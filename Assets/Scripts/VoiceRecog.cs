@@ -34,16 +34,18 @@ public class VoiceRecog : MonoBehaviour {
     
 
 
-    void Start () {
+    void Awake() {
         MoleculeCreator spawnScript = gameObject.GetComponent<MoleculeCreator>();
 
         toolKeyWords.Add("Hand");
         Gun[] allTools = Resources.FindObjectsOfTypeAll<Gun>();
         foreach (Gun tool in allTools)
         {
-	    if (tool.gameObject.activeSelf && !toolKeyWords.Contains(tool.voiceName))
+            if (/*tool.gameObject.activeSelf &&*/tool.voiceName != "" && !toolKeyWords.Contains(tool.voiceName))
 	    {
-	        toolKeyWords.Add(tool.voiceName);
+                Debug.Log("hello " + tool.voiceName);
+                toolKeyWords.Add(tool.voiceName);
+                
 	    }
         }        //Tool Switchin
 

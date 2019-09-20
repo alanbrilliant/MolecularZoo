@@ -15,13 +15,16 @@ public class CardDeck : Gun {
     private int cardState;
 
 
+    override public string voiceName
+    {
+        get { return "Cards"; }
+    }
+
     public AudioClip gunshot;
 
     private enum cardDeck { saturatedFat, water, carbonDioxide, };
 
-    override public string voiceName {
-        get { return "Cards"; }
-    }
+ 
 
     // Use this for initialization
     void Start () {

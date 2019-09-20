@@ -9,13 +9,18 @@ public class Tractor : Gun {
 
     private GameObject laser;
     private LaserScript laserScript;
-
     // Use this for initialization
     void Start () {
-
+        
         laserScript = gameObject.GetComponentInChildren<LaserScript>();
         laser = laserScript.gameObject;
 
+    }
+
+
+    override public string voiceName
+    {
+        get { return "Tractor"; }
     }
 
     // Update is called once per frame

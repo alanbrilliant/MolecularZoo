@@ -5,7 +5,6 @@ using UnityEngine;
 public class Gun : MonoBehaviour {
     internal bool isActive;
     internal Wand wand;
-
     internal AudioSource wandAudio;
 
     internal SteamVR_Controller.Device controller {
@@ -40,10 +39,12 @@ public class Gun : MonoBehaviour {
         setActive(false);
     }
 
-    virtual public string voiceName {
+    virtual public string voiceName{
         get {
-	    return gameObject.name;
-	}
-    }
+
+            return "";
+        }
+        
+    } 
 
 }

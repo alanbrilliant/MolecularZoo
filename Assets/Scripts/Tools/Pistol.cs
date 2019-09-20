@@ -7,13 +7,14 @@ public class Pistol : Gun {
 
     public AudioClip gunshot;
    public  GameObject bullet;
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    // Use this for initialization
+    override public string voiceName
+    {
+        get { return "Pistol"; }
+    }
+
+    // Update is called once per frame
+    void Update () {
 
         if (base.isActive == true)
         {/*
