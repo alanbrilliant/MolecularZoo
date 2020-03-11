@@ -22,6 +22,7 @@ TagManager:
   - AtomExplosiveBullet
   - AtomBullet
   - VoiceManager
+  - Molecule
   layers:
   - Default
   - TransparentFX

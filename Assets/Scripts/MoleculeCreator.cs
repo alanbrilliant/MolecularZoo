@@ -49,6 +49,7 @@ public class MoleculeCreator : MonoBehaviour
         GameObject parentMol = new GameObject();
         parentMol.transform.position = Vector3.zero;
         parentMol.name = moleculeName;
+		parentMol.tag = "Molecule";
 
 
         for (int i = 0; i < atomList.Count; i++)
