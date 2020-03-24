@@ -10,8 +10,11 @@ public class SpawnOnContact : MonoBehaviour {
 	public BoxCollider spawnArea;
 	public string[] toSpawn;
 	public int[] number;
+	public float forceAtSpawnMolecule;
+	public float forceAtSpawnAtoms;
 
 	private MoleculeData[] datas;
+
 	// Use this for initialization
 	void Start () {
 		datas = new MoleculeData[toSpawn.Length];
@@ -65,6 +68,16 @@ public class SpawnOnContact : MonoBehaviour {
 				Vector3 pos = spawnArea.transform.position + spawnArea.center;
 				pos += new Vector3(x, y, z);
 				script.instantiateMolecule(datas[i], pos);
+			}
+		}
+
+		foreach(GameObject g in GameObject.FindGameObjectsWithTag("Molecule"))
+		{
+			//for this molecule, add the same force to each atom so that the whole molecule moves in the same direction
+			Vector3 theForceForThisMolecule = UnityEngine.Random.insideUnitSphere.normalized * forceAtSpawnMolecule;
+			foreach (Rigidbody rig in g.GetComponentsInChildren<Rigidbody>())
+			{
+				rig.AddForce(theForceForThisMolecule + UnityEngine.Random.insideUnitSphere.normalized * forceAtSpawnAtoms);
 			}
 		}
 	}
