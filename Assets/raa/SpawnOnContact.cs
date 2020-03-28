@@ -12,6 +12,7 @@ public class SpawnOnContact : MonoBehaviour {
 	public int[] number;
 	public float forceAtSpawnMolecule;
 	public float forceAtSpawnAtoms;
+	public AudioClip spawnClip;
 
 	private MoleculeData[] datas;
 
@@ -35,6 +36,11 @@ public class SpawnOnContact : MonoBehaviour {
 		{
 			DestroyAllMolecules();
 			Spawn();
+			AudioSource audio = target.GetComponent<AudioSource>();
+			if (audio!= null && spawnClip !=null) {
+				audio.clip = spawnClip;
+				audio.Play();
+			}
 		}
 	}
 
