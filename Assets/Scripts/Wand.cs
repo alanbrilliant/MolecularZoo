@@ -222,7 +222,7 @@ public class Wand : MonoBehaviour {
 
 
             connectedRigidbody.velocity = grabbedObjectVelocity;
-
+			connectedRigidbody.gameObject.SendMessage("OnRelease", null, SendMessageOptions.DontRequireReceiver);
         }
 
         //Release of trigger when holding a tool
@@ -365,11 +365,11 @@ public class Wand : MonoBehaviour {
             {
                 //Debug.Log("Grabbing!!");
 				GameObject closeObject = closestCollider.gameObject;
+				GrabbableCollider tc = closeObject.GetComponent<GrabbableCollider>();
+				if (tc != null) closeObject = tc.parent;
 
-
-
-                //If the closest collider is an atom spawner, then the code will instantiate an atom, and attach that to the hand
-                if (closeObject.tag == "AtomSpawn")
+				//If the closest collider is an atom spawner, then the code will instantiate an atom, and attach that to the hand
+				if (closeObject.tag == "AtomSpawn")
                 {
 
                     if (grabJoint.connectedBody == null)

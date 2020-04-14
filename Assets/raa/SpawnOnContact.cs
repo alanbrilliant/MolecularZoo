@@ -15,7 +15,9 @@ public class SpawnOnContact : MonoBehaviour {
 	public AudioClip spawnClip;
 
 	private MoleculeData[] datas;
-
+	private bool grabbed;
+	void OnGrab() { grabbed = true; }
+	void OnRelease() { grabbed = false; }
 	// Use this for initialization
 	void Start () {
 		datas = new MoleculeData[toSpawn.Length];
@@ -32,7 +34,7 @@ public class SpawnOnContact : MonoBehaviour {
 
 	private void OnCollisionEnter(Collision col)
 	{
-		if(target == col.gameObject)
+		if(grabbed && target == col.gameObject)
 		{
 			DestroyAllMolecules();
 			Spawn();
