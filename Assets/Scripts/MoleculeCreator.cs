@@ -29,7 +29,7 @@ public class MoleculeCreator : MonoBehaviour
     private float molSize = .1f;
     // Use this for initialization
 
-    public void instantiateMolecule(MoleculeData molecule, Vector3 startingPos)
+    public GameObject instantiateMolecule(MoleculeData molecule, Vector3 startingPos)
     {
        
 
@@ -170,19 +170,18 @@ public class MoleculeCreator : MonoBehaviour
 			
 			for (int j = 0; j < moleculeNameSounds.Count; j++) {
 				string soundNameRepaired = moleculeNameSounds [j].name.Substring (0,moleculeNameSounds[j].name.IndexOf("Sound"));
-				if (soundNameRepaired == molecule.name) {
+				if (soundNameRepaired.ToLower() == molecule.name.ToLower()) {//capitalization should not matter, so ToLower() is used
 					
 					instantiatedAtoms [i].GetComponent<AtomScript> ().setMoleculeNameSound (moleculeNameSounds [j]);
 				}
 			}
 		}
 
+		return parentMol;
+	}
 
 
-    }
-
-
-    public GameObject instantiateMiniatureRigidMolecule(MoleculeData molecule, Vector3 startingPos) {
+	public GameObject instantiateMiniatureRigidMolecule(MoleculeData molecule, Vector3 startingPos) {
 
         List<int> atomList = molecule.atom.element;
         List<int> bondStart = molecule.bond.aid1;
