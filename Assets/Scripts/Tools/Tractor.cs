@@ -58,7 +58,7 @@ public class Tractor : Gun {
                             tractoredObject = hit.collider.gameObject;
 							GrabbableCollider tc = tractoredObject.GetComponent<GrabbableCollider>();
 							if (tc != null) tractoredObject = tc.parent;
-							tractoredObject.SendMessage("OnGrab", null, SendMessageOptions.DontRequireReceiver);
+							tractoredObject.SendMessage("OnTractor", null, SendMessageOptions.DontRequireReceiver);
 							GameObject hitAtom = tractoredObject;
                             Rigidbody hitAtomRB = tractoredObject.GetComponent<Rigidbody>();
                             hitAtomRB.velocity = hitAtomRB.velocity.magnitude * (transform.position - hitAtom.transform.position).normalized;

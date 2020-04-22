@@ -2058,7 +2058,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   toSpawn: {fileID: 1327959487721318, guid: 8ddddcd26078d884fa4baa4f3b864f73, type: 2}
-  dotProductMinTrigger: -0.5
+  accelerationToSpawn: 0.3
+  reload: 0.5
+  launchSpeed: 0.2
 --- !u!136 &136352034219991694
 CapsuleCollider:
   m_ObjectHideFlags: 1

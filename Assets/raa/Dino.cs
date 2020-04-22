@@ -12,19 +12,29 @@ public class Dino : MonoBehaviour {
 	void Start () {
 		
 	}
+
+	void OnTractor()//should not set grabbed = true, but same as OnGrab apart from that
+	{
+		transform.SetParent(null, true);
+		rig.isKinematic = false;
+		StopAllCoroutines();
+	}
+
 	void OnGrab()
 	{
 		transform.SetParent(null, true);
 		rig.isKinematic = false;
 		grabbed = true;
+		StopAllCoroutines();
 	}
 	void OnRelease()
 	{
 		grabbed = false;
-		Invoke("CheckPosition", timeToGoHome);
+		StartCoroutine("CheckPosition");
 	}
-	void CheckPosition()
+	IEnumerator CheckPosition()
 	{
+		yield return new WaitForSeconds(timeToGoHome);
 		if (!grabbed)
 		{
 			rig.isKinematic = true;
