@@ -5,6 +5,7 @@ using UnityEngine;
 public class Dino : MonoBehaviour {
 	public Transform home;
 	public Rigidbody rig;
+	public AudioSource audioSource;
 	public float timeToGoHome;//if the dino is left alone for too long, he will teleport home
 
 	private bool grabbed;
@@ -25,6 +26,7 @@ public class Dino : MonoBehaviour {
 		transform.SetParent(null, true);
 		rig.isKinematic = false;
 		grabbed = true;
+		audioSource.Play();
 		StopAllCoroutines();
 	}
 	void OnRelease()
