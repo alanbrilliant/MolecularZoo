@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * Used for the dino. Spawns toSpawn when the velocity changes rapidly. 
+ * The velocity is calculated based on the position changes.
+ * This GameObject must be grabbed by a hand for spawning to occur.
+ */
 public class SpawnOnShake : MonoBehaviour {
 	public GameObject toSpawn;
 	public float velocityToSpawn;
@@ -9,16 +14,21 @@ public class SpawnOnShake : MonoBehaviour {
 	public float launchSpeed;
 	public int framesToSampleVelocity;
 
-
+	//used to calculate if the velocity changed rapidly
 	private Vector3 oldVelocity;
+	//used to calculate the velocity
 	private Vector3 oldPosition;
+	//keep track of if this GameObject is grabbed
 	private bool grabbed;
+	//
 	private int framesLeftToSampleVelocity;
 	private float loadLeft;
 	public float spawnDist;
 
+	//update if this GameObject is grabbed
 	void OnGrab() { grabbed = true; }
 	void OnRelease() { grabbed = false; }
+
 	// Use this for initialization
 	void Start () {
 		oldPosition = transform.position;
