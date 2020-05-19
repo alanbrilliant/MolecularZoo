@@ -222,6 +222,8 @@ public class Wand : MonoBehaviour {
 
 
             connectedRigidbody.velocity = grabbedObjectVelocity;
+
+			//send the message that the GameObject was released
 			connectedRigidbody.gameObject.SendMessage("OnRelease", null, SendMessageOptions.DontRequireReceiver);
         }
 
@@ -365,6 +367,7 @@ public class Wand : MonoBehaviour {
             {
                 //Debug.Log("Grabbing!!");
 				GameObject closeObject = closestCollider.gameObject;
+				//if closeObject has a GrabbableCollider, set closeObject to the GrabbableCollider.parent. See GrabbableCollider for more info.
 				GrabbableCollider tc = closeObject.GetComponent<GrabbableCollider>();
 				if (tc != null) closeObject = tc.parent;
 

@@ -92,7 +92,10 @@ public class DataManager : MonoBehaviour {
 		MoleculeData newMolecule = new MoleculeData ();
 
 		JObject dataObj = LoadGameData (fileName);
+
+		//Give more information when a dataObj cannot be loaded
 		if (dataObj == null) Debug.LogError("Tried to load an invalid molecule file: " + fileName + ", name: " + moleculeName);
+
 		atoms atm = dataObj ["PC_Compounds"] [0]["atoms"].ToObject<atoms>() ;
 		bonds bnd = dataObj ["PC_Compounds"] [0]["bonds"].ToObject<bonds>();
 		conformers cnf =  dataObj ["PC_Compounds"] [0]["coords"][0]["conformers"][0].ToObject<conformers>();
