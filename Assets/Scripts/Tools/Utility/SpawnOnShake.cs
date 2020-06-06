@@ -13,9 +13,8 @@ public class SpawnOnShake : MonoBehaviour {
 	public float reload;
 	public float launchSpeed;
 	public int framesToSampleVelocity;
-
-	//used to calculate if the velocity changed rapidly
-	private Vector3 oldVelocity;
+	public float spawnDist;
+	
 	//used to calculate the velocity
 	private Vector3 oldPosition;
 	//keep track of if this GameObject is grabbed
@@ -23,7 +22,7 @@ public class SpawnOnShake : MonoBehaviour {
 	//
 	private int framesLeftToSampleVelocity;
 	private float loadLeft;
-	public float spawnDist;
+	
 
 	//update if this GameObject is grabbed
 	void OnGrab() { grabbed = true; }
@@ -32,7 +31,7 @@ public class SpawnOnShake : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		oldPosition = transform.position;
-		oldVelocity = Vector3.zero;
+		loadLeft = reload;
 	}
 	
 	// Update is called once per frame
@@ -45,7 +44,7 @@ public class SpawnOnShake : MonoBehaviour {
 		{
 			framesLeftToSampleVelocity = framesToSampleVelocity;
 
-			Vector3 velocity = (transform.position - oldPosition) / Time.fixedDeltaTime;
+			Vector3 velocity = (transform.position - oldPosition) / (Time.fixedDeltaTime * framesToSampleVelocity);
 
 			if (loadLeft < 0 && velocity.magnitude > velocityToSpawn)
 			{

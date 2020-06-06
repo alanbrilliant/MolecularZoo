@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//rigidbody is required for setting spawned molecule velocity
+[RequireComponent(typeof(Rigidbody))]
 public class Decay : MonoBehaviour {
 
 	[Tooltip("The objects to spawn once the time is up")]
@@ -18,9 +20,11 @@ public class Decay : MonoBehaviour {
 	//how much time has passed. Used to determine the color of the materials and if it should "Die"
 	private float timeElapsed;
 
+	private Rigidbody rig;
+
 	// Use this for initialization
 	void Start () {
-
+		rig = GetComponent<Rigidbody>();
 		//Set totalChance to the summation of chance
 		for (int i = 0; i < chance.Length; i++) totalChance += chance[i];
 
@@ -74,7 +78,11 @@ public class Decay : MonoBehaviour {
 				MoleculeData moleculeData = dataManager.loadMolecule(toSpawn[i] + "data.json", toSpawn[i]);
 				//using Dino.mainMoleculeCreator, instantiate the molecule
 				GameObject spawned = MoleculeCreator.main.instantiateMolecule(moleculeData, transform.position);
-
+				foreach (Rigidbody r in spawned.GetComponentsInChildren<Rigidbody>())
+				{
+					//for each atom (each Rigidbody), add the force for this molecule plus some atom-individual random force
+					r.velocity = rig.velocity;
+				}
 				//get an atom from the molecule
 				AtomScript atom = spawned.GetComponentInChildren<AtomScript>();
 				//play the noise of the atom. This if statement should never be false, since a molecule should have atoms.

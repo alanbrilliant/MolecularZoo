@@ -2104,7 +2104,6 @@ MonoBehaviour:
   rig: {fileID: 54069322852744000}
   audioSource: {fileID: 82355027612835680}
   timeToGoHome: 10
-  moleculeCreator: {fileID: 0}
 --- !u!114 &114447524227041176
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2154,11 +2153,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   toSpawn: {fileID: 1327959487721318, guid: 8ddddcd26078d884fa4baa4f3b864f73, type: 2}
-  velocityToSpawn: 0.75
-  reload: 1.5
+  velocityToSpawn: 0.3
+  reload: 3
   launchSpeed: 0.3
-  framesToSampleVelocity: 5
-  spawnDist: 0.15
+  framesToSampleVelocity: 10
+  spawnDist: 0.2
 --- !u!136 &136352034219991694
 CapsuleCollider:
   m_ObjectHideFlags: 1
