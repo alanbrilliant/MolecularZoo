@@ -5,7 +5,10 @@ using UnityEngine;
 
 public class MoleculeCreator : MonoBehaviour
 {
+	public static MoleculeCreator main;
 
+	[Tooltip("should the static MoleculeCreator.main be set to this instance?")]
+	public bool isMain;
 
     public GameObject hydrogenPrefab;
     public GameObject oxygenPrefab;
@@ -27,9 +30,14 @@ public class MoleculeCreator : MonoBehaviour
     public List<AudioClip> moleculeNameSounds;
 
     private float molSize = .1f;
-    // Use this for initialization
 
-    public void instantiateMolecule(MoleculeData molecule, Vector3 startingPos)
+	private void Awake()
+	{
+		if (isMain) main = this;
+	}
+
+	//returns the molecule GameObject created
+	public GameObject instantiateMolecule(MoleculeData molecule, Vector3 startingPos)
     {
        
 
@@ -49,6 +57,8 @@ public class MoleculeCreator : MonoBehaviour
         GameObject parentMol = new GameObject();
         parentMol.transform.position = Vector3.zero;
         parentMol.name = moleculeName;
+		//set the tag to Molecule so that scripts can utilize the tag and find molecules
+		parentMol.tag = "Molecule";
 
 
         for (int i = 0; i < atomList.Count; i++)
@@ -164,24 +174,22 @@ public class MoleculeCreator : MonoBehaviour
             newBond.transform.name = "bond" + i;
 
         }
-
 		for (int i = 0; i < instantiatedAtoms.Count; i++) {
-			
 			for (int j = 0; j < moleculeNameSounds.Count; j++) {
 				string soundNameRepaired = moleculeNameSounds [j].name.Substring (0,moleculeNameSounds[j].name.IndexOf("Sound"));
-				if (soundNameRepaired == molecule.name) {
+				if (soundNameRepaired.ToLower().Equals(molecule.name.ToLower())) {//capitalization should not matter, so ToLower() is used
 					
 					instantiatedAtoms [i].GetComponent<AtomScript> ().setMoleculeNameSound (moleculeNameSounds [j]);
 				}
-			}
+			}			
 		}
 
+		//return the GameObject of the molecule
+		return parentMol;
+	}
 
 
-    }
-
-
-    public GameObject instantiateMiniatureRigidMolecule(MoleculeData molecule, Vector3 startingPos) {
+	public GameObject instantiateMiniatureRigidMolecule(MoleculeData molecule, Vector3 startingPos) {
 
         List<int> atomList = molecule.atom.element;
         List<int> bondStart = molecule.bond.aid1;

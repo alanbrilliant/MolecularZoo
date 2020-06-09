@@ -470,6 +470,14 @@ public class AtomScript : MonoBehaviour { //TODO: Change AtomScript to Atom
 				audioSrc.clip = moleculeNameSound;
 				audioSrc.Play ();
 			}
+			else
+			{
+				print("this atom has no sound");
+			}
+		}
+		else
+		{
+			print("this atom broke off of the molecule, thus no sound");
 		}
 	}
 
